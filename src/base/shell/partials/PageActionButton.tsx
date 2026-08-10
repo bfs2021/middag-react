@@ -15,10 +15,12 @@
  */
 
 import { useCallback, useState, type ReactElement } from "react";
+import { HugeiconsIcon, type IconSvgElement } from "@hugeicons/react";
 import { router } from "@inertiajs/core";
 import { Link } from "@inertiajs/react";
 
 import { ConfirmationDialog } from "@/base/partials/ConfirmationDialog";
+import { getIcon, hasIcon } from "@/base/utils/icons";
 import type { PageAction } from "@/contracts/page-contract";
 import { renderLabel } from "@/i18n/render-label";
 import { useTranslation } from "@/i18n/useTranslation";
@@ -108,13 +110,33 @@ export function PageActionButton({ action }: { action: PageAction }): ReactEleme
 
   const label = renderLabel(action.label, t);
 
+  /**
+   * The action's icon, when it names one the registry knows.
+   *
+   * `Action.icon` has always been part of the contract and this button ignored
+   * it, so every page action and every tab-strip action rendered label-only
+   * while the contract said otherwise. `hasIcon` gates the lookup because
+   * `getIcon` answers an unregistered name with a generic inbox glyph — drawing
+   * the wrong picture confidently is worse than drawing none.
+   */
+  const icon =
+    action.icon && hasIcon(action.icon) ? (
+      <HugeiconsIcon
+        icon={getIcon(action.icon) as unknown as IconSvgElement}
+        className="size-3.5"
+      />
+    ) : null;
+
   // Simple navigation link (GET, no confirmation). A disabled action never renders
   // as an anchor: an <a> keeps its href and ignores `disabled`, so it would stay
   // navigable and look enabled. It falls through to the locked <button> below.
   if (isNavigation && target.url && !confirmation && !action.loading && !action.disabled) {
     return (
       <Button data-testid={actionTestId(action.id)} variant={variant} size="sm" asChild>
-        <Link href={target.url}>{label}</Link>
+        <Link href={target.url}>
+          {icon}
+          {label}
+        </Link>
       </Button>
     );
   }
@@ -130,6 +152,7 @@ export function PageActionButton({ action }: { action: PageAction }): ReactEleme
         disabled={action.disabled || effectiveLoading}
         aria-disabled={action.disabled || effectiveLoading}
       >
+        {!effectiveLoading && icon}
         {effectiveLoading && (
           <svg
             className="mr-2 size-3.5 animate-spin"
