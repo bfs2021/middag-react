@@ -5,7 +5,6 @@
 
 ### Bug Fixes
 
-* keep the full query and reload the contract in server tables ([5452b9c](https://github.com/middag-io/middag-react/commit/5452b9cbf5a413d509743245ac5bcbccccc78f92))
 * keep the full query and reload the contract in server tables ([eb695fd](https://github.com/middag-io/middag-react/commit/eb695fddabd86bf73a6b0d4c9d33aebe91e58d32))
 
 ## [0.45.3](https://github.com/middag-io/middag-react/compare/v0.45.2...v0.45.3) (2026-11-16)
