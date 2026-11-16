@@ -29,7 +29,7 @@ The wizard detects your host platform (Moodle/WordPress), configures authenticat
 npm install @middag-io/react react react-dom @inertiajs/react @inertiajs/core
 ```
 
-**GitHub Packages (includes TypeScript source for IDE navigation):**
+**GitHub Packages (optional; adds the TypeScript source for IDE navigation, needs a token):**
 
 ```bash
 # Add to global ~/.npmrc
@@ -286,10 +286,11 @@ The package includes a CLI for bootstrapping and maintaining the UI layer in con
 
 ## Help and status
 
-- **Status:** the 0.x line is pre-stable; minor releases may break the API. Releases are listed in [`CHANGELOG.md`](CHANGELOG.md).
-- **Documentation:** https://docs.middag.dev
+- **Status:** the 0.x line is pre-stable; minor releases may break the API.
+- **Documentation:** https://docs.middag.dev/framework/explanation/ui/overview
 - **Questions and bugs:** https://github.com/middag-io/middag-react/issues
 - **Security reports:** see [`SECURITY.md`](SECURITY.md) (do not open a public issue).
+- **Changes:** see [`CHANGELOG.md`](CHANGELOG.md).
 
 ## License
 
