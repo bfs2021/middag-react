@@ -7,7 +7,6 @@
 
 * **blocks:** cap a dense table column and let it map its own status colours ([960c4c8](https://github.com/middag-io/middag-react/commit/960c4c8b0c5fae37025615f3b61cd821ce9de745))
 * **blocks:** give link list rows a right side, a selected state and a dense mode ([a812024](https://github.com/middag-io/middag-react/commit/a812024b444309842c3a3560570800fd80ad1bef))
-* carry the file value's pending upload as an opaque uploadToken ([c8d5e67](https://github.com/middag-io/middag-react/commit/c8d5e6750bc74ab7d84995be5fdd26c21efb6ce8))
 * carry the file value's pending upload as an opaque uploadToken ([6b51743](https://github.com/middag-io/middag-react/commit/6b51743ba28f6823605dd5dbab3607afb45f4222))
 * **partials:** draw the date range filter the contract already declared ([06cc70c](https://github.com/middag-io/middag-react/commit/06cc70c73ba30112c551bebdf5ab6886f188c483))
 * **partials:** draw the multiselect filter the contract already declared ([9abaf35](https://github.com/middag-io/middag-react/commit/9abaf3544f0dbbd75c93c7ac29b3207126bbcbf5))
@@ -28,7 +27,6 @@
 
 ### Documentation
 
-* add help and status to the README ([1f1e50f](https://github.com/middag-io/middag-react/commit/1f1e50fc3eba520d713afcf021c85883100d0167))
 * add help and status to the README ([859f461](https://github.com/middag-io/middag-react/commit/859f461565f46efde0e4b819845fa1463025a81b))
 * **partials:** translate the DataTable column width comment to English ([19b4088](https://github.com/middag-io/middag-react/commit/19b4088e63afb8342df37cb530438ff2cec2c5bc))
 
