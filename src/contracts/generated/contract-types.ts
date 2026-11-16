@@ -9,7 +9,7 @@
  *
  * @source middag-php-ui/schema/{page-contract,fragment}.json
  * @contract-version 1
- * @hash aadc7e2b4a0f7724
+ * @hash 61137d173165ca8e
  */
 export type Label = string | Translatable;
 export type ActionTarget =
@@ -74,6 +74,18 @@ export type ValueFormat =
   | "currency"
   | "boolean"
   | "badge";
+export type ColumnVariant =
+  | "text"
+  | "status"
+  | "badge"
+  | "boolean"
+  | "timestamp"
+  | "link"
+  | "rich_status"
+  | "html"
+  | "link_group"
+  | "annotated"
+  | "progress";
 export type FilterType = "select" | "text" | "date" | "date_range" | "boolean" | "number_range";
 export type FieldConstraints =
   | {
@@ -94,7 +106,7 @@ export type FileValue =
       size?: number;
       type?: string;
       id?: string;
-      draftitemid?: number;
+      uploadToken?: string;
     };
 export type FieldError = string | string[];
 export type FormSchemaNode = FormFieldNode | FormSectionNode | FormGroupNode | FormHeaderNode;
@@ -550,6 +562,7 @@ export interface Column {
   options?: {
     [k: string]: unknown;
   };
+  variant?: ColumnVariant;
 }
 export interface FilterDefinition {
   key: string;

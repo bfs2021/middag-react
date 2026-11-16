@@ -33,6 +33,24 @@ describe("FileUploadField controlled value", () => {
     expect(screen.getByText("resume.pdf")).toBeInTheDocument();
   });
 
+  it("shows an existing file whose value carries an uploadToken", () => {
+    wrap(
+      <FileUploadField
+        id="attachment"
+        value={{
+          url: "/f.pdf",
+          name: "a.pdf",
+          size: 2048,
+          type: "application/pdf",
+          id: "file-7",
+          uploadToken: "99",
+        }}
+        onChange={noop}
+      />,
+    );
+    expect(screen.getByText("a.pdf")).toBeInTheDocument();
+  });
+
   it("derives the display name from a plain URL string value", () => {
     wrap(<FileUploadField id="photo" value="/uploads/2026/photo.png" onChange={noop} />);
     expect(screen.getByText("photo.png")).toBeInTheDocument();

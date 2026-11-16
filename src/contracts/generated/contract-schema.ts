@@ -9,7 +9,7 @@
  *
  * @source middag-php-ui/schema/{page-contract,fragment}.json
  * @contract-version 1
- * @hash aadc7e2b4a0f7724
+ * @hash 61137d173165ca8e
  */
 import { z } from "zod";
 
