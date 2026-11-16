@@ -107,11 +107,11 @@ function ActionCard({ item }: { item: ActionGridBlockData["items"][number] }): R
         </div>
       </CardHeader>
       <CardContent>
-        {/* `loading`/`disabled` já fazem parte do contrato Action (gerado de
-            Middag\Ui) mas eram ignorados aqui: o servidor podia sinalizar uma
-            ação em andamento e o botão seguia inerte e clicável. `loading`
-            implica desabilitado — reenviar durante o processamento é o que a
-            sinalização existe para evitar. */}
+        {/* `loading`/`disabled` are part of the Action contract (generated from
+            Middag\Ui) but were ignored here: the server could flag an action
+            as in progress while the button stayed active and clickable.
+            `loading` implies disabled, because resubmitting during processing
+            is what the flag exists to prevent. */}
         <Button
           variant="outline"
           size="sm"
