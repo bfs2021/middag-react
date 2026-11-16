@@ -1,5 +1,35 @@
 # Changelog
 
+## [0.45.0](https://github.com/middag-io/middag-react/compare/v0.44.1...v0.45.0) (2026-11-16)
+
+
+### Features
+
+* **blocks:** cap a dense table column and let it map its own status colours ([960c4c8](https://github.com/middag-io/middag-react/commit/960c4c8b0c5fae37025615f3b61cd821ce9de745))
+* **blocks:** give link list rows a right side, a selected state and a dense mode ([a812024](https://github.com/middag-io/middag-react/commit/a812024b444309842c3a3560570800fd80ad1bef))
+* carry the file value's pending upload as an opaque uploadToken ([6b51743](https://github.com/middag-io/middag-react/commit/6b51743ba28f6823605dd5dbab3607afb45f4222))
+* **partials:** draw the date range filter the contract already declared ([06cc70c](https://github.com/middag-io/middag-react/commit/06cc70c73ba30112c551bebdf5ab6886f188c483))
+* **partials:** draw the multiselect filter the contract already declared ([9abaf35](https://github.com/middag-io/middag-react/commit/9abaf3544f0dbbd75c93c7ac29b3207126bbcbf5))
+* **partials:** make the table toolbar's two dead controls work ([b2ec625](https://github.com/middag-io/middag-react/commit/b2ec6259d04dab6aba8e35ffe7bf96249a45eba5))
+
+
+### Bug Fixes
+
+* **blocks:** navigate internal link list items through Inertia ([2fa482d](https://github.com/middag-io/middag-react/commit/2fa482d5d9617bfd3e40b84eb6f0f2b176b15fd7))
+* **form:** actually read the field registry when routing a field ([59346d9](https://github.com/middag-io/middag-react/commit/59346d98187fddd4776ecbc87bf2ab81918b5024))
+* **layout:** keep the dashboard aside on screen, and let a page size it ([786bfaa](https://github.com/middag-io/middag-react/commit/786bfaa8d8b3c5c1c0614b3ed3a1cceb2e6692c2))
+* **partials:** hold the column cap on the column, not on the text ([e308ebe](https://github.com/middag-io/middag-react/commit/e308ebed09ca768e54d529e9104ad72d265f628a))
+* **partials:** match statusMap keys case-insensitively ([cd15c47](https://github.com/middag-io/middag-react/commit/cd15c47acbc3f9257e266b777347f5847c0e6a42))
+* **partials:** render the confirmation message as text, not HTML ([cad4508](https://github.com/middag-io/middag-react/commit/cad4508f2db8bd2b3ac95047ed0485c13895b239))
+* **partials:** sanitize html cells and chart colour styles ([304a606](https://github.com/middag-io/middag-react/commit/304a60679883e96ff782f12fb890a4f3ea94971a))
+* **shell:** draw the icon a page action declares ([7dd4f5d](https://github.com/middag-io/middag-react/commit/7dd4f5d06f170fd5fbd72a1a64021acb7bd61ef4))
+
+
+### Documentation
+
+* add help and status to the README ([859f461](https://github.com/middag-io/middag-react/commit/859f461565f46efde0e4b819845fa1463025a81b))
+* **partials:** translate the DataTable column width comment to English ([19b4088](https://github.com/middag-io/middag-react/commit/19b4088e63afb8342df37cb530438ff2cec2c5bc))
+
 ## [0.44.1](https://github.com/middag-io/middag-react/compare/v0.44.0...v0.44.1) (2026-11-14)
 
 
