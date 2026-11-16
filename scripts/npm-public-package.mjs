@@ -27,7 +27,15 @@
  * (lifecycle hooks such as `prepare` need the git checkout and repo tooling).
  */
 import { execFileSync } from "node:child_process";
-import { mkdirSync, mkdtempSync, readFileSync, realpathSync, rmSync, writeFileSync } from "node:fs";
+import {
+  mkdirSync,
+  mkdtempSync,
+  readdirSync,
+  readFileSync,
+  realpathSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -133,24 +141,32 @@ export function checkTarball(tarball, sourcePackageJson) {
   };
 }
 
+/**
+ * Runs `npm pack` for cwd into the empty packDir and returns the tarball path.
+ * The tarball is found on disk instead of parsing `npm pack --json`, whose
+ * shape changed between npm 11 (array) and npm 12 (object keyed by name).
+ */
+export function packInto(cwd, packDir) {
+  // --silent drops the per-file "npm notice" listing; errors still throw with stderr.
+  execFileSync("npm", ["pack", "--ignore-scripts", "--silent", "--pack-destination", packDir], {
+    cwd,
+    stdio: ["ignore", "ignore", "pipe"],
+    maxBuffer: 64 * 1024 * 1024,
+  });
+  const tarballs = readdirSync(packDir).filter((name) => name.endsWith(".tgz"));
+  if (tarballs.length !== 1) {
+    throw new Error(`expected one tarball from npm pack in ${packDir}, found ${tarballs.length}`);
+  }
+  return join(packDir, tarballs[0]);
+}
+
 /** Packs the source package and extracts it into outDir with the public manifest. */
 export function stagePublicPackage(sourceDir, outDir) {
   const packDir = mkdtempSync(join(tmpdir(), "npm-public-pack-"));
   try {
-    const packed = JSON.parse(
-      execFileSync("npm", ["pack", "--ignore-scripts", "--json", "--pack-destination", packDir], {
-        cwd: sourceDir,
-        encoding: "utf8",
-      }),
-    );
+    const tarball = packInto(sourceDir, packDir);
     mkdirSync(outDir, { recursive: true });
-    execFileSync("tar", [
-      "-xzf",
-      join(packDir, packed[0].filename),
-      "-C",
-      outDir,
-      "--strip-components=1",
-    ]);
+    execFileSync("tar", ["-xzf", tarball, "-C", outDir, "--strip-components=1"]);
     const source = JSON.parse(readFileSync(join(sourceDir, "package.json"), "utf8"));
     writeFileSync(
       join(outDir, "package.json"),
@@ -165,13 +181,7 @@ export function stagePublicPackage(sourceDir, outDir) {
 export function verifyStagedPackage(stageDir, sourcePackageJson) {
   const packDir = mkdtempSync(join(tmpdir(), "npm-public-verify-"));
   try {
-    const packed = JSON.parse(
-      execFileSync("npm", ["pack", "--ignore-scripts", "--json", "--pack-destination", packDir], {
-        cwd: stageDir,
-        encoding: "utf8",
-      }),
-    );
-    return checkTarball(join(packDir, packed[0].filename), sourcePackageJson);
+    return checkTarball(packInto(stageDir, packDir), sourcePackageJson);
   } finally {
     rmSync(packDir, { recursive: true, force: true });
   }
