@@ -284,6 +284,13 @@ The package includes a CLI for bootstrapping and maintaining the UI layer in con
 | `notify-schemas-updated.yml` | Push to main (docs/public/schemas) | Notifies downstream consumers of schema changes                 |
 | `sync-examples.yml`          | Monday 8:00 UTC / manual           | Sync ReUI examples, opens PR if updates                         |
 
+## Help and status
+
+- **Status:** the 0.x line is pre-stable; minor releases may break the API. Releases are listed in [`CHANGELOG.md`](CHANGELOG.md).
+- **Documentation:** https://docs.middag.dev
+- **Questions and bugs:** https://github.com/middag-io/middag-react/issues
+- **Security reports:** see [`SECURITY.md`](SECURITY.md) (do not open a public issue).
+
 ## License
 
 **Apache-2.0 OSS.** The rendering engine, the standard Community blocks, shells, layouts, contracts and registries. Free to use, fork and ship. See [`LICENSE`](./LICENSE).
