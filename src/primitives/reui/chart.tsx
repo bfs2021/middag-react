@@ -8,6 +8,16 @@ import { cn } from "@/lib/utils";
 const THEMES = { light: "", dark: ".dark" } as const;
 
 const INITIAL_DIMENSION = { width: 320, height: 200 } as const;
+
+// ChartStyle interpolates config keys, colours and the chart id into a
+// <style> element. Keys and ids are limited to identifier characters, and a
+// colour that could end the declaration, the rule or the element is dropped.
+const SAFE_CSS_IDENT = /^[\w-]+$/;
+const UNSAFE_CSS_VALUE = /[;{}<>\\]/;
+
+function isSafeCssColor(color: string): boolean {
+  return color.trim() !== "" && !UNSAFE_CSS_VALUE.test(color);
+}
 type TooltipNameType = number | string;
 
 export type ChartConfig = Record<
@@ -55,7 +65,7 @@ function ChartContainer({
   };
 }) {
   const uniqueId = React.useId();
-  const chartId = `chart-${id ?? uniqueId.replace(/:/g, "")}`;
+  const chartId = `chart-${(id ?? uniqueId).replace(/[^\w-]/g, "")}`;
 
   return (
     <ChartContext.Provider value={{ config }}>
@@ -81,7 +91,11 @@ function ChartContainer({
 
 const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
   const colorConfig = Object.entries(config).filter(
-    ([, config]) => config.theme ?? config.color,
+    ([key, config]) =>
+      SAFE_CSS_IDENT.test(key) &&
+      [config.color, ...Object.values(config.theme ?? {})].some(
+        (color) => color != null && isSafeCssColor(color),
+      ),
   );
 
   if (!colorConfig.length) {
@@ -100,7 +114,9 @@ ${colorConfig
     const color =
       itemConfig.theme?.[theme as keyof typeof itemConfig.theme] ??
       itemConfig.color;
-    return color ? `  --color-${key}: ${color};` : null;
+    return color && isSafeCssColor(color)
+      ? `  --color-${key}: ${color};`
+      : null;
   })
   .join("\n")}
 }

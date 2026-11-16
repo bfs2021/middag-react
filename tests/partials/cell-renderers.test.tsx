@@ -208,6 +208,72 @@ describe("HtmlCell", () => {
     render(<HtmlCell value="" row={{}} column={{ key: "h" }} />);
     expect(screen.getByText("—")).toBeDefined();
   });
+
+  it("renders an em dash for null", () => {
+    render(<HtmlCell value={null} row={{}} column={{ key: "h" }} />);
+    expect(screen.getByText("—")).toBeDefined();
+  });
+
+  it("keeps benign markup: links, emphasis, line breaks and classes", () => {
+    const { container } = render(
+      <HtmlCell
+        value={'<a href="/users/7" class="badge">Ana</a><br><em>note</em>'}
+        row={{}}
+        column={{ key: "h" }}
+      />,
+    );
+    const link = container.querySelector("a");
+    expect(link?.getAttribute("href")).toBe("/users/7");
+    expect(link?.getAttribute("class")).toBe("badge");
+    expect(container.querySelector("br")).not.toBeNull();
+    expect(container.querySelector("em")?.textContent).toBe("note");
+  });
+
+  it("drops script and style elements", () => {
+    const { container } = render(
+      <HtmlCell
+        value={"<script>window.pwned = 1</script><style>body{}</style><b>ok</b>"}
+        row={{}}
+        column={{ key: "h" }}
+      />,
+    );
+    expect(container.querySelector("script")).toBeNull();
+    expect(container.querySelector("style")).toBeNull();
+    expect(container.textContent).not.toContain("pwned");
+    expect(container.querySelector("b")?.textContent).toBe("ok");
+  });
+
+  it("drops event handler attributes", () => {
+    const { container } = render(
+      <HtmlCell
+        value={'<img src="x.png" onerror="alert(1)"><span onclick="alert(2)">hi</span>'}
+        row={{}}
+        column={{ key: "h" }}
+      />,
+    );
+    expect(container.innerHTML).not.toContain("onerror");
+    expect(container.innerHTML).not.toContain("onclick");
+    expect(container.innerHTML).not.toContain("alert");
+  });
+
+  it("drops javascript: URLs", () => {
+    const { container } = render(
+      <HtmlCell value={'<a href="javascript:alert(1)">click</a>'} row={{}} column={{ key: "h" }} />,
+    );
+    expect(container.querySelector("a")?.getAttribute("href")).toBeNull();
+    expect(container.textContent).toBe("click");
+  });
+
+  it("drops inline styles", () => {
+    const { container } = render(
+      <HtmlCell
+        value={'<span style="position:fixed;inset:0">overlay</span>'}
+        row={{}}
+        column={{ key: "h" }}
+      />,
+    );
+    expect(container.innerHTML).not.toContain("position:fixed");
+  });
 });
 
 describe("LinkGroupCell", () => {
