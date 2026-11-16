@@ -214,8 +214,7 @@
     "vitest": "^4.1.12"
   },
   "overrides": {
-    "happy-dom": "^21.0.4",
-    "minimatch": "^11.0.1"
+    "happy-dom": "^21.0.4"
   },
   "homepage": "https://ui-docs.middag.io",
   "bugs": {
