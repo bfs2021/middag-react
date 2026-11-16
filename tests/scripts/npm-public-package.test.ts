@@ -17,6 +17,7 @@ import {
   checkTarball,
   diffManifests,
   missingExportTargets,
+  packInto,
   toPublicManifest,
 } from "../../scripts/npm-public-package.mjs";
 
@@ -160,5 +161,30 @@ describe("checkTarball", () => {
     expect(() =>
       execFileSync("node", [SCRIPT, "check", tarball, writeSource(SOURCE)], { stdio: "pipe" }),
     ).toThrow();
+  });
+});
+
+describe("packInto", () => {
+  it("returns the tarball npm pack wrote, whatever npm's --json shape", () => {
+    const pkgDir = mkdtempSync(path.join(tmpdir(), "npm-public-packinto-"));
+    const packDir = mkdtempSync(path.join(tmpdir(), "npm-public-packout-"));
+    tmpDirs.push(pkgDir, packDir);
+    writeFileSync(
+      path.join(pkgDir, "package.json"),
+      JSON.stringify({
+        name: "pack-into-fixture",
+        version: "0.0.1",
+        dependencies: { clsx: "^2.1.1" },
+      }),
+    );
+    writeFileSync(path.join(pkgDir, "index.js"), "");
+
+    const tarball = packInto(pkgDir, packDir);
+
+    expect(path.basename(tarball)).toBe("pack-into-fixture-0.0.1.tgz");
+    expect(checkTarball(tarball, path.join(pkgDir, "package.json"))).toEqual({
+      dependencies: 1,
+      peerDependencies: 0,
+    });
   });
 });

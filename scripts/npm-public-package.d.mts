@@ -14,6 +14,7 @@ export function checkTarball(
   tarball: string,
   sourcePackageJson: string,
 ): { dependencies: number; peerDependencies: number };
+export function packInto(cwd: string, packDir: string): string;
 export function stagePublicPackage(sourceDir: string, outDir: string): void;
 export function verifyStagedPackage(
   stageDir: string,
