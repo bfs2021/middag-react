@@ -4,8 +4,6 @@
  * Uses react-markdown with rehype-highlight for code blocks and rehype-sanitize
  * for XSS prevention. External links open in a new tab; internal links use
  * Inertia router for SPA navigation.
- *
- * @see NV-05-ux-blocks.md §5 (markdown content rendering)
  */
 
 import { useCallback, useState, type ComponentPropsWithoutRef, type ReactElement } from "react";

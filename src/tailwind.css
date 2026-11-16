@@ -1,5 +1,5 @@
 /*
- * CSS Isolation Strategy (ADR-807)
+ * CSS Isolation Strategy
  *
  * Bidirectional isolation between MIDDAG React and Moodle host page:
  *
@@ -47,7 +47,7 @@
   /* Tailwind v4 resets bare `border` to currentColor. Restore the shadcn/ReUI
      default so every `border` utility uses the semantic token (theme-aware).
      Scoped to .middag-root (not bare `*`) so it does NOT leak outward onto the
-     Moodle/WP host page — see the outward-isolation strategy above (ADR-807). */
+     Moodle/WP host page — see the outward-isolation strategy above. */
   .middag-root,
   .middag-root *,
   .middag-root ::after,
@@ -232,7 +232,7 @@
 /* ── Host compatibility ──────────────────────────────────────────────────
  * Unlayered CSS to override host platform styles that conflict with
  * Tailwind @layer utilities. Scoped to .middag-root.
- * @see ADR-807 CSS isolation strategy
+ * See the CSS isolation strategy above.
  */
 @media (min-width: 48rem) {
   .middag-root [data-slot="sidebar-container"] {

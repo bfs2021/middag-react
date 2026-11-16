@@ -7,14 +7,12 @@
  *
  * formatRelativeTime() keeps the hybrid scale used by timeline/timestamp
  * displays:
- * - < 1 min: "now" / "agora"
- * - < 1h: "N minutes ago" / "há N minutos"
+ * - < 1 min: "now"
+ * - < 1h: "N minutes ago"
  * - < 24h: time of day (locale short time)
  * - yesterday: "yesterday, <time>"
  * - < 30 days: "<day month>, <time>"
  * - >= 30 days: "<day month year>"
- *
- * @see NV-05-ux-blocks.md §6 (timeline timestamps)
  */
 
 import type { TimestampFormat } from "@/contracts/block-data";

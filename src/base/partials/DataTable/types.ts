@@ -1,7 +1,5 @@
 /**
  * DataTable types — column definitions, pagination, sorting, filtering, and actions.
- *
- * @see NV-05-ux-blocks.md
  */
 
 import type { ReactNode } from "react";

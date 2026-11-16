@@ -1,7 +1,5 @@
 /**
  * Clipboard utility — safe clipboard write with fallback.
- *
- * @see NV-05-ux-blocks.md §4.4 (copy-to-clipboard in DetailSection)
  */
 
 /**

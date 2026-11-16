@@ -4,8 +4,6 @@
  * Renders structured data as label/value pairs in a responsive grid.
  * Desktop uses CSS grid (1fr/2fr), mobile stacks with overline labels.
  * Supports multiple field kinds: text, status, timestamp, boolean, link, code, email.
- *
- * @see NV-05-ux-blocks.md §4 (detail section anatomy)
  */
 
 import { useCallback, useState, type ReactElement } from "react";

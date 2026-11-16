@@ -4,7 +4,7 @@
  * Blocks receive icon names as strings from the server; this util resolves them.
  * Delegates to the icon registry populated by registerDefaultIcons().
  *
- * @see NV-05-ux-blocks.md — blocks reference icons by kebab-case name
+ * Blocks reference icons by kebab-case name.
  */
 
 import { InboxIcon } from "@hugeicons/core-free-icons";

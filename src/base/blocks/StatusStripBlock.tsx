@@ -2,8 +2,6 @@
  * StatusStripBlock — horizontal status indicators strip.
  *
  * Delegates to StatusBar partial. Derives score item if score is present.
- *
- * @see NV-05-ux-blocks.md §5
  */
 
 import type { ReactElement } from "react";

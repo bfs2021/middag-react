@@ -3,8 +3,6 @@
  *
  * Delegates to MarkdownContent partial when available.
  * Stub renders raw content in a prose-style container.
- *
- * @see NV-05-ux-blocks.md §8
  */
 
 import { lazy, Suspense, type ReactElement } from "react";

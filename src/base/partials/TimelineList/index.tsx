@@ -3,8 +3,6 @@
  *
  * Renders entries grouped by date, connected by a vertical timeline line.
  * Each entry has a colored icon node, actor, timestamp, action, and optional detail.
- *
- * @see NV-05-ux-blocks.md §6 (timeline anatomy)
  */
 
 import { useState, type ReactElement } from "react";

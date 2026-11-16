@@ -13,7 +13,7 @@ import type { FormSchemaNode } from "@/contracts/block-data";
  */
 export interface EditablePanelDescriptor {
   title: string;
-  /** Small label above the title (e.g. "Formulário · matricula-2026"). */
+  /** Small label above the title (e.g. "Form · enrolment-2026"). */
   subtitle?: string;
   /** Form schema tree — fields, sections, groups, headers (FormPanel shape). */
   schema: FormSchemaNode[];

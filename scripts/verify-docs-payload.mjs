@@ -4,7 +4,7 @@
  * verify-docs-payload.mjs — deny-scan of the public docs payload (.docs-dist/).
  *
  * FREE/PRO docs policy: everything under docs/ that reaches the public that reaches the public
- * R2 bucket (`middag-docs-public`, ADR-016) is FREE content. Internal material
+ * R2 bucket (`middag-docs-public`) is FREE content. Internal material
  * (agent instructions, dev plans, planning artifacts) must never ship there.
  * prepare-docs-payload.mjs excludes those paths at copy time; this script is
  * the independent second layer — it re-scans the FINAL payload so a filter

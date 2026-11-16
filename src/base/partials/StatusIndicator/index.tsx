@@ -2,8 +2,6 @@
  * StatusIndicator — colored dot/icon with optional label.
  *
  * Used by DataTable status cells, detail panels, and anywhere status display is needed.
- *
- * @see NV-05-ux-blocks.md §1.2
  */
 
 import type { ReactElement } from "react";

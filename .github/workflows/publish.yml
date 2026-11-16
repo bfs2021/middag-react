@@ -139,7 +139,7 @@ jobs:
             exit $EXIT_CODE
           fi
 
-  # ADR-016: after a real publish, build the versioned docs payload and sync it
+  # After a real publish, build the versioned docs payload and sync it
   # to Cloudflare R2. Gated on a confirmed release so it runs exactly once per
   # released version (immutability is enforced inline below).
   build-docs:
@@ -165,7 +165,7 @@ jobs:
           # .docs-dist is a dot-dir; upload-artifact@v4+ excludes hidden paths by default.
           include-hidden-files: true
 
-  # R2 publication (ADR-016 Build-Time Aggregation via Edge Storage) through the
+  # R2 publication through the
   # cloudflare-r2-docs-publish component of the public middag-io/actions
   # repository, called by its major tag. The component
   # refuses a version whose prefix already holds an object under any kind
