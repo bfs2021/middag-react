@@ -64,6 +64,14 @@ jobs:
       - name: Build
         run: npm run build
 
+      # Fail before any registry is touched if the public npm copy would drift
+      # from the source manifest (dropped dependencies, files or exports).
+      - name: Guard public npm package manifest
+        run: |
+          STAGE_DIR=$(mktemp -d)
+          node scripts/npm-public-package.mjs stage "$STAGE_DIR"
+          node scripts/npm-public-package.mjs verify "$STAGE_DIR"
+
       # NOTE (first publish from this repository): the @middag-io/react package
       # on GitHub Packages is linked to the repository that first published it.
       # Before the FIRST publish from this repo succeeds, an org admin must
@@ -104,29 +112,20 @@ jobs:
 
           TEMP_DIR=$(mktemp -d)
 
-          # Copy package.json and modify for compiled-only publish
-          node -e "
-            const fs = require('fs');
-            const pkg = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
-            pkg.files = ['dist-lib', 'bin'];
-            delete pkg.publishConfig;
-            delete pkg.scripts;
-            delete pkg.dependencies;
-            delete pkg.devDependencies;
-            fs.writeFileSync('$TEMP_DIR/package.json', JSON.stringify(pkg, null, 2));
-          "
-
-          # Copy compiled artifacts + README + LICENSE
-          cp -r dist-lib "$TEMP_DIR/"
-          cp -r bin "$TEMP_DIR/"
-          cp README.md "$TEMP_DIR/"
-          cp LICENSE "$TEMP_DIR/"
+          # Stage the public copy from the same `npm pack` as GitHub Packages
+          # (same files, same dependencies); only publishConfig and scripts
+          # are dropped (scripts/npm-public-package.mjs).
+          node scripts/npm-public-package.mjs stage "$TEMP_DIR"
 
           # Override scoped registry to point to public npm. NO _authToken line:
           # auth comes from npm Trusted Publishing (OIDC, id-token: write above).
           # Any _authToken configured for registry.npmjs.org — even an env
           # placeholder — disables OIDC detection and sends a garbage bearer.
           echo "@middag-io:registry=https://registry.npmjs.org" > "$TEMP_DIR/.npmrc"
+
+          # Guard: the packed public manifest must keep the source dependencies,
+          # files and exports, or the publish fails here.
+          node scripts/npm-public-package.mjs verify "$TEMP_DIR"
 
           # Publish to public npm (treat "already published" as success)
           cd "$TEMP_DIR"

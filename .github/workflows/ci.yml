@@ -73,6 +73,15 @@ jobs:
       - name: Build @middag-io/react (dist-lib)
         run: npm run build
 
+      # Same guard as the release: the public npm copy (staged without
+      # publishConfig/scripts) must keep the source dependencies, files and
+      # exports (scripts/npm-public-package.mjs).
+      - name: Guard public npm package manifest
+        run: |
+          STAGE_DIR=$(mktemp -d)
+          node scripts/npm-public-package.mjs stage "$STAGE_DIR"
+          node scripts/npm-public-package.mjs verify "$STAGE_DIR"
+
       # The docs payload build runs the FREE-only deny-list verification
       # (scripts/verify-docs-payload.mjs) — catches internal material leaking
       # into the public docs payload before it ever reaches a release.
