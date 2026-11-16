@@ -103,7 +103,12 @@ const DEFAULT_STATUS_MAP: Record<string, StatusSemantic> = {
 };
 
 function resolveStatusSemantic(status: string, statusMap?: Record<string, string>): StatusSemantic {
-  const merged = { ...DEFAULT_STATUS_MAP, ...statusMap };
+  // The lookup is case-insensitive on both sides: the displayed value and the
+  // caller's keys are lowercased, so `{ Aprovado: "success" }` matches "APROVADO".
+  const callerMap = Object.fromEntries(
+    Object.entries(statusMap ?? {}).map(([key, intent]) => [key.toLowerCase(), intent]),
+  );
+  const merged = { ...DEFAULT_STATUS_MAP, ...callerMap };
   return (merged[status.toLowerCase()] ?? "secondary") as StatusSemantic;
 }
 

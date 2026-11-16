@@ -136,6 +136,17 @@ describe("StatusCell", () => {
     render(<StatusCell value={null} row={{}} column={{ key: "status" }} />);
     expect(screen.getByText("—")).toBeDefined();
   });
+
+  it("matches statusMap keys regardless of their case", () => {
+    const { container } = render(
+      <StatusCell
+        value="Aprovado"
+        row={{}}
+        column={{ key: "status", statusMap: { APROVADO: "success" } }}
+      />,
+    );
+    expect(container.querySelector(".text-success")).not.toBeNull();
+  });
 });
 
 describe("BooleanCell", () => {
@@ -217,7 +228,7 @@ describe("HtmlCell", () => {
   it("keeps benign markup: links, emphasis, line breaks and classes", () => {
     const { container } = render(
       <HtmlCell
-        value={'<a href="/users/7" class="badge">Ana</a><br><em>note</em>'}
+        value={'<a href="/users/7" class="badge">Profile</a><br><em>note</em>'}
         row={{}}
         column={{ key: "h" }}
       />,
