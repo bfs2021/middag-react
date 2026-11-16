@@ -5,7 +5,7 @@
 
 ### Bug Fixes
 
-* **publish:** pin the next release to 0.45.2 ([bf1ba35](https://github.com/middag-io/middag-react/commit/bf1ba357a250dd8b7a7fd0d6b8ada2cc637d54d2))
+* **publish:** find the packed tarball on disk in the npm guard, so the package ships with its `dependencies` ([fab3e1c](https://github.com/middag-io/middag-react/commit/fab3e1c9fdf1e1dedcc1a3ae44a3d8748f61d0cb))
 * **publish:** pin the next release to 0.45.2 ([097b2af](https://github.com/middag-io/middag-react/commit/097b2afa012677f3a63879c6754ea847c80b12f6))
 
 ## [0.45.1](https://github.com/middag-io/middag-react/compare/v0.45.0...v0.45.1) (2026-11-16)
