@@ -815,8 +815,8 @@ export function DataTable<TData extends object>({
     () => Object.keys(rowSelection).filter((k) => rowSelection[k]),
     [rowSelection],
   );
-  // Teto de largura por coluna, por id — o `<th>` e o `<td>` o aplicam, e a
-  // célula preenche o que a coluna tiver.
+  // Width cap per column, by id. Both the `<th>` and the `<td>` apply it, and
+  // the cell fills whatever width the column has.
   const columnMaxWidth = useCallback(
     (id: string) => columns.find((c) => c.key === id)?.maxWidth,
     [columns],
