@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.45.4](https://github.com/middag-io/middag-react/compare/v0.45.3...v0.45.4) (2026-11-16)
+
+
+### Bug Fixes
+
+* keep the full query and reload the contract in server tables ([eb695fd](https://github.com/middag-io/middag-react/commit/eb695fddabd86bf73a6b0d4c9d33aebe91e58d32))
+
 ## [0.45.3](https://github.com/middag-io/middag-react/compare/v0.45.2...v0.45.3) (2026-11-16)
 
 
