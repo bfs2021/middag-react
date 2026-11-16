@@ -28,13 +28,17 @@ export function DenseTableBlock({ block }: BlockProps<DenseTableBlockData>): Rea
   const isLoading = meta?.loading === true;
   const clientSide = (meta as Record<string, unknown> | undefined)?.clientSide === true;
   const rowKeyField = (meta?.rowKey as string) ?? "id";
-  const reloadKey = (meta?.partialReloadKey as string) ?? key;
-  // clientSide tables filter in-browser; seed the search box from the URL
-  // ?search= param so tag-chip links (e.g. /tickets?search=<tag>) and shareable
-  // search URLs actually filter on load. Server mode echoes search via the
-  // contract, so this only applies to clientSide.
-  const initialClientSearch =
-    clientSide && typeof window !== "undefined"
+  // Server-mode reloads ask for this page prop only. Pages ship blocks inside
+  // the single `contract` prop, so that is the default; the block key is not a
+  // page prop and asking for it reloaded nothing.
+  const reloadKey = (meta?.partialReloadKey as string | undefined) ?? "contract";
+  // Seed the search box from the URL ?search= param. clientSide tables filter
+  // in-browser, so tag-chip links (e.g. /tickets?search=<tag>) and shareable
+  // search URLs filter on load. Server mode sends the full query on every
+  // change, and the contract does not echo the search, so the URL is the only
+  // place the current search survives a reload.
+  const initialSearch =
+    typeof window !== "undefined"
       ? (new URLSearchParams(window.location.search).get("search") ?? "")
       : "";
 
@@ -355,7 +359,7 @@ export function DenseTableBlock({ block }: BlockProps<DenseTableBlockData>): Rea
         onRowClick={inspectorEnabled || data.rowHref ? handleRowClick : undefined}
         selectedRowKey={inspectorEnabled && selectedId ? String(selectedId) : undefined}
         isLoading={isLoading}
-        searchValue={initialClientSearch}
+        searchValue={initialSearch}
         searchPlaceholder={data.searchPlaceholder}
         emptyStateIcon={data.emptyState?.icon}
         emptyStateTitle={data.emptyState?.title}

@@ -561,13 +561,30 @@ export function DataTable<TData extends object>({
     return () => mql.removeEventListener("change", handler as (e: MediaQueryListEvent) => void);
   }, []);
 
+  // Server mode: every request carries the full query. The server reads only
+  // what it receives, so a change that sends just its own key (the pager
+  // sending `page`) silently drops the search, sort, page size and filters.
+  const emitParamChange = useCallback(
+    (changes: DataTableParamChange) => {
+      onParamChange?.({
+        page: pagination?.page ?? 0,
+        perPage: pagination?.perPage,
+        sort: sort ?? null,
+        search: debouncedSearch,
+        filters: appliedFilters,
+        ...changes,
+      });
+    },
+    [onParamChange, pagination?.page, pagination?.perPage, sort, debouncedSearch, appliedFilters],
+  );
+
   // Emit search changes
   useEffect(() => {
     if (debouncedSearch !== prevDebouncedRef.current) {
       prevDebouncedRef.current = debouncedSearch;
-      onParamChange?.({ search: debouncedSearch, page: 0 });
+      emitParamChange({ search: debouncedSearch, page: 0 });
     }
-  }, [debouncedSearch, onParamChange]);
+  }, [debouncedSearch, emitParamChange]);
 
   // -----------------------------------------------------------------------
   // Sorting bridge: DataTable sort <-> TanStack SortingState
@@ -587,15 +604,15 @@ export function DataTable<TData extends object>({
         return;
       }
       if (next.length === 0) {
-        onParamChange?.({ sort: null });
+        emitParamChange({ sort: null });
       } else {
         const s = next[0];
-        onParamChange?.({
+        emitParamChange({
           sort: { key: s.id, direction: s.desc ? "desc" : "asc" },
         });
       }
     },
-    [sortingState, onParamChange, clientSide],
+    [sortingState, emitParamChange, clientSide],
   );
 
   // -----------------------------------------------------------------------
@@ -793,7 +810,7 @@ export function DataTable<TData extends object>({
             changes.perPage = next.pageSize;
             changes.page = 0;
           }
-          onParamChange?.(changes);
+          emitParamChange(changes);
         },
     getCoreRowModel: getCoreRowModel(),
     ...(clientSide
@@ -843,12 +860,12 @@ export function DataTable<TData extends object>({
         table.setPageIndex(0);
         return;
       }
-      onParamChange?.({
+      emitParamChange({
         filters: { ...appliedFilters, [key]: value },
         page: 0,
       });
     },
-    [appliedFilters, onParamChange, clientSide, table],
+    [appliedFilters, emitParamChange, clientSide, table],
   );
 
   const handleFilterRemove = useCallback(
@@ -865,9 +882,9 @@ export function DataTable<TData extends object>({
       }
       const next = { ...appliedFilters };
       delete next[key];
-      onParamChange?.({ filters: next, page: 0 });
+      emitParamChange({ filters: next, page: 0 });
     },
-    [appliedFilters, onParamChange, clientSide, table],
+    [appliedFilters, emitParamChange, clientSide, table],
   );
 
   const handleFilterClearAll = useCallback(() => {
@@ -877,8 +894,8 @@ export function DataTable<TData extends object>({
       table.setPageIndex(0);
       return;
     }
-    onParamChange?.({ filters: {}, page: 0 });
-  }, [onParamChange, clientSide, table]);
+    emitParamChange({ filters: {}, page: 0 });
+  }, [emitParamChange, clientSide, table]);
 
   // -----------------------------------------------------------------------
   // Column count for visibility toggle threshold
@@ -1234,7 +1251,7 @@ export function DataTable<TData extends object>({
                 if (clientSide) {
                   table.setPageSize(Number(e.target.value));
                 } else {
-                  onParamChange?.({ perPage: Number(e.target.value), page: 0 });
+                  emitParamChange({ perPage: Number(e.target.value), page: 0 });
                 }
               }}
               className="border-border text-muted-foreground h-7 rounded border bg-transparent px-1.5 text-xs"
@@ -1251,7 +1268,7 @@ export function DataTable<TData extends object>({
                 size="icon-xs"
                 disabled={pageIndex === 0}
                 onClick={() =>
-                  clientSide ? table.previousPage() : onParamChange?.({ page: pageIndex - 1 })
+                  clientSide ? table.previousPage() : emitParamChange({ page: pageIndex - 1 })
                 }
                 aria-label={t("middag.ui.table.previous_page")}
               >
@@ -1265,7 +1282,7 @@ export function DataTable<TData extends object>({
                 size="icon-xs"
                 disabled={pageIndex >= pageCount - 1}
                 onClick={() =>
-                  clientSide ? table.nextPage() : onParamChange?.({ page: pageIndex + 1 })
+                  clientSide ? table.nextPage() : emitParamChange({ page: pageIndex + 1 })
                 }
                 aria-label={t("middag.ui.table.next_page")}
               >

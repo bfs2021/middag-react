@@ -248,4 +248,94 @@ describe("DenseTableBlock", () => {
     const th = container.querySelectorAll("thead th")[0] as HTMLElement;
     expect(th.style.maxWidth).toBe("300px");
   });
+
+  it("keeps sort and filters in the request when paging", async () => {
+    const { DenseTableBlock } = await import("@/base/blocks/DenseTableBlock");
+    const { I18nProvider } = await import("@/i18n/I18nProvider");
+    const { mockRouter } = await import("../setup");
+
+    const data = {
+      ...denseTableData(),
+      pagination: { page: 1, perPage: 10, total: 30, lastPage: 3 },
+      filters: {
+        available: [
+          {
+            key: "status",
+            label: "Status",
+            type: "select" as const,
+            options: [{ value: "active", label: "Active" }],
+          },
+        ],
+        applied: { status: "active" },
+      },
+    };
+
+    render(
+      <I18nProvider>
+        <DenseTableBlock block={block("dense_table", "test-table-pager-query", data)} />
+      </I18nProvider>,
+    );
+
+    mockRouter.get.mockClear();
+    fireEvent.click(screen.getByRole("button", { name: "Next page" }));
+
+    const params = mockRouter.get.mock.calls[0][1] as Record<string, unknown>;
+    expect(params).toMatchObject({
+      page: 2,
+      per_page: 10,
+      sort: "name",
+      direction: "asc",
+      "filter[status]": "active",
+    });
+  });
+
+  it("reloads the contract prop when partialReloadKey is not set", async () => {
+    const { DenseTableBlock } = await import("@/base/blocks/DenseTableBlock");
+    const { I18nProvider } = await import("@/i18n/I18nProvider");
+    const { mockRouter } = await import("../setup");
+
+    const data = {
+      ...denseTableData(),
+      pagination: { page: 1, perPage: 10, total: 30, lastPage: 3 },
+    };
+
+    render(
+      <I18nProvider>
+        <DenseTableBlock block={block("dense_table", "test-table-reload-default", data)} />
+      </I18nProvider>,
+    );
+
+    mockRouter.get.mockClear();
+    fireEvent.click(screen.getByRole("button", { name: "Next page" }));
+
+    const options = mockRouter.get.mock.calls[0][2] as { only: string[] };
+    expect(options.only).toEqual(["contract"]);
+  });
+
+  it("reloads the partialReloadKey prop when the block sets it", async () => {
+    const { DenseTableBlock } = await import("@/base/blocks/DenseTableBlock");
+    const { I18nProvider } = await import("@/i18n/I18nProvider");
+    const { mockRouter } = await import("../setup");
+
+    const data = {
+      ...denseTableData(),
+      pagination: { page: 1, perPage: 10, total: 30, lastPage: 3 },
+    };
+
+    render(
+      <I18nProvider>
+        <DenseTableBlock
+          block={block("dense_table", "test-table-reload-custom", data, {
+            meta: { partialReloadKey: "tickets" },
+          })}
+        />
+      </I18nProvider>,
+    );
+
+    mockRouter.get.mockClear();
+    fireEvent.click(screen.getByRole("button", { name: "Next page" }));
+
+    const options = mockRouter.get.mock.calls[0][2] as { only: string[] };
+    expect(options.only).toEqual(["tickets"]);
+  });
 });

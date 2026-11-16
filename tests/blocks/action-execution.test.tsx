@@ -168,7 +168,7 @@ describe("DenseTableBlock — row action execution (interpolate preserved)", () 
 
     expect(mockRouter.delete).toHaveBeenCalledWith("/items/7/delete", {
       preserveState: true,
-      only: ["dt1"],
+      only: ["contract"],
     });
   });
 });

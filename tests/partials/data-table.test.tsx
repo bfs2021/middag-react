@@ -8,6 +8,7 @@ import type {
   DataTableBulkAction,
   DataTableColumn,
   DataTableFilterDef,
+  DataTableParamChange,
 } from "@/base/partials/DataTable/types";
 import { I18nProvider } from "@/i18n/I18nProvider";
 
@@ -165,7 +166,7 @@ describe("DataTable toolbar controls", () => {
 
     const removeBtn = screen.getByRole("button", { name: "Remove filter Status" });
     fireEvent.click(removeBtn);
-    expect(onParamChange).toHaveBeenCalledWith({ filters: {}, page: 0 });
+    expect(onParamChange).toHaveBeenCalledWith(expect.objectContaining({ filters: {}, page: 0 }));
   });
 });
 
@@ -192,7 +193,9 @@ describe("DataTable server param changes", () => {
     );
 
     fireEvent.click(screen.getByRole("button", { name: /Name/ }));
-    expect(onParamChange).toHaveBeenCalledWith({ sort: { key: "name", direction: "asc" } });
+    expect(onParamChange).toHaveBeenCalledWith(
+      expect.objectContaining({ sort: { key: "name", direction: "asc" } }),
+    );
   });
 
   it("emits the next page index when paging forward", () => {
@@ -210,7 +213,7 @@ describe("DataTable server param changes", () => {
     );
 
     fireEvent.click(screen.getByRole("button", { name: "Next page" }));
-    expect(onParamChange).toHaveBeenCalledWith({ page: 1 });
+    expect(onParamChange).toHaveBeenCalledWith(expect.objectContaining({ page: 1 }));
   });
 
   it("emits perPage and resets to page 0 when the page size changes", () => {
@@ -228,7 +231,7 @@ describe("DataTable server param changes", () => {
     );
 
     fireEvent.change(screen.getByLabelText("Rows per page"), { target: { value: "25" } });
-    expect(onParamChange).toHaveBeenCalledWith({ perPage: 25, page: 0 });
+    expect(onParamChange).toHaveBeenCalledWith(expect.objectContaining({ perPage: 25, page: 0 }));
   });
 
   it("emits a debounced search param when typing in the search box", async () => {
@@ -245,6 +248,106 @@ describe("DataTable server param changes", () => {
     );
 
     fireEvent.change(screen.getByPlaceholderText("Search..."), { target: { value: "ali" } });
-    await waitFor(() => expect(onParamChange).toHaveBeenCalledWith({ search: "ali", page: 0 }));
+    await waitFor(() =>
+      expect(onParamChange).toHaveBeenCalledWith(
+        expect.objectContaining({ search: "ali", page: 0 }),
+      ),
+    );
+  });
+});
+
+describe("DataTable server param changes keep the current query", () => {
+  beforeEach(() => setMatchMedia(false));
+  afterEach(() => cleanup());
+
+  const sortableColumns: DataTableColumn<Row>[] = [
+    { key: "name", label: "Name", sortable: true },
+    { key: "email", label: "Email" },
+  ];
+  const filterDefs = [
+    {
+      key: "status",
+      label: "Status",
+      type: "select",
+      options: [{ value: "active", label: "Active" }],
+    },
+  ] as unknown as DataTableFilterDef[];
+
+  function renderServerTable(onParamChange: (params: DataTableParamChange) => void) {
+    return render(
+      <I18nProvider>
+        <DataTable
+          columns={sortableColumns}
+          rows={rows}
+          rowKey={(r) => r.id}
+          pagination={{ page: 1, perPage: 10, total: 30 }}
+          sort={{ key: "email", direction: "desc" }}
+          searchValue="ali"
+          filters={filterDefs}
+          appliedFilters={{ status: "active" }}
+          onParamChange={onParamChange}
+        />
+      </I18nProvider>,
+    );
+  }
+
+  it("sends search, sort, page size and filters with the pager", () => {
+    const onParamChange = vi.fn();
+    renderServerTable(onParamChange);
+
+    fireEvent.click(screen.getByRole("button", { name: "Next page" }));
+
+    expect(onParamChange).toHaveBeenCalledWith({
+      page: 2,
+      perPage: 10,
+      sort: { key: "email", direction: "desc" },
+      search: "ali",
+      filters: { status: "active" },
+    });
+  });
+
+  it("sends search, page size and filters with a sort change", () => {
+    const onParamChange = vi.fn();
+    renderServerTable(onParamChange);
+
+    fireEvent.click(screen.getByRole("button", { name: /Name/ }));
+
+    expect(onParamChange).toHaveBeenCalledWith({
+      page: 1,
+      perPage: 10,
+      sort: { key: "name", direction: "asc" },
+      search: "ali",
+      filters: { status: "active" },
+    });
+  });
+
+  it("sends search, sort and page size with a filter change", () => {
+    const onParamChange = vi.fn();
+    renderServerTable(onParamChange);
+
+    fireEvent.click(screen.getByRole("button", { name: "Remove filter Status" }));
+
+    expect(onParamChange).toHaveBeenCalledWith({
+      page: 0,
+      perPage: 10,
+      sort: { key: "email", direction: "desc" },
+      search: "ali",
+      filters: {},
+    });
+  });
+
+  it("sends search, sort and filters with a page size change", () => {
+    const onParamChange = vi.fn();
+    renderServerTable(onParamChange);
+
+    fireEvent.change(screen.getByLabelText("Rows per page"), { target: { value: "25" } });
+
+    expect(onParamChange).toHaveBeenCalledWith({
+      page: 0,
+      perPage: 25,
+      sort: { key: "email", direction: "desc" },
+      search: "ali",
+      filters: { status: "active" },
+    });
   });
 });
