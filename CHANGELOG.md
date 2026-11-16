@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.45.3](https://github.com/middag-io/middag-react/compare/v0.45.2...v0.45.3) (2026-11-16)
+
+
+### Documentation
+
+* translate the remaining Portuguese text and complete Help and status ([7f87370](https://github.com/middag-io/middag-react/commit/7f87370d344e54c9c782f0be72553c1ae3ab2744))
+
 ## [0.45.2](https://github.com/middag-io/middag-react/compare/v0.45.1...v0.45.2) (2026-11-16)
 
 
