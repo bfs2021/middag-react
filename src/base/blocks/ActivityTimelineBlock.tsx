@@ -3,8 +3,6 @@
  *
  * Renders timeline entries grouped by date. Supports load more via Inertia partial reload.
  * Stub implementation until TimelineList partial is available.
- *
- * @see NV-05-ux-blocks.md §6
  */
 
 import { useState, type ReactElement } from "react";

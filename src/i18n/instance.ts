@@ -41,7 +41,7 @@ export const i18nReady: Promise<unknown> = i18n
     // region suffix and fail the lookup. load:'currentOnly' + exact codes is sufficient.
     load: "currentOnly",
 
-    // D4: keep flat dotted keys ("middag.ui.validation.required") verbatim.
+    // keep flat dotted keys ("middag.ui.validation.required") verbatim.
     keySeparator: false,
     nsSeparator: ":",
 
@@ -52,7 +52,7 @@ export const i18nReady: Promise<unknown> = i18n
 
     interpolation: {
       escapeValue: false, // React already escapes.
-      prefix: "{", // D3: single-brace to match framework {param} + existing {min}.
+      prefix: "{", // single-brace to match framework {param} + existing {min}.
       suffix: "}",
     },
 
@@ -64,6 +64,6 @@ export const i18nReady: Promise<unknown> = i18n
 
     react: {
       useSuspense: false, // we re-render on store events, no Suspense boundary.
-      bindI18nStore: "added", // D2: re-render when host strings arrive via addResource.
+      bindI18nStore: "added", // re-render when host strings arrive via addResource.
     },
   });

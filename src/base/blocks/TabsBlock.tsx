@@ -6,7 +6,6 @@
  * active font-weight 500).
  *
  * @see DESIGN.md §P1 — Tabs
- * @see ADR-807 ref/page-contract-v1 §5
  */
 
 import type { ReactElement } from "react";

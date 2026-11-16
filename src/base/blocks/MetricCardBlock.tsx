@@ -1,7 +1,5 @@
 /**
  * MetricCardBlock — KPI card with value, delta, icon, and optional link.
- *
- * @see NV-05-ux-blocks.md §3.1–3.7
  */
 
 import type { ReactElement } from "react";

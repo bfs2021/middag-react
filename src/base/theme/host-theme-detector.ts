@@ -9,7 +9,7 @@
  *   2. Known localStorage keys (scan, not assume)
  *   3. prefers-color-scheme media query (OS fallback)
  *
- * @see ADR-807 — CSS isolation via .middag-root
+ * CSS isolation via .middag-root
  */
 
 export type DetectedTheme = "dark" | "light" | "auto";

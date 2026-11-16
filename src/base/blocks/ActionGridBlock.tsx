@@ -4,8 +4,6 @@
  * Each card displays an icon, title, description, and an action button.
  * When confirmText is present, an AlertDialog gates the action.
  * Actions execute via Inertia router.post/delete.
- *
- * @see ADR-807
  */
 
 "use client";

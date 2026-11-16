@@ -1,8 +1,6 @@
 /**
  * NavErrorBoundary — error boundary for sidebar and page header.
  * Shows a minimal fallback if navigation rendering fails.
- *
- * @see NV-05-ux-shell-sidebar.md §8.3
  */
 
 import { Component, type ErrorInfo, type ReactElement, type ReactNode } from "react";

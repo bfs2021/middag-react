@@ -1,7 +1,7 @@
 /**
  * ContractPage — entry point for any page driven by PageContract.
  *
- * Resolves shell → layout → blocks through registries (ADR-807).
+ * Resolves shell → layout → blocks through registries.
  * Feature pages compose their contract in the backend; the runtime
  * handles rendering deterministically.
  *
@@ -22,7 +22,7 @@ import { isLazyBlock, LazyBlock } from "@/engine/LazyBlock";
 import { resolveBlock, resolveLayout, resolveShell } from "@/engine/registries";
 import { useTranslation } from "@/i18n/useTranslation";
 
-// Registry-based dynamic component resolution (ADR-807 §6). Shell and Layout are
+// Registry-based dynamic component resolution. Shell and Layout are
 // stable singleton references retrieved from the registry — not new components.
 /* eslint-disable react-hooks/static-components */
 export function ContractPage({
@@ -39,7 +39,7 @@ export function ContractPage({
     [contract?.shell],
   );
 
-  // D5: unknown layout falls back to "stack" instead of rendering error
+  // unknown layout falls back to "stack" instead of rendering error
   const Layout = useMemo(() => {
     const resolved = resolveLayout(contract?.layout?.template);
     if (!resolved) {
@@ -48,14 +48,14 @@ export function ContractPage({
     return resolved;
   }, [contract?.layout?.template]);
 
-  // D15: stable reference — prevents Layout re-renders if it's memoized
+  // stable reference — prevents Layout re-renders if it's memoized
   const renderBlock = useCallback(
     (block: BlockDescriptor): ReactElement | null => {
       const Block = resolveBlock(block.type);
 
       if (!Block) {
         // role="alert" surfaces the diagnostic to assistive tech; the specific
-        // block type is a dev-only detail (verbose só DEV) — prod shows only the
+        // block type is a dev-only detail — prod shows only the
         // translated category so internal keys never leak to end users.
         return (
           <div
@@ -97,7 +97,7 @@ export function ContractPage({
   // ── Early returns after all hooks ───────────────────────────────────────
 
   if (validationErrors) {
-    // The per-field validation list is a dev diagnostic (verbose só DEV); prod
+    // The per-field validation list is a dev diagnostic; prod
     // renders only the translated headline inside the alert.
     return (
       <div

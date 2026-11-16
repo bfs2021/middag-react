@@ -1,7 +1,5 @@
 /**
  * StatusBar — horizontal strip of status indicators with colored dots.
- *
- * @see NV-05-ux-blocks.md §5.1–5.8
  */
 
 import type { ReactElement } from "react";

@@ -5,8 +5,6 @@
  *
  * Metrics renders blocks in a grid (no per-block padding).
  * Content and aside render blocks directly — blocks are self-describing.
- *
- * @see NV-05-ux-screens-core.md T-01
  */
 
 import type { ReactElement } from "react";

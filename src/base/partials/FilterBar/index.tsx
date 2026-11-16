@@ -2,8 +2,6 @@
  * FilterBar — filter trigger button + popover/sheet with available filters.
  *
  * Desktop (>=1024px): Popover. Tablet/Mobile: Sheet from bottom.
- *
- * @see NV-05-ux-blocks.md §1.2 toolbar anatomy
  */
 
 import { Fragment, useState, type ReactElement } from "react";

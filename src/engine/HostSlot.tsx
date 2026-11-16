@@ -47,8 +47,6 @@
  * | `middag-global-search`   | Central search bar (⌘K)      | local_middag    |
  * | `middag-org-selector`    | Organization/scope switcher  | local_middag    |
  * | `middag-quick-menu`      | MIDDAG quick-access grid     | local_middag    |
- *
- * @see ADR-807 ref/host-integration
  */
 
 "use client";

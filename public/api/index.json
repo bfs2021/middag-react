@@ -1,5 +1,5 @@
 {
-  "description": "MIDDAG React UI -- Example PageContract API Endpoints. These static JSON files demonstrate the exact shape that Moodle and WordPress backends must produce to drive the @middag/react UI. Each file contains a complete PageContract (ADR-807) response with realistic mock data.",
+  "description": "MIDDAG React UI -- Example PageContract API Endpoints. These static JSON files demonstrate the exact shape that Moodle and WordPress backends must produce to drive the @middag/react UI. Each file contains a complete PageContract response with realistic mock data.",
   "version": "1",
   "endpoints": [
     {

@@ -3,8 +3,6 @@
  *
  * Receives parsed lines from server (log_reader_service::read_file).
  * Available for dependent plugins at system/partials/LogViewer.
- *
- * @see ADR-924, logs-redesign-design.md
  */
 
 import { useEffect, useRef, useState, type ReactElement } from "react";

@@ -3,8 +3,6 @@
  *
  * Maps BlockDescriptor<DenseTableBlockData> to DataTable partial props.
  * Server interactions use Inertia partial reload.
- *
- * @see NV-05-ux-blocks.md §1
  */
 
 import { useCallback, useEffect, useRef, useState, type ReactElement } from "react";

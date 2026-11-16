@@ -3,8 +3,6 @@
  *
  * PHP side: inertia_manager::share() in http_kernel boot.
  * Frontend: usePage<SharedProps>().props
- *
- * @see NV-05-ux-shell-sidebar.md §1.3
  */
 
 import type { NavigationTreePayload } from "@/contracts/navigation";

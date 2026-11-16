@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * prepare-docs-payload.mjs — build the documentation payload for the MIDDAG
- * edge-aggregation platform (ADR-016: Build-Time Aggregation via Edge Storage).
+ * edge-aggregation platform.
  *
  * Library repos do not render a site. They emit a versioned payload that mirrors
  * the R2 upload taxonomy `/{repo}/[docs|xref|schemas]/{version}/*` and is later
@@ -52,11 +52,11 @@ console.log(`[docs-payload] ${PACKAGE}@${version}`);
 await rm(DIST, { recursive: true, force: true });
 await mkdir(DIST, { recursive: true });
 
-// 2. xref — generated reference, by TypeDoc (ADR-015 tooling).
+// 2. xref — generated reference, by TypeDoc.
 console.log(`[docs-payload] typedoc -> .docs-dist/xref/${version}`);
 execSync(`npx typedoc --out .docs-dist/xref/${version}`, { cwd: ROOT, stdio: "inherit" });
 
-// 3. schemas — contract schemas as their own artifact kind (ADR-016 §1).
+// 3. schemas — contract schemas as their own artifact kind.
 //    Copied into the payload; the originals stay in docs/public/schemas/ because
 //    the MCP server (packages/mcp-middag-ui) bundles them from there at build time.
 const schemasSrc = resolve(ROOT, "docs", "public", "schemas");

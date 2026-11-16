@@ -11,7 +11,7 @@ interface OverlayScreenProps {
 }
 
 /**
- * Full-screen overlay panel with X close button (NV-05 — ADR-807).
+ * Full-screen overlay panel with X close button.
  *
  * Not a modal (no backdrop, no centering). Renders a stacked screen
  * on top of the current page. The underlying page stays mounted in the DOM.

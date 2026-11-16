@@ -2,8 +2,6 @@
  * FormSection — collapsible fieldset container for form groups.
  *
  * Does not render fields — receives them as children.
- *
- * @see NV-05-ux-blocks.md §2.6
  */
 
 import { useState, type ReactElement, type ReactNode } from "react";

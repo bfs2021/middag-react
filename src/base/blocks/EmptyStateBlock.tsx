@@ -2,8 +2,6 @@
  * EmptyStateBlock — variant-aware empty state with icon, description, and CTA.
  *
  * Delegates to EmptyPlaceholder partial.
- *
- * @see NV-05-ux-blocks.md §7
  */
 
 import type { ReactElement } from "react";

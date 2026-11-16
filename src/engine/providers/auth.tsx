@@ -2,8 +2,6 @@
  * AuthProvider — React context for authenticated user data and capability checks.
  *
  * Reads auth from Inertia shared props populated by inertia_shared_props.php.
- *
- * @see NV-05-ux-shell-sidebar.md §1.3
  */
 
 import { createContext, useContext, useMemo, type ReactNode } from "react";

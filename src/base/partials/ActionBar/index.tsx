@@ -3,8 +3,6 @@
  *
  * Shows selected count + bulk action buttons. Dangerous actions require confirmation
  * via the unified ConfirmationDialog.
- *
- * @see NV-05-ux-blocks.md §1.2 toolbar anatomy
  */
 
 import { useState, type ReactElement } from "react";

@@ -3,8 +3,6 @@
  *
  * Delegates to DetailSection partial (created by partials-builder agent).
  * Stub implementation until DetailSection is available — renders fields directly.
- *
- * @see NV-05-ux-blocks.md §4
  */
 
 import { useCallback, useState, type ReactElement } from "react";

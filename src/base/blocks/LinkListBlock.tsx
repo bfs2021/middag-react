@@ -3,8 +3,6 @@
  *
  * Items with href: null are hidden. Internal destinations navigate through
  * Inertia; external links stay plain anchors and open in a new tab.
- *
- * @see ADR-807 block catalog
  */
 
 import type { ReactElement } from "react";

@@ -1,5 +1,5 @@
 /**
- * Registries (ADR-807) — closed, versioned maps from page-contract types
+ * Registries — closed, versioned maps from page-contract types
  * to React components.
  *
  * shellRegistry: shell key → React component

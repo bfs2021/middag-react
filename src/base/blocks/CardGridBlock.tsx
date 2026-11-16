@@ -8,8 +8,6 @@
  * - 'default': generic key-value card
  * - 'store': ecommerce store card with logo, stats, status badge
  * - 'connector': connector card with type icon and health indicator
- *
- * @see ADR-807
  */
 
 "use client";

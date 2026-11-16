@@ -3,8 +3,6 @@
  *
  * Source of truth for all visual tokens.
  * Consumed by Tailwind CSS v4 via @theme in tailwind.css.
- *
- * @see NV-05-ux-design-system.md
  */
 
 :root {

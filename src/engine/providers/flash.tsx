@@ -4,8 +4,6 @@
  * Flash messages are server-sent one-shot notifications (success/error/info/warning).
  * This provider listens to flash prop changes on each Inertia navigation and
  * fires the appropriate toast. Does not re-fire if flash is unchanged.
- *
- * @see NV-05-ux-shell-sidebar.md §1.3
  */
 
 import { useEffect, useRef, type ReactNode } from "react";

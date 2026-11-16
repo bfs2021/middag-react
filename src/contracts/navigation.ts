@@ -1,12 +1,9 @@
 /**
  * Navigation contract — typed shape for the `navigation` Inertia shared prop.
  *
- * Unified tree model (NV-05 — ADR-807 expanded).
+ * Unified tree model.
  * PHP serializes this from navigation_registry during boot().
  * Frontend reads it from usePage().props.navigation.
- *
- * @see ADR-807 ref/shell-and-navigation §4
- * @see NV-05-ux-shell-sidebar.md §1.3
  */
 
 /** Entity types for automatic icon resolution when no explicit icon is set. */

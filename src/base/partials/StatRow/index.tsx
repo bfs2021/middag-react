@@ -1,7 +1,5 @@
 /**
  * StatRow — responsive grid container for MetricCardBlock instances.
- *
- * @see NV-05-ux-screens-core.md T-01 metrics region
  */
 
 import type { ReactElement, ReactNode } from "react";

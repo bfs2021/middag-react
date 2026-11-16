@@ -3,8 +3,6 @@
  *
  * Hooks into Inertia router events to show a thin progress bar at the
  * top of the viewport during page transitions.
- *
- * @see NV-05-ux-shell-sidebar.md §6.3
  */
 
 import { useEffect, type ReactNode } from "react";

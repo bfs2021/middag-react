@@ -2,8 +2,6 @@
  * EmptyPlaceholder — contextual empty state with icon, title, description, and CTA.
  *
  * Variants: first-use, no-results, error, permission, compact, inline.
- *
- * @see NV-05-ux-blocks.md §7.1–7.8, §9.3
  */
 
 import { lazy, Suspense, type ReactElement } from "react";

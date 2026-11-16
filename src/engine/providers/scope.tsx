@@ -5,7 +5,6 @@
  * global_scope_manager. Extensions add their scope data during boot().
  *
  * @see classes/framework/kernel/manager/global_scope_manager.php
- * @see NV-05-ux-shell-sidebar.md §1.3
  */
 
 import { createContext, useContext, useMemo, type ReactNode } from "react";

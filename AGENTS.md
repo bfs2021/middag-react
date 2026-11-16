@@ -24,7 +24,7 @@ Green before delivering: `npm run check` (typecheck app+tests+demo, lint, format
 ## Inherited rules (pointers, do not copy)
 
 - npm publishing uses OIDC Trusted Publishing — no npm token secrets in CI (NORM-P3-15, see `docs-middag-ops`).
-- Docs payload publishes to the docs proxy per ADR-016 (`docs:build` / `docs:verify`).
+- Docs payload publishes to the docs proxy (`docs:build` / `docs:verify`).
 - Org doctrine via docs-MCP (alias `ops`) or `docs-middag-ops`; planning/backlog in `tool-middag-planning`.
 
 ## NOT in scope / do not do without permission

@@ -3,8 +3,6 @@
  *
  * Features: search, filters, column visibility, sorting, row selection,
  * bulk actions, row actions, skeleton loading, empty state, mobile card layout.
- *
- * @see NV-05-ux-blocks.md
  */
 
 import {
