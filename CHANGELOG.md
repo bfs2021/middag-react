@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.45.1](https://github.com/middag-io/middag-react/compare/v0.45.0...v0.45.1) (2026-11-16)
+
+
+### Bug Fixes
+
+* **publish:** keep dependencies in the public npm package ([a751d98](https://github.com/middag-io/middag-react/commit/a751d9856dc6917d9d0742c5dd312563ed50bd73))
+
 ## [0.45.0](https://github.com/middag-io/middag-react/compare/v0.44.1...v0.45.0) (2026-11-16)
 
 
