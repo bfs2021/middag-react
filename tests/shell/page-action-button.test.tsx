@@ -1,6 +1,7 @@
 /**
  * PageActionButton — a disabled navigation action must render as a locked
- * <button> with no href, so it is neither navigable nor styled as enabled.
+ * <button> with no href, so it is neither navigable nor styled as enabled; and
+ * the icon an action declares is drawn when the registry knows the name.
  */
 
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
@@ -9,6 +10,7 @@ import { afterEach, describe, expect, it } from "vitest";
 import "../setup";
 
 import { PageActionButton } from "@/base/shell/partials/PageActionButton";
+import { registerDefaultIcons } from "@/base/utils/register-default-icons";
 import type { PageAction } from "@/contracts/page-contract";
 import { I18nProvider } from "@/i18n/I18nProvider";
 
@@ -57,5 +59,42 @@ describe("PageActionButton navigation", () => {
     renderAction({ disabled: true });
     fireEvent.click(screen.getByTestId("action-new-store"));
     expect(mockRouter.visit).not.toHaveBeenCalled();
+  });
+});
+
+describe("PageActionButton icon", () => {
+  afterEach(() => {
+    cleanup();
+  });
+
+  it("draws the action's icon when the registry knows the name", () => {
+    registerDefaultIcons();
+    const { container } = renderAction({ icon: "trash" });
+
+    expect(screen.getByText("New Store")).toBeDefined();
+    expect(container.querySelectorAll("svg").length).toBe(1);
+  });
+
+  it("draws nothing for an unregistered icon name", () => {
+    const { container } = renderAction({ icon: "no-such-icon-name" });
+
+    // getIcon answers an unknown name with a generic inbox glyph. Drawing the
+    // wrong picture confidently is worse than drawing none, so the lookup is
+    // gated on the name being registered.
+    expect(container.querySelectorAll("svg").length).toBe(0);
+  });
+
+  it("renders label-only when the action declares no icon", () => {
+    const { container } = renderAction({});
+
+    expect(container.querySelectorAll("svg").length).toBe(0);
+  });
+
+  it("draws the icon on a disabled action's locked button", () => {
+    registerDefaultIcons();
+    const { container } = renderAction({ icon: "trash", disabled: true });
+
+    expect(screen.getByTestId("action-new-store").tagName).toBe("BUTTON");
+    expect(container.querySelectorAll("svg").length).toBe(1);
   });
 });
