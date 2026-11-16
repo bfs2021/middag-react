@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.45.3](https://github.com/middag-io/middag-react/compare/v0.45.2...v0.45.3) (2026-11-16)
+
+
+### Build System
+
+* drop the minimatch override that breaks typedoc ([bdbd81e](https://github.com/middag-io/middag-react/commit/bdbd81e9bdff705106424ccc5a3682927df0debb))
+* drop the minimatch override that breaks typedoc ([8009473](https://github.com/middag-io/middag-react/commit/800947392d6534a882b49e107386a664b955596e))
+* override minimatch to ^11.0.1 for GHSA-g3hv-75wg-m249 ([5f263da](https://github.com/middag-io/middag-react/commit/5f263daeba3fe6f4a9dc7cd95c82588bd93af78c))
+
+
+### Documentation
+
+* finish the English pass and the Help and status section ([8d3c5e5](https://github.com/middag-io/middag-react/commit/8d3c5e597bd64ccf2347bb9aa7a3def18ac93d9b))
+* translate the remaining Portuguese text and complete Help and status ([7f87370](https://github.com/middag-io/middag-react/commit/7f87370d344e54c9c782f0be72553c1ae3ab2744))
+
 ## [0.45.2](https://github.com/middag-io/middag-react/compare/v0.45.1...v0.45.2) (2026-11-16)
 
 
