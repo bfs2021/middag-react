@@ -9,7 +9,7 @@
  *
  * @source middag-php-ui/schema/{page-contract,fragment}.json
  * @contract-version 1
- * @hash f596d1bfc7e628b4
+ * @hash 61137d173165ca8e
  */
 export type Label = string | Translatable;
 export type ActionTarget =
@@ -106,7 +106,7 @@ export type FileValue =
       size?: number;
       type?: string;
       id?: string;
-      draftitemid?: number;
+      uploadToken?: string;
     };
 export type FieldError = string | string[];
 export type FormSchemaNode = FormFieldNode | FormSectionNode | FormGroupNode | FormHeaderNode;

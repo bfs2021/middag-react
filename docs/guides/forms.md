@@ -25,7 +25,7 @@ FormPanelBlockData
 The `component` field on each `FormFieldNode` determines which input component renders:
 
 | Component       | Value Type | Description                                                          |
-|-----------------|------------|----------------------------------------------------------------------|
+| --------------- | ---------- | -------------------------------------------------------------------- |
 | `text`          | string     | Single-line text input.                                              |
 | `textarea`      | string     | Multi-line text area. Supports rows prop.                            |
 | `email`         | string     | Email input with browser validation.                                 |
@@ -58,7 +58,7 @@ The `component` field on each `FormFieldNode` determines which input component r
 ### Common Field Props
 
 | Prop            | Type                 | Default    | Description                                        |
-|-----------------|----------------------|------------|----------------------------------------------------|
+| --------------- | -------------------- | ---------- | -------------------------------------------------- |
 | `label`         | string               | (required) | Field label displayed above the input.             |
 | `placeholder`   | string               |            | Placeholder text inside the input.                 |
 | `helpText`      | string               |            | Help text displayed below the input.               |
@@ -95,7 +95,7 @@ Fields can be shown, hidden, required, or disabled based on other field values u
 Available operators:
 
 | Operator     | Description                                               |
-|--------------|-----------------------------------------------------------|
+| ------------ | --------------------------------------------------------- |
 | `equals`     | Field value strictly equals the given value.              |
 | `not_equals` | Field value does not equal the given value.               |
 | `in`         | Field value is included in the given array of values.     |
@@ -160,10 +160,10 @@ StaticFormField      — static (read-only display)
 Narrow by `component` to access type-specific props:
 
 ```ts
-if (field.component === 'entity_picker') {
-    // TypeScript narrows to EntityPickerFormField
-    field.props.autocompleteHref;  // ✓ available
-    field.props.entityAvatarField; // ✓ available
+if (field.component === "entity_picker") {
+  // TypeScript narrows to EntityPickerFormField
+  field.props.autocompleteHref; // ✓ available
+  field.props.entityAvatarField; // ✓ available
 }
 ```
 
@@ -179,9 +179,9 @@ return back()->withErrors(['email' => 'Invalid email format']);
 ```ts
 // Contract (received by frontend)
 {
-    errors: {
-        email: 'Invalid email format'
-    }
+  errors: {
+    email: "Invalid email format";
+  }
 }
 ```
 
@@ -277,7 +277,7 @@ Add a `validation` object to any field's props:
 Control validation behavior via `meta.validation`:
 
 | Mode     | Client | Server  | Use Case                                                  |
-|----------|--------|---------|-----------------------------------------------------------|
+| -------- | ------ | ------- | --------------------------------------------------------- |
 | `both`   | Zod    | Inertia | Default — immediate feedback + authoritative server check |
 | `client` | Zod    | —       | Preview or test forms                                     |
 | `server` | —      | Inertia | Forms with complex server-only rules                      |
@@ -289,7 +289,7 @@ Control validation behavior via `meta.validation`:
 International phone input with country flag selector. Value is E.164 format.
 
 | Prop             | Type    | Default | Description                                      |
-|------------------|---------|---------|--------------------------------------------------|
+| ---------------- | ------- | ------- | ------------------------------------------------ |
 | `defaultCountry` | string  | `"BR"`  | ISO 3166-1 alpha-2 country code                  |
 | `fixedCountry`   | boolean | false   | When true, locks to defaultCountry (no selector) |
 
@@ -297,12 +297,44 @@ International phone input with country flag selector. Value is E.164 format.
 ['component' => 'phone', 'props' => ['label' => 'Phone', 'defaultCountry' => 'US', 'fixedCountry' => true]]
 ```
 
+### File Field {#file-field}
+
+Drag-and-drop upload with previews. Props: `accept`, `multiple`, `maxFiles`, `maxSize`.
+
+In edit mode the host sends the current file(s) in `values` as a `FileValue` (single) or
+`FileValue[]` (`multiple`). Each entry is a bare URL string or an object:
+
+| Key           | Type    | Required | Description                                       |
+| ------------- | ------- | -------- | ------------------------------------------------- |
+| `url`         | string  | yes      | Where the file is served.                         |
+| `name`        | string  |          | Display name. Derived from `url` when absent.     |
+| `size`        | integer |          | Size in bytes.                                    |
+| `type`        | string  |          | MIME type.                                        |
+| `id`          | string  |          | Stable file id.                                   |
+| `uploadToken` | string  |          | Opaque reference to a pending upload (see below). |
+
+`uploadToken` is issued by the host's upload endpoint and sent back with the form, unchanged,
+so the host can find the pending upload again. It is not the file id (`id`): the library never
+reads or interprets it, it only carries it. The host adapter owns the mapping to its own storage.
+The object form rejects unknown keys (`additionalProperties: false`).
+
+```json
+{
+  "url": "/f.pdf",
+  "name": "a.pdf",
+  "size": 2048,
+  "type": "application/pdf",
+  "id": "file-7",
+  "uploadToken": "99"
+}
+```
+
 ### Document Field {#document-field}
 
 Country-aware document validation using [validator.js](https://github.com/validatorjs/validator.js) `isTaxID` (30+ countries). The host sends a **locale** and an optional **scope** to restrict to person or company documents.
 
 | Prop            | Type   | Default     | Description                                                                             |
-|-----------------|--------|-------------|-----------------------------------------------------------------------------------------|
+| --------------- | ------ | ----------- | --------------------------------------------------------------------------------------- |
 | `documentType`  | string | `"generic"` | validator.js locale (`"pt-BR"`, `"en-US"`, `"de-DE"`, etc.), `"generic"`, or custom key |
 | `documentScope` | string | `"any"`     | `"person"` (individual), `"company"` (business), or `"any"` (both)                      |
 | `documentMasks` | object |             | Custom format masks merged with built-in. `#` = digit placeholder.                      |
@@ -357,7 +389,7 @@ Each scope gets its own mask and placeholder. Placeholders resolve via i18n key 
 Searchable entity selection with avatar and subtitle support:
 
 | Prop                   | Type   | Default | Description                                  |
-|------------------------|--------|---------|----------------------------------------------|
+| ---------------------- | ------ | ------- | -------------------------------------------- |
 | `autocompleteHref`     | string |         | Async search URL. Receives `?q=search_term`. |
 | `autocompleteMinChars` | number | 2       | Min chars before search triggers             |
 | `entityAvatarField`    | string |         | Field name in response for avatar URL        |
@@ -386,7 +418,7 @@ API response format: `{ items: [{ value, label, avatar_url, department }] }`
 Locale-aware currency input with formatted display:
 
 | Prop             | Type   | Default | Description                                     |
-|------------------|--------|---------|-------------------------------------------------|
+| ---------------- | ------ | ------- | ----------------------------------------------- |
 | `currency`       | string | `"BRL"` | ISO 4217 currency code                          |
 | `currencyLocale` | string |         | Override locale for formatting (e.g. `"en-US"`) |
 
