@@ -22,7 +22,15 @@
       "release-type": "node",
       "package-name": "@middag-io/react",
       "changelog-path": "CHANGELOG.md",
-      "exclude-paths": ["docs/guides", "docs/reference", "packages/contracts-codegen"]
+      "exclude-paths": ["docs/guides", "docs/reference", "packages/contracts", "packages/contracts-codegen"]
+    },
+    "packages/contracts": {
+      "release-type": "node",
+      "package-name": "@middag-io/ui-contracts",
+      "component": "ui-contracts",
+      "include-component-in-tag": true,
+      "initial-version": "0.1.0",
+      "changelog-path": "CHANGELOG.md"
     },
     "packages/contracts-codegen": {
       "release-type": "node",
