@@ -34,12 +34,14 @@ const problems = [];
 const work = mkdtempSync(join(tmpdir(), "contracts-codegen-pack-"));
 
 try {
-  const [pack] = JSON.parse(
+  // npm <= 11 prints an array of packs; npm 12 an object keyed by package name.
+  const packed = JSON.parse(
     execFileSync("npm", ["pack", "--json", "--ignore-scripts", "--pack-destination", work], {
       cwd: PACKAGE_DIR,
       encoding: "utf8",
     }),
   );
+  const [pack] = Array.isArray(packed) ? packed : Object.values(packed);
   const files = pack.files.map((f) => f.path).sort();
   for (const path of REQUIRED) if (!files.includes(path)) problems.push(`missing ${path}`);
   for (const path of files) if (!ALLOWED.test(path)) problems.push(`unexpected file ${path}`);
