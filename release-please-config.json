@@ -16,10 +16,19 @@
     { "type": "style", "section": "Styles", "hidden": true }
   ],
   "exclude-paths": ["docs/guides", "docs/reference"],
+  "separate-pull-requests": true,
   "packages": {
     ".": {
       "release-type": "node",
       "package-name": "@middag-io/react",
+      "changelog-path": "CHANGELOG.md",
+      "exclude-paths": ["docs/guides", "docs/reference", "packages/contracts-codegen"]
+    },
+    "packages/contracts-codegen": {
+      "release-type": "node",
+      "package-name": "@middag-io/ui-contracts-codegen",
+      "component": "ui-contracts-codegen",
+      "include-component-in-tag": true,
       "changelog-path": "CHANGELOG.md"
     }
   }
