@@ -75,8 +75,9 @@ Format: `type(scope): description` or `type: description`
 
 - `src/primitives/reui/` — synced from ReUI registry
 - `src/primitives/examples/` — synced via `npm run sync:examples` (dev-only gallery, not published)
-- `src/contracts/generated/` — generated from the php-ui JSON schemas
-  (`npm run gen:contracts`); never hand-edit
+- `src/contracts/generated/`, `packages/contracts/src/generated/` and
+  `packages/contracts/schema/` — generated or mirrored from a php-ui release
+  (`npm run gen:contracts`, `npm run contracts:mirror`); never hand-edit
 
 ## Adding a new block
 
@@ -88,14 +89,30 @@ Format: `type(scope): description` or `type: description`
 
 ## Contract codegen
 
-The types in `src/contracts/generated/` are **generated** from JSON Schemas
-(`docs/public/schemas/page-contract.json` + `fragment.json`) — the wire format
-is owned by the backend value objects, not hand-written here.
+The wire contract is owned by the backend value objects of
+[`middag-io/ui`](https://github.com/middag-io/middag-php-ui), not hand-written
+here. It lives in `packages/contracts` (`@middag-io/ui-contracts`):
 
-- `npm run gen:contracts` regenerates `generated/` from the committed schema
-  mirror (or from a sibling schema checkout when present).
+- `packages/contracts/schema/` mirrors `schema/*.json` of a php-ui release tag,
+  and `schema/SOURCE.json` records the repository, tag, commit and hashes.
+- `packages/contracts-codegen` (`@middag-io/ui-contracts-codegen`) generates
+  `packages/contracts/src/generated/` from that mirror.
+- Until the engine depends on the published package, `src/contracts/generated/`
+  is a copy of the generated types and zod schemas, and
+  `docs/public/schemas/` a copy of the schemas.
+
+Commands:
+
+- `npm run gen:contracts` regenerates the package and both copies from the mirror.
 - `npm run gen:contracts:check` gates drift in CI and in the pre-push hook.
-- Never hand-edit `generated/` or the schema mirror — regenerate instead.
+- `npm run contracts:mirror -- vX.Y.Z` mirrors a php-ui release (normally done
+  by the `Contracts mirror` workflow when php-ui releases).
+- For an unreleased php-ui checkout:
+  `node packages/contracts-codegen/bin/middag-contracts-gen.mjs --package packages/contracts --source ../middag-php-ui/schema`.
+  The mirror is then marked local and the drift gate fails until a release is
+  mirrored.
+
+See `packages/contracts/README.md` for the versioning and compatibility rules.
 
 ## Code style
 

@@ -34,6 +34,6 @@ Green before delivering: `npm run check` (typecheck app+tests+demo, lint, format
 
 ## Gotchas — READ before touching
 
-1. Contracts are GENERATED: `npm run gen:contracts` writes them, `gen:contracts:check` gates — never hand-edit generated contract files.
+1. Contracts are GENERATED from a mirrored php-ui release (`packages/contracts/schema/` + `SOURCE.json`): `npm run gen:contracts` writes `packages/contracts/src/generated/` and the engine copy in `src/contracts/generated/`, `gen:contracts:check` gates, `contracts:mirror -- vX.Y.Z` mirrors a release — never hand-edit generated files or the mirror.
 2. Git hooks come from `.githooks` (`prepare` sets `core.hooksPath`) — run `npm install` once so they activate.
 3. Subpath builds are separate (`build:subpaths` + `patch-esm.mjs`) — plain `vite build` alone is not the full artifact.

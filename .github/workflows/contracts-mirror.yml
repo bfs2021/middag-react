@@ -1,0 +1,120 @@
+name: Contracts mirror
+
+# Mirrors the wire schemas of a middag-php-ui release into
+# packages/contracts/schema and opens a pull request with the regenerated
+# @middag-io/ui-contracts (and the engine copy).
+#
+# Triggers:
+#   - repository_dispatch `php-ui-released` sent by the php-ui release
+#     workflow, with client_payload.tag (vX.Y.Z);
+#   - workflow_dispatch with the tag, to mirror a release by hand.
+#
+# Nothing happens when the release carries the same schemas as the mirror.
+# A breaking change without an x-contract-version bump fails here: that is a
+# producer bug to fix in php-ui, not something to merge.
+#
+# The pull request is opened with the token of the org release GitHub App
+# (vars.GH_APPS_MIDDAG_CI_RELEASE_CLIENT_ID +
+# secrets.GH_APPS_MIDDAG_CI_RELEASE_PRIVATE_KEY), so its CI runs. Its title
+# carries the npm bump of @middag-io/ui-contracts: feat for an additive
+# change, fix for a regeneration with no wire change, feat! for a breaking
+# change that bumps x-contract-version.
+
+on:
+  repository_dispatch:
+    types: [php-ui-released]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: middag-php-ui release tag to mirror (vX.Y.Z)
+        required: true
+        type: string
+
+permissions: {}
+
+concurrency:
+  group: contracts-mirror
+  cancel-in-progress: false
+
+jobs:
+  mirror:
+    name: Mirror php-ui schemas
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Resolve the release tag
+        id: tag
+        env:
+          INPUT_TAG: ${{ inputs.tag }}
+          DISPATCH_TAG: ${{ github.event.client_payload.tag }}
+        run: |
+          TAG="${INPUT_TAG:-$DISPATCH_TAG}"
+          if ! [[ "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::invalid php-ui release tag '${TAG}'"
+            exit 1
+          fi
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+
+      - name: Mint App token
+        id: app
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
+        with:
+          client-id: ${{ vars.GH_APPS_MIDDAG_CI_RELEASE_CLIENT_ID }}
+          private-key: ${{ secrets.GH_APPS_MIDDAG_CI_RELEASE_PRIVATE_KEY }}
+          permission-contents: write
+          permission-pull-requests: write
+
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          token: ${{ steps.app.outputs.token }}
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      - name: Mirror and regenerate
+        id: mirror
+        env:
+          TAG: ${{ steps.tag.outputs.tag }}
+          GITHUB_TOKEN: ${{ github.token }}
+        run: npm run contracts:mirror -- "$TAG"
+
+      - name: Refuse a breaking change without a contract version bump
+        if: steps.mirror.outputs.changed == 'true' && steps.mirror.outputs.ok != 'true'
+        env:
+          TAG: ${{ steps.tag.outputs.tag }}
+        run: |
+          echo "::error::middag-php-ui ${TAG} breaks the wire contract without bumping x-contract-version (see the compat report above)."
+          exit 1
+
+      - name: Open the pull request
+        if: steps.mirror.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ steps.app.outputs.token }}
+          TAG: ${{ steps.tag.outputs.tag }}
+          LEVEL: ${{ steps.mirror.outputs.level }}
+        run: |
+          case "$LEVEL" in
+            breaking) TYPE='feat(ui-contracts)!' ;;
+            additive) TYPE='feat(ui-contracts)' ;;
+            *)        TYPE='fix(ui-contracts)' ;;
+          esac
+          TITLE="${TYPE}: mirror the middag-php-ui ${TAG} schemas"
+          BRANCH="contracts/php-ui-${TAG}"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -c "$BRANCH"
+          git add packages/contracts src/contracts/generated docs/public/schemas
+          git commit -m "$TITLE" -m "Compatibility: ${LEVEL}. Mirrored from middag-io/middag-php-ui@${TAG}."
+          git push --force origin "$BRANCH"
+          if gh pr view "$BRANCH" --json number >/dev/null 2>&1; then
+            echo "Pull request for $BRANCH already open; branch updated."
+            exit 0
+          fi
+          gh pr create --base main --head "$BRANCH" --title "$TITLE" --body "Mirrors \`schema/\` from middag-io/middag-php-ui@${TAG} into \`packages/contracts\` and regenerates \`@middag-io/ui-contracts\` and the engine copy.
+
+          Compatibility with the previous mirror: **${LEVEL}** (details in the Contracts mirror run log)."

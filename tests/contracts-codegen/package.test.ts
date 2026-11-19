@@ -1,4 +1,4 @@
-import { cpSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
@@ -191,30 +191,36 @@ describe("contracts package", () => {
   });
 });
 
-describe("with the current php-ui schemas", () => {
-  it("generates the same types as the engine's generated contract", async () => {
-    fixture(dir, {}, { schemas: ["page-contract.json", "fragment.json"] });
-    rmSync(join(dir, "schema/a.json"));
-    const files: Record<string, string> = {};
-    for (const name of ["page-contract.json", "fragment.json"]) {
-      cpSync(join(REPO, "docs/public/schemas", name), join(dir, "schema", name));
-      files[name] = sha256(readFileSync(join(dir, "schema", name), "utf8"));
-    }
-    writeSource(dir, {
-      repository: "middag-io/middag-php-ui",
-      ref: "v1",
-      sha: "abc",
-      path: "schema",
-      files,
-    });
+describe("@middag-io/ui-contracts", () => {
+  const FREE = join(REPO, "packages/contracts");
 
-    const result = await generate(dir);
-    const body = (text: string) => text.slice(text.indexOf("*/\n") + 3);
-    const engine = readFileSync(join(REPO, "src/contracts/generated/contract-types.ts"), "utf8");
-    expect(body(result.files["types.ts"])).toBe(body(engine));
+  it("is in sync with its mirror and its provenance", async () => {
+    expect(await check(FREE)).toMatchObject({ ok: true, problems: [] });
+  });
+
+  it("exports a type and a zod schema for every $def, and the two legacy root names", async () => {
+    const result = await build(FREE);
+    for (const name of Object.keys(result.defs)) {
+      expect(result.files["schemas.ts"]).toContain(`export const ${name}Schema`);
+    }
     expect(result.files["schemas.ts"]).toContain(
-      "export const NavigationNodeSchema: z.ZodType<NavigationNode> = z.object({",
+      "export const pageContractSchemaCore = PageContractSchema;",
     );
-    expect(await check(dir)).toMatchObject({ ok: true });
+    expect(result.files["schemas.ts"]).toContain(
+      "export const fragmentSchemaCore = FragmentSchema;",
+    );
+  });
+
+  it("is copied verbatim into the engine and the public schema mirror", () => {
+    for (const name of ["types.ts", "schemas.ts"]) {
+      expect(readFileSync(join(REPO, "src/contracts/generated", name), "utf8")).toBe(
+        readFileSync(join(FREE, "src/generated", name), "utf8"),
+      );
+    }
+    for (const name of ["page-contract.json", "fragment.json"]) {
+      expect(readFileSync(join(REPO, "docs/public/schemas", name), "utf8")).toBe(
+        readFileSync(join(FREE, "schema", name), "utf8"),
+      );
+    }
   });
 });

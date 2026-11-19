@@ -1,0 +1,56 @@
+{
+  "name": "@middag-io/ui-contracts",
+  "version": "0.0.0",
+  "description": "TypeScript types and zod schemas of the MIDDAG UI wire contract, generated from the JSON Schemas emitted by middag-io/ui (PHP).",
+  "license": "Apache-2.0",
+  "type": "module",
+  "sideEffects": false,
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./types": {
+      "types": "./dist/types.d.ts",
+      "default": "./dist/types.js"
+    },
+    "./meta": {
+      "types": "./dist/meta.d.ts",
+      "default": "./dist/meta.js"
+    },
+    "./schemas/*.json": "./schema/*.json",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "schema",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=20.19.0"
+  },
+  "peerDependencies": {
+    "zod": "^4.0.0"
+  },
+  "peerDependenciesMeta": {
+    "zod": {
+      "optional": true
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/middag-io/middag-react.git",
+    "directory": "packages/contracts"
+  },
+  "homepage": "https://github.com/middag-io/middag-react/tree/main/packages/contracts#readme",
+  "bugs": "https://github.com/middag-io/middag-react/issues",
+  "keywords": [
+    "middag",
+    "contracts",
+    "json-schema",
+    "zod",
+    "inertia"
+  ]
+}
