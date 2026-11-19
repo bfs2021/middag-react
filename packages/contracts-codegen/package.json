@@ -5,7 +5,7 @@
   "license": "Apache-2.0",
   "type": "module",
   "bin": {
-    "middag-contracts-gen": "./bin/middag-contracts-gen.mjs"
+    "middag-contracts-gen": "bin/middag-contracts-gen.mjs"
   },
   "exports": {
     ".": {
