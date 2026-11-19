@@ -78,6 +78,7 @@ jobs:
       # grant this repository access under the package's "Manage Actions
       # access" settings — otherwise GITHUB_TOKEN gets a 403 here.
       - name: Publish to GitHub Packages if changed
+        if: steps.version.outputs.skip != 'true'
         run: |
           LOCAL_VERSION=$(node -e "console.log(require('./package.json').version)")
           GH_VERSION=$(npm view @middag-io/react version 2>/dev/null || echo "0.0.0")
@@ -138,6 +139,89 @@ jobs:
             fi
             exit $EXIT_CODE
           fi
+
+  # @middag-io/ui-contracts-codegen versions on its own (release-please
+  # component ui-contracts-codegen, tag ui-contracts-codegen-vX.Y.Z). Same two
+  # channels as @middag-io/react: GitHub Packages and public npm through
+  # Trusted Publishing.
+  publish-codegen:
+    name: Publish @middag-io/ui-contracts-codegen
+    needs: release
+    if: ${{ contains(fromJSON(needs.release.outputs.paths-released || '[]'), 'packages/contracts-codegen') || github.event_name == 'workflow_dispatch' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+    defaults:
+      run:
+        working-directory: packages/contracts-codegen
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+          registry-url: https://npm.pkg.github.com
+      - name: Ensure npm >= 11.5.2 (OIDC trusted publishing)
+        run: |
+          npm install -g npm@latest
+          NPMV=$(npm --version)
+          echo "npm $NPMV"
+          node -e "const [a,b,c]='$NPMV'.split('.').map(Number); process.exit((a>11||(a===11&&(b>5||(b===5&&c>=2))))?0:1)" \
+            || { echo "::error::npm $NPMV < 11.5.2 — trusted publishing unsupported"; exit 1; }
+      - name: Skip an unreleased version
+        id: version
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          if [ "$VERSION" = "0.0.0" ]; then
+            echo "::notice::@middag-io/ui-contracts-codegen has no release yet (0.0.0); nothing to publish."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Install (tests and pack check)
+        if: steps.version.outputs.skip != 'true'
+        working-directory: .
+        run: npm ci
+      - name: Codegen tests
+        if: steps.version.outputs.skip != 'true'
+        working-directory: .
+        run: npx vitest run tests/contracts-codegen
+      - name: Pack check
+        if: steps.version.outputs.skip != 'true'
+        working-directory: .
+        run: npm run codegen:pack-check
+
+      - name: Publish to GitHub Packages if changed
+        if: steps.version.outputs.skip != 'true'
+        run: |
+          NAME=$(node -p "require('./package.json').name")
+          VERSION=$(node -p "require('./package.json').version")
+          if npm view "$NAME@$VERSION" version >/dev/null 2>&1; then
+            echo "$NAME@$VERSION already on GitHub Packages, skipping."
+          else
+            npm publish
+          fi
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # The runner .npmrc routes @middag-io to GitHub Packages; the staged copy
+      # carries its own .npmrc pointing the scope to public npm, with NO
+      # _authToken (auth comes from Trusted Publishing, id-token: write above).
+      # The first version of a new package has no trusted publisher yet: an
+      # npm org admin publishes it once by hand and then links this workflow.
+      - name: Publish to public npm if changed
+        if: steps.version.outputs.skip != 'true'
+        run: |
+          NAME=$(node -p "require('./package.json').name")
+          VERSION=$(node -p "require('./package.json').version")
+          if curl -sf "https://registry.npmjs.org/${NAME/\//%2f}/$VERSION" >/dev/null; then
+            echo "$NAME@$VERSION already on npm, skipping."
+            exit 0
+          fi
+          STAGE_DIR=$(mktemp -d)
+          npm pack --ignore-scripts --pack-destination "$STAGE_DIR"
+          cd "$STAGE_DIR"
+          echo "@middag-io:registry=https://registry.npmjs.org" > .npmrc
+          npm publish ./*.tgz --access public --provenance
 
   # After a real publish, build the versioned docs payload and sync it
   # to Cloudflare R2. Gated on a confirmed release so it runs exactly once per
