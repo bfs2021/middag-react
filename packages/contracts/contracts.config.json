@@ -1,0 +1,16 @@
+{
+  "packageName": "@middag-io/ui-contracts",
+  "schemas": ["page-contract.json", "fragment.json"],
+  "idPrefix": "https://ui-docs.middag.io/",
+  "forbiddenIds": ["https://pro-docs.middag.io/"],
+  "out": "src/generated",
+  "producer": "middag-io/ui",
+  "aliases": {
+    "pageContractSchemaCore": "PageContract",
+    "fragmentSchemaCore": "Fragment"
+  },
+  "commands": {
+    "generate": "npm run gen:contracts",
+    "check": "npm run gen:contracts:check"
+  }
+}
