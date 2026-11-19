@@ -1,0 +1,42 @@
+{
+  "name": "@middag-io/ui-contracts-codegen",
+  "version": "0.0.0",
+  "description": "Generates the TypeScript types and zod schemas of a MIDDAG contracts package from the wire JSON Schemas emitted by the PHP value objects.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "bin": {
+    "middag-contracts-gen": "./bin/middag-contracts-gen.mjs"
+  },
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.mts",
+      "default": "./lib/index.mjs"
+    }
+  },
+  "files": [
+    "bin",
+    "lib",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=20.19.0"
+  },
+  "dependencies": {
+    "json-schema-to-typescript": "^15.0.4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/middag-io/middag-react.git",
+    "directory": "packages/contracts-codegen"
+  },
+  "homepage": "https://github.com/middag-io/middag-react/tree/main/packages/contracts-codegen#readme",
+  "bugs": "https://github.com/middag-io/middag-react/issues",
+  "keywords": [
+    "middag",
+    "contracts",
+    "json-schema",
+    "zod",
+    "codegen"
+  ]
+}

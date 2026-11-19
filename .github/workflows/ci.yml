@@ -82,6 +82,11 @@ jobs:
           node scripts/npm-public-package.mjs stage "$STAGE_DIR"
           node scripts/npm-public-package.mjs verify "$STAGE_DIR"
 
+      # @middag-io/ui-contracts-codegen: the tarball holds only bin/ and lib/,
+      # installs from public npm on its own and its CLI generates a package.
+      - name: Pack check @middag-io/ui-contracts-codegen
+        run: npm run codegen:pack-check
+
       # The docs payload build runs the FREE-only deny-list verification
       # (scripts/verify-docs-payload.mjs) — catches internal material leaking
       # into the public docs payload before it ever reaches a release.
