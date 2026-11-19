@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.46.0](https://github.com/middag-io/middag-react/compare/v0.45.4...v0.46.0) (2026-11-19)
+
+
+### Features
+
+* **contracts-codegen:** add the @middag-io/ui-contracts-codegen package ([7b052a9](https://github.com/middag-io/middag-react/commit/7b052a9df782a1850a356bfea74ff0e77e603b70))
+
 ## [0.45.4](https://github.com/middag-io/middag-react/compare/v0.45.3...v0.45.4) (2026-11-16)
 
 
