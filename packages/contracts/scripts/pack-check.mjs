@@ -23,7 +23,9 @@ import { fileURLToPath } from "node:url";
 
 const PACKAGE_DIR = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const REPO = resolve(PACKAGE_DIR, "..", "..");
-const FORBIDDEN = "pro-docs.middag.io";
+// Premium schema host; matched as text anywhere in the tarball, not as a URL.
+const FORBIDDEN_HOST = "pro-docs.middag.io";
+const FORBIDDEN = /pro-docs\.middag\.io/;
 const REQUIRED = [
   "package.json",
   "README.md",
@@ -59,7 +61,7 @@ for (const path of REQUIRED) {
 for (const path of files) {
   if (!ALLOWED.test(path)) problems.push(`unexpected file ${path}`);
   const text = readFileSync(join(PACKAGE_DIR, path), "utf8");
-  if (text.includes(FORBIDDEN)) problems.push(`${path} mentions ${FORBIDDEN}`);
+  if (FORBIDDEN.test(text)) problems.push(`${path} mentions ${FORBIDDEN_HOST}`);
 }
 
 const mirrored = new Set();
