@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.46.1](https://github.com/middag-io/middag-react/compare/v0.46.0...v0.46.1) (2026-11-19)
+
+
+### Refactoring
+
+* **contracts:** generate the engine contract through @middag-io/ui-contracts ([2ad809b](https://github.com/middag-io/middag-react/commit/2ad809bdca07ba2e95a0e76694c92dd3582a2919))
+* **contracts:** generate the wire contract through @middag-io/ui-contracts ([a77f9ff](https://github.com/middag-io/middag-react/commit/a77f9ff4588489534f617b7594ff89042c132b59))
+
+
+### Documentation
+
+* describe the contracts mirror and packages ([001fd2a](https://github.com/middag-io/middag-react/commit/001fd2a801d4779160d2a628c5909e4f49d9b67e))
+
 ## [0.46.0](https://github.com/middag-io/middag-react/compare/v0.45.4...v0.46.0) (2026-11-19)
 
 
