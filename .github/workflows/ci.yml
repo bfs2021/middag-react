@@ -53,6 +53,30 @@ jobs:
       - name: Contracts drift gate
         run: npm run gen:contracts:check
 
+      # packages/contracts/schema must equal the php-ui release recorded in
+      # schema/SOURCE.json (fetched from GitHub at the recorded commit).
+      - name: Contracts mirror provenance
+        run: npm run contracts:verify-source
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # A mirror change must not break the wire without an x-contract-version
+      # bump (removed $def or field, field made required, narrowed type).
+      - name: Contracts compatibility with the base branch
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_REF: ${{ github.base_ref }}
+        run: |
+          git fetch --no-tags --depth=1 origin "$BASE_REF"
+          BASE_DIR=$(mktemp -d)
+          for f in page-contract.json fragment.json; do
+            if ! git show "FETCH_HEAD:packages/contracts/schema/$f" > "$BASE_DIR/$f" 2>/dev/null; then
+              echo "No contracts mirror on $BASE_REF yet; nothing to compare."
+              exit 0
+            fi
+          done
+          npm run contracts:compat -- --base "$BASE_DIR"
+
       # Runs the full suite once WITH coverage so the regression floor
       # (vitest.config.ts coverage.thresholds ≈ baseline − 2pp) gates the PR.
       # A drop below the floor fails here; raise the floor as coverage grows.
@@ -81,6 +105,13 @@ jobs:
           STAGE_DIR=$(mktemp -d)
           node scripts/npm-public-package.mjs stage "$STAGE_DIR"
           node scripts/npm-public-package.mjs verify "$STAGE_DIR"
+
+      # @middag-io/ui-contracts: build, tarball contents (no premium schema or
+      # $def) and a clean install from public npm, imported and type-checked.
+      - name: Build + pack check @middag-io/ui-contracts
+        run: |
+          npm run contracts:build
+          npm run contracts:pack-check
 
       # @middag-io/ui-contracts-codegen: the tarball holds only bin/ and lib/,
       # installs from public npm on its own and its CLI generates a package.
