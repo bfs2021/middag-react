@@ -19,22 +19,11 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
-  # npm dependency audit through the node-npm-scan component of the public
-  # middag-io/actions repository, called by its major tag.
-  # It reads package-lock.json only (runtime and dev dependencies) and fails
-  # on a critical or high advisory.
-  audit:
-    name: npm audit
-    permissions:
-      contents: read
-    uses: middag-io/actions/.github/workflows/node-npm-scan.yml@node-npm-scan-v1
-    with:
-      node-version: "24"
-      blocking-severities: critical, high
-
   check:
     name: check + drift + test
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
@@ -82,6 +71,17 @@ jobs:
       # A drop below the floor fails here; raise the floor as coverage grows.
       - name: Unit tests + coverage gate
         run: npm run test:coverage
+
+      # npm dependency audit through the node-npm-scan composite of the public
+      # middag-io/actions repository, called by its major tag. It reads
+      # package-lock.json only (runtime and dev dependencies) and fails on a
+      # critical or high advisory. It depends on the npm registry, so it runs
+      # last and even after an earlier failure.
+      - name: npm audit
+        if: ${{ !cancelled() }}
+        uses: middag-io/actions/node-npm-scan@node-npm-scan-v1
+        with:
+          blocking-severities: critical, high
 
   build:
     name: build (lib + docs payload)
