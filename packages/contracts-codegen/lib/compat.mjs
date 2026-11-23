@@ -10,8 +10,61 @@
  * - a type narrowed: a type removed from the type set, an enum value removed,
  *   a const changed, a $ref pointing elsewhere, a union branch removed.
  *
- * A new $def, a new optional property or a new enum value is additive.
+ * A new $def, a new optional property or a new enum value is additive. So is
+ * widening a `$ref X` into an `anyOf`/`oneOf` that still has `$ref X` as a
+ * branch: every value the old schema accepted is still accepted.
+ *
+ * The gate only refuses a break once the producer is at `2.0.0-rc.1` or later
+ * (the wire freezes at the first release candidate). Below that, breaks are
+ * still reported, but `ok` stays true. A missing or unparseable producer tag is
+ * enforced, so a caller that does not pass one keeps the strict behaviour.
  */
+
+/** First producer version whose wire breaks are refused. */
+export const ENFORCE_FROM = "2.0.0-rc.1";
+
+function parseVersion(tag) {
+  const match = /^v?(\d+)\.(\d+)\.(\d+)(?:-([0-9A-Za-z.-]+))?(?:\+[0-9A-Za-z.-]+)?$/.exec(
+    String(tag ?? "").trim(),
+  );
+  if (!match) return null;
+  return {
+    core: [Number(match[1]), Number(match[2]), Number(match[3])],
+    pre: match[4] ? match[4].split(".") : [],
+  };
+}
+
+function comparePre(a, b) {
+  if (!a.length || !b.length) return a.length ? -1 : b.length ? 1 : 0;
+  for (let i = 0; i < Math.max(a.length, b.length); i++) {
+    if (a[i] === undefined) return -1;
+    if (b[i] === undefined) return 1;
+    const na = /^\d+$/.test(a[i]);
+    const nb = /^\d+$/.test(b[i]);
+    if (na && nb) {
+      if (Number(a[i]) !== Number(b[i])) return Number(a[i]) < Number(b[i]) ? -1 : 1;
+    } else if (na !== nb) {
+      return na ? -1 : 1;
+    } else if (a[i] !== b[i]) {
+      return a[i] < b[i] ? -1 : 1;
+    }
+  }
+  return 0;
+}
+
+/**
+ * Whether a break in the producer release `tag` must fail the gate: true from
+ * {@link ENFORCE_FROM} on, and for a missing or unparseable tag.
+ */
+export function enforcesBreaks(tag) {
+  const version = parseVersion(tag);
+  if (!version) return true;
+  const floor = parseVersion(ENFORCE_FROM);
+  for (let i = 0; i < 3; i++) {
+    if (version.core[i] !== floor.core[i]) return version.core[i] > floor.core[i];
+  }
+  return comparePre(version.pre, floor.pre) >= 0;
+}
 
 const describe = (path) => (path.length ? path.join(".") : "(root)");
 
@@ -30,6 +83,15 @@ function compareNode(base, next, path, breaks, additions) {
     if (JSON.stringify(base) !== JSON.stringify(next))
       breaks.push(`${describe(path)}: schema changed`);
     return;
+  }
+
+  if (base.$ref !== undefined && next.$ref === undefined) {
+    for (const key of ["anyOf", "oneOf"]) {
+      if (Array.isArray(next[key]) && next[key].some((branch) => branch?.$ref === base.$ref)) {
+        additions.push(`${describe(path)}: $ref ${base.$ref} widened to ${key}`);
+        return;
+      }
+    }
   }
 
   if (base.$ref !== undefined || next.$ref !== undefined) {
@@ -141,9 +203,11 @@ function compareNode(base, next, path, breaks, additions) {
 /**
  * @param {{ version: string, defs: Record<string, unknown> }} base
  * @param {{ version: string, defs: Record<string, unknown> }} next
- * @returns {{ level: "none" | "patch" | "additive" | "breaking", versionBumped: boolean, ok: boolean, breaks: string[], additions: string[] }}
+ * @param {{ producerTag?: string }} [options] release tag of the producer that
+ *   made `next`; breaks below {@link ENFORCE_FROM} are reported, not refused
+ * @returns {{ level: "none" | "patch" | "additive" | "breaking", versionBumped: boolean, enforced: boolean, ok: boolean, breaks: string[], additions: string[] }}
  */
-export function compareContracts(base, next) {
+export function compareContracts(base, next, options = {}) {
   const breaks = [];
   const additions = [];
   for (const name of Object.keys(base.defs)) {
@@ -166,5 +230,13 @@ export function compareContracts(base, next) {
       : changed
         ? "patch"
         : "none";
-  return { level, versionBumped, ok: breaks.length === 0 || versionBumped, breaks, additions };
+  const enforced = enforcesBreaks(options.producerTag);
+  return {
+    level,
+    versionBumped,
+    enforced,
+    ok: breaks.length === 0 || versionBumped || !enforced,
+    breaks,
+    additions,
+  };
 }

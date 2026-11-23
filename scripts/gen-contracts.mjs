@@ -129,6 +129,8 @@ if (CHECK) {
         `compat: ${report.level}${report.versionBumped ? " (x-contract-version bumped)" : ""}`,
       );
       for (const line of report.breaks) console.log(`  breaking: ${line}`);
+      if (report.breaks.length && !report.enforced)
+        console.log("  (reported only: the producer tag is below the rc gate)");
       for (const line of report.additions) console.log(`  additive: ${line}`);
     }
   }

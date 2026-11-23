@@ -17,7 +17,7 @@ import { compile } from "json-schema-to-typescript";
 import { compareContracts } from "./compat.mjs";
 import { assertOpenEnums, collectRefs, emitZod, resolveRef } from "./zod.mjs";
 
-export { compareContracts } from "./compat.mjs";
+export { compareContracts, enforcesBreaks, ENFORCE_FROM } from "./compat.mjs";
 export { emitZod } from "./zod.mjs";
 
 export const CONFIG_FILE = "contracts.config.json";
@@ -494,7 +494,7 @@ export async function mirror(packageDir, { repository, ref, path = SCHEMA_DIR, t
   writeSource(packageDir, { repository, ref, sha, path, files: hashes });
   const hasBase = config.schemas.every((name) => existsSync(join(baseDir, name)));
   const report = hasBase
-    ? compareContracts(contractOf(baseDir, config), contractOf(dir, config))
+    ? compareContracts(contractOf(baseDir, config), contractOf(dir, config), { producerTag: ref })
     : null;
   rmSync(baseDir, { recursive: true, force: true });
   return { changed: true, report };
