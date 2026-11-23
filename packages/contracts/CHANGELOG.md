@@ -10,7 +10,6 @@
 
 ### Bug Fixes
 
-* **ui-contracts:** degrade unknown enum values to the first member ([1b3647f](https://github.com/middag-io/middag-react/commit/1b3647fff79fbbaf54c43fc895207eeb0d99e46e))
 * **ui-contracts:** mirror the released middag-php-ui v1.11.0 schemas ([4b01e47](https://github.com/middag-io/middag-react/commit/4b01e47011470c81b8eb83b8c46c2fff196a442c))
 * **ui-contracts:** replace the enum catch with open enums for presentational values ([65cdc00](https://github.com/middag-io/middag-react/commit/65cdc0052facc85f0bc77000a86d67a7820d278e))
 
@@ -25,3 +24,8 @@
 ### Refactoring
 
 * **contracts:** generate the wire contract through @middag-io/ui-contracts ([a77f9ff](https://github.com/middag-io/middag-react/commit/a77f9ff4588489534f617b7594ff89042c132b59))
+
+### Consumer impact
+
+Presentational enums (`ActionIntent`, `NotificationLevel`, `ThemeMode`, `ValueFormat`, `ColumnVariant`, `FilterType`, `ChartType`, `FormComponent`, `FieldType`) now accept an unknown string and keep its raw value (the TypeScript type adds `(string & {})`); control enums stay strict. The package also accepts the `richtext`, `time` and `autocomplete` form components.
+
