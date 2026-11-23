@@ -220,7 +220,10 @@
     "vitest": "^4.1.12"
   },
   "overrides": {
-    "happy-dom": "^21.0.4"
+    "happy-dom": "^21.0.4",
+    "quick-temp": {
+      "rimraf": "^6.1.4"
+    }
   },
   "homepage": "https://ui-docs.middag.io",
   "bugs": {
