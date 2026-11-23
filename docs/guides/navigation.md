@@ -2,31 +2,31 @@
 
 The navigation system receives a tree of nodes from the backend and renders the sidebar automatically. Nodes support badges, drilldown, collapsible groups, and status indicators.
 
-## NavigationTreePayload {#tree-payload}
+## NavigationTree {#tree-payload}
 
-The backend sends a `NavigationTreePayload` as an Inertia shared prop. It contains a tree of `NavigationNode` objects, an active key, and optional footer items.
+The backend sends a `NavigationTree` in the `navigation` shared prop. It contains a tree of `NavigationNode` objects, an active key, and footer items. Both types are generated from the middag-php-ui value objects.
 
 ```ts
-interface NavigationTreePayload {
+interface NavigationTree {
     tree: NavigationNode[];
     activeKey: string;
-    drilldownStack?: string[];
     footer: NavigationNode[];
 }
 
 interface NavigationNode {
     key: string;
-    label: string;
+    label: Label;
     icon?: string;
-    entityType?: NavigationEntityType;
     href?: string;
-    badge?: string | number;
-    badgeVariant?: 'count' | 'alert';
-    active?: boolean;
-    drilldown?: boolean;
-    collapsible?: boolean;
-    defaultOpen?: boolean;
+    badge?: string;
+    entityType?: string;
+    badgeVariant?: string;   // 'count' | 'alert'
     statusColor?: string;
+    target?: string;
+    active?: true;
+    drilldown?: true;
+    collapsible?: true;
+    defaultOpen?: true;
     children?: NavigationNode[];
 }
 ```
@@ -101,16 +101,17 @@ In production, the backend resolves the active key and sends it in `activeKey`. 
 | Property       | Type                 | Required | Default | Description                                                                            |
 |----------------|----------------------|----------|---------|----------------------------------------------------------------------------------------|
 | `key`          | string               | Yes      |         | Unique identifier. Used for active key matching and React keys.                        |
-| `label`        | string               | Yes      |         | Localized display text.                                                                |
+| `label`        | Label                | Yes      |         | Display text: a string or a translatable `{key, domain, params}`.                      |
 | `icon`         | string               | No       |         | Lucide icon name (kebab-case). E.g. "plug", "graduation-cap", "settings-2".            |
-| `entityType`   | NavigationEntityType | No       |         | Auto-resolves icon if icon is not set. E.g. "connector" maps to "plug".                |
+| `entityType`   | string               | No       |         | Auto-resolves icon if icon is not set, through `registerEntityIcon()`.                 |
 | `href`         | string               | No       |         | Navigation URL. Omit for non-navigable group nodes.                                    |
-| `badge`        | string \| number     | No       |         | Badge value shown next to the label. E.g. 12, "new".                                   |
-| `badgeVariant` | "count" \| "alert"   | No       | "count" | "count" renders muted text; "alert" renders a red pill.                                |
+| `badge`        | string               | No       |         | Badge value shown next to the label. E.g. "12", "new".                                 |
+| `badgeVariant` | string               | No       | "count" | "count" renders muted text; "alert" renders a red pill.                                |
 | `drilldown`    | boolean              | No       |         | When true, clicking replaces the sidebar with this node's children plus a back button. |
 | `collapsible`  | boolean              | No       |         | When true, the group renders with a toggle to expand/collapse its children.            |
 | `defaultOpen`  | boolean              | No       | false   | Whether a collapsible group starts expanded on first render.                           |
 | `statusColor`  | string               | No       |         | CSS color for a status dot next to drilldown titles.                                   |
+| `target`       | string               | No       |         | Link target (e.g. "_blank"). External http(s) URLs are detected automatically.         |
 | `children`     | NavigationNode[]     | No       |         | Child nodes. Supports up to 3 levels of depth.                                         |
 
 ## Sidebar Rendering {#sidebar-rendering}

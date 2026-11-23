@@ -81,7 +81,7 @@ describe("ContractPage integration", () => {
     const { I18nProvider } = await import("@/i18n/I18nProvider");
 
     const contract = {
-      version: "1" as const,
+      version: "2" as const,
       shell: "product",
       page: {
         key: "dashboard",
@@ -155,7 +155,7 @@ describe("ContractPage integration", () => {
     const { I18nProvider } = await import("@/i18n/I18nProvider");
 
     const contract = {
-      version: "1" as const,
+      version: "2" as const,
       shell: "immersive",
       page: { key: "empty", title: "Empty Page", breadcrumbs: [] },
       layout: {
@@ -196,7 +196,7 @@ describe("ContractPage integration", () => {
     const { I18nProvider } = await import("@/i18n/I18nProvider");
 
     const contract = {
-      version: "1" as const,
+      version: "2" as const,
       shell: "product",
       page: { key: "detail", title: "Detail View", breadcrumbs: [] },
       layout: {
@@ -262,7 +262,7 @@ describe("ContractPage integration", () => {
     const { I18nProvider } = await import("@/i18n/I18nProvider");
 
     const contract = {
-      version: "1" as const,
+      version: "2" as const,
       shell: "immersive",
       page: { key: "unknown", title: "Unknown Blocks", breadcrumbs: [] },
       layout: {
@@ -298,7 +298,7 @@ describe("ContractPage integration", () => {
     const { I18nProvider } = await import("@/i18n/I18nProvider");
 
     const contract = {
-      version: "1" as const,
+      version: "2" as const,
       shell: "custom_shell_xyz",
       page: { key: "fallback", title: "Fallback Shell Page", breadcrumbs: [] },
       layout: {
@@ -342,7 +342,7 @@ describe("ContractPage integration", () => {
     const { I18nProvider } = await import("@/i18n/I18nProvider");
 
     const contract = {
-      version: "1" as const,
+      version: "2" as const,
       shell: "auth",
       page: { key: "login", title: "Sign in", subtitle: "Welcome back", breadcrumbs: [] },
       layout: {
@@ -410,7 +410,7 @@ describe("ContractPage integration", () => {
     const { I18nProvider } = await import("@/i18n/I18nProvider");
 
     const contract = {
-      version: "1" as const,
+      version: "2" as const,
       shell: "immersive",
       page: { key: "custom-layout", title: "Custom Layout", breadcrumbs: [] },
       layout: {
@@ -475,7 +475,7 @@ describe("ContractPage integration", () => {
     const { I18nProvider } = await import("@/i18n/I18nProvider");
 
     const contract = {
-      version: "1" as const,
+      version: "2" as const,
       shell: "immersive",
       page: { key: "multi", title: "Multi Block", breadcrumbs: [] },
       layout: {
@@ -526,7 +526,7 @@ describe("ContractPage integration", () => {
     const { I18nProvider } = await import("@/i18n/I18nProvider");
 
     const contract = {
-      version: "1" as const,
+      version: "2" as const,
       shell: "product",
       page: { key: "full-dashboard", title: "Full Dashboard", breadcrumbs: [] },
       layout: {

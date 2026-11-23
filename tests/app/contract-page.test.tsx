@@ -33,7 +33,7 @@ function BlockLayout({ layout, renderBlock }: LayoutProps): ReactElement {
 
 function validContract(over: Partial<PageContract> = {}): PageContract {
   return {
-    version: "1",
+    version: "2",
     shell: "test-shell",
     page: { key: "t", title: "T", breadcrumbs: [] },
     layout: { template: "test-layout", regions: { content: [] } },

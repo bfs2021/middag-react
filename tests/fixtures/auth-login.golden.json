@@ -16,7 +16,7 @@
     "errors": [],
     "csrf_token": "dev-csrf-token",
     "contract": {
-      "version": "1",
+      "version": "2",
       "shell": "auth",
       "page": {
         "key": "demo.login",

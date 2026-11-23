@@ -43,7 +43,7 @@ const MIRROR_REF = MIRROR_AT >= 0 ? process.argv[MIRROR_AT + 1] : undefined;
 const PRODUCER_REPOSITORY = "middag-io/middag-php-ui";
 
 const COPIED = ["types.ts", "schemas.ts"];
-const SCHEMAS = ["page-contract.json", "fragment.json"];
+const SCHEMAS = ["page-contract.json", "fragment.json", "shared-props.json"];
 
 function engineFiles() {
   const generated = join(PACKAGE_DIR, "src", "generated");
@@ -55,7 +55,7 @@ function engineFiles() {
     banner +
     [
       'export * from "./types.js";',
-      'export { pageContractSchemaCore, fragmentSchemaCore } from "./schemas.js";',
+      'export { pageContractSchemaCore, fragmentSchemaCore, sharedPropsSchemaCore } from "./schemas.js";',
       "",
     ].join("\n");
   return files;

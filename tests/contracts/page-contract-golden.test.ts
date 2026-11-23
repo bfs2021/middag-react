@@ -17,7 +17,7 @@ import { pageContractSchema, validatePageContract } from "@/contracts/page-contr
 // A realistic PHP-emitted contract: product shell, dashboard layout with two
 // regions, page meta with breadcrumbs + actions, and a navigation tree.
 const goldenContract = {
-  version: "1" as const,
+  version: "2" as const,
   shell: "product",
   page: {
     key: "connectors.index",

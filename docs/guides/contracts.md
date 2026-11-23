@@ -8,7 +8,7 @@ Every contract follows the same hierarchical structure:
 
 ```
 PageContract
- +-- version: "1"
+ +-- version: "2"
  +-- shell: "product" | "immersive"
  +-- page
  |    +-- key, title, breadcrumbs, actions, filters
@@ -112,11 +112,16 @@ The registries are populated by `registerDefaults()`. You can also register cust
 
 ```ts
 interface PageContract {
-    version: '1';
+    version: '2';
     shell: 'product' | 'immersive' | (string & {});
     page: PageMeta;
     layout: LayoutDescriptor;
     resources?: PageResources;
+}
+
+interface PageResources {
+    featureFlags: Record<string, boolean>;
+    branding?: Branding;
 }
 
 interface PageMeta {

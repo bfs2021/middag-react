@@ -7,20 +7,20 @@
  * Regenerate:  npm run gen:contracts
  * Drift gate:  npm run gen:contracts:check
  *
- * @source middag-io/middag-php-ui@v1.11.0 schema/{page-contract.json,fragment.json}
- * @contract-version 1
- * @hash 63f5044005aa4225
+ * @source middag-io/middag-php-ui@v1.13.0 schema/{page-contract.json,fragment.json,shared-props.json}
+ * @contract-version 2
+ * @hash a11a97d1f5ad9c63
  */
 /** Breaking version of the wire contract (`x-contract-version`). */
-export const CONTRACT_VERSION = "1" as const;
+export const CONTRACT_VERSION = "2" as const;
 
 /** Hash of the mirrored schemas this package was generated from. */
-export const SCHEMA_HASH = "63f5044005aa4225" as const;
+export const SCHEMA_HASH = "a11a97d1f5ad9c63" as const;
 
 /** Producer of the schemas and the release they were mirrored from. */
 export const PRODUCER = {
   "package": "middag-io/ui",
   "repository": "middag-io/middag-php-ui",
-  "ref": "v1.11.0",
-  "sha": "f3f500f1208aad0f634e1108a3eb4d2cdeab0358"
+  "ref": "v1.13.0",
+  "sha": "2352184c2f80c195f78c67a073916bdc60cd54b8"
 } as const;

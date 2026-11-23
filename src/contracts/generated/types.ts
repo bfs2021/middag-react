@@ -7,9 +7,9 @@
  * Regenerate:  npm run gen:contracts
  * Drift gate:  npm run gen:contracts:check
  *
- * @source middag-io/middag-php-ui@v1.11.0 schema/{page-contract.json,fragment.json}
- * @contract-version 1
- * @hash 63f5044005aa4225
+ * @source middag-io/middag-php-ui@v1.13.0 schema/{page-contract.json,fragment.json,shared-props.json}
+ * @contract-version 2
+ * @hash a11a97d1f5ad9c63
  */
 export type Label = string | Translatable;
 export type ActionTarget =
@@ -44,7 +44,6 @@ export type ActionIntent =
   | "link"
   | "ghost"
   | (string & {});
-export type ThemeMode = "light" | "dark" | "system" | (string & {});
 export type NotificationLevel = "success" | "info" | "warning" | "error" | (string & {});
 export type FragmentKind =
   | "block"
@@ -55,17 +54,8 @@ export type FragmentKind =
   | "inspector"
   | "notifications"
   | "custom";
-export type ResourcePatch =
-  | {
-      preferences?: UserPreferences;
-      capabilities?: {
-        [k: string]: boolean;
-      };
-      featureFlags?: {
-        [k: string]: boolean;
-      };
-    }
-  | [];
+export type ThemeMode = "light" | "dark" | "system" | (string & {});
+export type FieldError = string | string[];
 export type ValueFormat =
   | "text"
   | "date"
@@ -118,7 +108,6 @@ export type FileValue =
       id?: string;
       uploadToken?: string;
     };
-export type FieldError = string | string[];
 export type FormSchemaNode = FormFieldNode | FormSectionNode | FormGroupNode | FormHeaderNode;
 export type FormFieldNode =
   | {
@@ -411,7 +400,7 @@ export type FormComponent =
 export type RenderTarget = "html" | "props";
 
 export interface PageContract {
-  version: "1";
+  version: "2";
   shell: string;
   page: PageMeta;
   layout: LayoutDescriptor;
@@ -495,34 +484,10 @@ export interface PollConfig {
   stopAfterMs?: number;
 }
 export interface PageResources {
-  preferences: UserPreferences;
-  capabilities:
-    | {
-        [k: string]: boolean;
-      }
-    | [];
-  featureFlags:
-    | {
-        [k: string]: boolean;
-      }
-    | [];
-  user?: Identity;
+  featureFlags: {
+    [k: string]: boolean;
+  };
   branding?: Branding;
-}
-export interface UserPreferences {
-  theme: ThemeMode;
-  locale: string;
-  timezone?: string;
-  dateFormat?: string;
-  numberFormat?: string;
-  [k: string]: unknown;
-}
-export interface Identity {
-  id: string;
-  name: string;
-  email?: string;
-  avatarUrl?: string;
-  roles?: string[];
 }
 export interface Branding {
   appName: string;
@@ -538,7 +503,7 @@ export interface Notification {
   action?: Action;
 }
 export interface Fragment {
-  version: "1";
+  version: "2";
   kind: FragmentKind;
   payload?: {
     [k: string]: unknown;
@@ -546,6 +511,11 @@ export interface Fragment {
   notifications?: Notification[];
   resources?: ResourcePatch;
   customType?: string;
+}
+export interface ResourcePatch {
+  featureFlags?: {
+    [k: string]: boolean;
+  };
 }
 export interface InspectorDescriptor {
   endpoint: string;
@@ -558,17 +528,73 @@ export interface EditablePanelDescriptor {
   submitMethod: "post" | "put" | "patch";
   width: number;
 }
+export interface Identity {
+  id: string;
+  name: string;
+  email?: string;
+  avatarUrl?: string;
+  roles?: string[];
+}
 export interface NavigationNode {
   key: string;
   label: Label;
   icon?: string;
   href?: string;
   badge?: string;
+  entityType?: string;
+  badgeVariant?: string;
+  statusColor?: string;
+  target?: string;
   active?: true;
   drilldown?: true;
   collapsible?: true;
   defaultOpen?: true;
   children?: NavigationNode[];
+}
+export interface NavigationTree {
+  tree: NavigationNode[];
+  activeKey: string;
+  footer: NavigationNode[];
+}
+export interface SharedProps {
+  auth?: SharedAuth;
+  theme?: SharedTheme;
+  flash?: FlashMessages;
+  errors?: FormErrors;
+  csrf_token?: string;
+  locale?: string;
+  scope?: {
+    [k: string]: unknown;
+  };
+  navigation?: NavigationTree;
+  [k: string]: unknown;
+}
+export interface SharedAuth {
+  id: string;
+  name: string;
+  email?: string;
+  avatarUrl?: string;
+  roles?: string[];
+  capabilities: string[];
+  logoutUrl?: string;
+}
+export interface SharedTheme {
+  appearance?: ThemeMode;
+  strings?: {
+    [k: string]: string;
+  };
+}
+export interface FlashMessages {
+  success?: string;
+  error?: string;
+  info?: string;
+  warning?: string;
+}
+/**
+ * Validation errors keyed by field name. The reserved key "_" carries form-level errors; dotted keys target nested fields.
+ */
+export interface FormErrors {
+  [k: string]: FieldError;
 }
 export interface TableConfig {
   columns: Column[];
@@ -631,12 +657,6 @@ export interface FormStep {
   label: Label;
   fields: string[];
   help?: Label;
-}
-/**
- * Validation errors keyed by field name. The reserved key "_" carries form-level errors; dotted keys target nested fields.
- */
-export interface FormErrors {
-  [k: string]: FieldError;
 }
 export interface FieldPropsBase {
   label: string;

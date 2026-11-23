@@ -39,15 +39,15 @@
     {
       "id": "navigation",
       "title": "Navigation Contract",
-      "description": "Sidebar navigation tree contract (NavigationNode, NavigationTreePayload, NavigationEntityType). Consumed by ProductShell.",
-      "path": "navigation.json",
-      "url": "https://ui-docs.middag.io/schemas/navigation.json",
+      "description": "Sidebar navigation tree contract (NavigationTree, NavigationNode): the navigation slot of the shared props, generated from middag-php-ui. Consumed by the shells.",
+      "path": "shared-props.json",
+      "url": "https://ui-docs.middag.io/schemas/shared-props.json",
       "usage": "Understand the sidebar navigation structure when generating pages with navigation context."
     },
     {
       "id": "shared-props",
       "title": "Shared Props Contract",
-      "description": "Inertia shared props (auth, theme, flash, scope, locale) sent on every request. Consumed by providers.",
+      "description": "Inertia shared props (auth, theme, flash, errors, csrf_token, locale, scope, navigation) sent on every request, generated from middag-php-ui. Consumed by providers.",
       "path": "shared-props.json",
       "url": "https://ui-docs.middag.io/schemas/shared-props.json",
       "usage": "Understand global data available on every page via usePage<SharedProps>().props."

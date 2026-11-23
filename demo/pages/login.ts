@@ -7,7 +7,7 @@
 import type { PageContract } from "@middag-io/react";
 
 export const loginContract: PageContract = {
-  version: "1",
+  version: "2",
   shell: "basic",
   page: { key: "demo.login", title: "Sign in", subtitle: "Use any credentials, this is a mock." },
   layout: {

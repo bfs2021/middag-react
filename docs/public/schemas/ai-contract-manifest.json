@@ -57,15 +57,15 @@
     {
       "id": "navigation",
       "title": "Navigation Contract",
-      "url": "https://ui-docs.middag.io/schemas/navigation.json",
-      "description": "Sidebar navigation tree contract: NavigationNode, NavigationTreePayload, NavigationEntityType (11 entity types with auto-icon resolution).",
+      "url": "https://ui-docs.middag.io/schemas/shared-props.json",
+      "description": "Sidebar navigation tree contract: NavigationTree and NavigationNode, the navigation slot of the shared props. entityType is an open string resolved through registerEntityIcon().",
       "x-ai-purpose": "Understand the sidebar navigation structure. Use entityType for automatic icon resolution instead of hardcoding icon names."
     },
     {
       "id": "shared-props",
       "title": "Shared Props Contract",
       "url": "https://ui-docs.middag.io/schemas/shared-props.json",
-      "description": "Inertia shared props sent on every request: auth (user + capabilities), theme (strings + appearance), flash (toast messages), scope (extension data), locale, version.",
+      "description": "Inertia shared props sent on every request: auth (user + capabilities), theme (strings + appearance), flash (success/error/info/warning messages), errors, csrf_token, locale, scope (extension data), navigation.",
       "x-ai-purpose": "Global data available on every page. AI agents can assume these props exist when generating pages. Auth capabilities drive <Can>/<Cannot> gates."
     },
     {
@@ -1196,8 +1196,8 @@
     {
       "id": "AP-09",
       "name": "Missing version field",
-      "description": "Omitting version: '1' from the PageContract. The Zod validation will reject it.",
-      "fix": "Always set version: '1' at the top level of every PageContract."
+      "description": "Omitting version: '2' from the PageContract. The Zod validation will reject it.",
+      "fix": "Always set version: '2' at the top level of every PageContract."
     },
     {
       "id": "AP-10",
@@ -1231,7 +1231,7 @@
       "description": "A dashboard page showing course metrics (enrollment, completion) and a table of enrolled students.",
       "platform": "Moodle",
       "contract": {
-        "version": "1",
+        "version": "2",
         "shell": "product",
         "page": {
           "key": "course-overview",
@@ -1394,7 +1394,7 @@
       "platform": "WordPress",
       "registrationNote": "WordPress IIFE: import { FormPanelBlock, DetailPanelBlock, registerBlock } individually.",
       "contract": {
-        "version": "1",
+        "version": "2",
         "shell": "product",
         "page": {
           "key": "plugin-settings",
@@ -1552,7 +1552,7 @@
       "title": "Kanban board with drag-and-drop",
       "description": "A task management kanban board with 3 columns and move endpoint.",
       "contract": {
-        "version": "1",
+        "version": "2",
         "shell": "product",
         "page": {
           "key": "project-tasks",
@@ -1650,7 +1650,7 @@
       "title": "Chart panel with multiple series",
       "description": "Analytics dashboard with a multi-series bar/line chart showing revenue and user trends.",
       "contract": {
-        "version": "1",
+        "version": "2",
         "shell": "product",
         "page": {
           "key": "analytics",

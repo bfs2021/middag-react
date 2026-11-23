@@ -11,7 +11,7 @@ import type { SharedProps } from "@/contracts/shared-props";
 
 interface AuthContextValue {
   /** Authenticated user, or null on guest pages (no `auth` shared prop). */
-  user: { id: number; name: string; email: string; avatarUrl?: string } | null;
+  user: { id: string; name: string; email?: string; avatarUrl?: string } | null;
   capabilities: string[];
   can: (capability: string) => boolean;
   /** True when an authenticated user is present. False for guests. */
