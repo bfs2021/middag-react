@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.2.0](https://github.com/middag-io/middag-react/compare/ui-contracts-v0.1.0...ui-contracts-v0.2.0) (2026-11-23)
+
+
+### Features
+
+* **ui-contracts:** accept richtext, time, autocomplete and translatable or null section labels ([25f8d72](https://github.com/middag-io/middag-react/commit/25f8d72a236659a565fadbf51f49d566222176b3))
+
+
+### Bug Fixes
+
+* **ui-contracts:** degrade unknown enum values to the first member ([1b3647f](https://github.com/middag-io/middag-react/commit/1b3647fff79fbbaf54c43fc895207eeb0d99e46e))
+* **ui-contracts:** mirror the released middag-php-ui v1.11.0 schemas ([4b01e47](https://github.com/middag-io/middag-react/commit/4b01e47011470c81b8eb83b8c46c2fff196a442c))
+* **ui-contracts:** replace the enum catch with open enums for presentational values ([65cdc00](https://github.com/middag-io/middag-react/commit/65cdc0052facc85f0bc77000a86d67a7820d278e))
+
 ## 0.1.0 (2026-11-19)
 
 
