@@ -1,11 +1,13 @@
 "use client";
 
 import { useMemo, useState, type ReactElement, type ReactNode } from "react";
+import type { TFunction } from "i18next";
 
 import { buildFormSchema } from "@/base/form/form-schema-builder";
 import { isFieldVisible } from "@/base/form/form-utils";
 import { FormField } from "@/base/form/FormField";
 import type { FormFieldNode, FormSchemaNode } from "@/contracts/block-data";
+import { renderLabel } from "@/i18n/render-label";
 import { useTranslation } from "@/i18n/useTranslation";
 import { cn } from "@/lib/utils";
 import { Button } from "@/primitives/reui/button";
@@ -44,6 +46,7 @@ function renderNodes(
   values: Values,
   errors: Record<string, string>,
   setValue: (key: string, value: unknown) => void,
+  t: TFunction,
 ): ReactNode {
   return nodes.map((node, index) => {
     switch (node.kind) {
@@ -66,22 +69,26 @@ function renderNodes(
             {node.label}
           </h4>
         );
-      case "section":
+      case "section": {
+        const sectionLabel = renderLabel(node.label, t);
         return (
           <section key={node.id} className="space-y-3">
-            <div className="text-muted-foreground text-[11px] font-medium tracking-[0.04em] uppercase">
-              {node.label}
-            </div>
-            {renderNodes(node.children, values, errors, setValue)}
+            {sectionLabel && (
+              <div className="text-muted-foreground text-[11px] font-medium tracking-[0.04em] uppercase">
+                {sectionLabel}
+              </div>
+            )}
+            {renderNodes(node.children, values, errors, setValue, t)}
           </section>
         );
+      }
       case "group":
         return (
           <div
             key={node.id}
             className={cn(node.columns === 2 ? "grid grid-cols-2 gap-3" : "space-y-3")}
           >
-            {renderNodes(node.children, values, errors, setValue)}
+            {renderNodes(node.children, values, errors, setValue, t)}
           </div>
         );
       default:
@@ -217,7 +224,7 @@ export function InlineEditablePanel(): ReactElement | null {
             </div>
           ) : (
             <div className="space-y-3.5">
-              {renderNodes(descriptor.schema, values, errors, setValue)}
+              {renderNodes(descriptor.schema, values, errors, setValue, t)}
             </div>
           )}
         </div>
