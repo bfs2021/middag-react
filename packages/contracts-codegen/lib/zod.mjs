@@ -152,7 +152,9 @@ export function emitZod({ defs, externals = {}, typesModule, aliases = {} }) {
     if (node.const !== undefined) return `z.literal(${JSON.stringify(node.const)})`;
     if (Array.isArray(node.enum)) {
       if (node.enum.length > 0 && node.enum.every((e) => typeof e === "string")) {
-        return `z.enum([${node.enum.map((e) => JSON.stringify(e)).join(", ")}])`;
+        // An unknown value degrades to the first member instead of failing the
+        // whole payload, so a newer producer does not break an older renderer.
+        return `z.enum([${node.enum.map((e) => JSON.stringify(e)).join(", ")}]).catch(${JSON.stringify(node.enum[0])})`;
       }
       return union(node.enum.map((e) => `z.literal(${JSON.stringify(e)})`));
     }

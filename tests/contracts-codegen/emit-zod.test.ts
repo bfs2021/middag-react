@@ -6,6 +6,11 @@ const emit = (defs: Record<string, unknown>, extra: Partial<Parameters<typeof em
   emitZod({ defs, typesModule: "./types.js", ...extra });
 
 describe("emitZod", () => {
+  it("degrades an unknown string enum value to the first member", () => {
+    const { body } = emit({ Level: { enum: ["info", "warn"] } });
+    expect(body).toContain('z.enum(["info", "warn"]).catch("info")');
+  });
+
   it("declares dependencies before dependents", () => {
     const { order } = emit({
       Page: { type: "object", properties: { label: { $ref: "#/$defs/Label" } } },
