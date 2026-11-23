@@ -109,3 +109,18 @@ describe("FilterBar", () => {
     expect(onApply).not.toHaveBeenCalled();
   });
 });
+
+describe("FilterBar unknown filter type", () => {
+  afterEach(() => {
+    cleanup();
+  });
+
+  it("skips a filter type it cannot draw instead of showing a bare label", async () => {
+    await open(
+      [{ key: "weird", label: "Weird", type: "hologram" as FilterDef["type"] }, ...MULTI],
+      {},
+    );
+    expect(screen.queryByText("Weird")).toBeNull();
+    expect(screen.getByText(MULTI[0]!.label)).toBeDefined();
+  });
+});

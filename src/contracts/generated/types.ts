@@ -42,9 +42,10 @@ export type ActionIntent =
   | "warning"
   | "info"
   | "link"
-  | "ghost";
-export type ThemeMode = "light" | "dark" | "system";
-export type NotificationLevel = "success" | "info" | "warning" | "error";
+  | "ghost"
+  | (string & {});
+export type ThemeMode = "light" | "dark" | "system" | (string & {});
+export type NotificationLevel = "success" | "info" | "warning" | "error" | (string & {});
 export type FragmentKind =
   | "block"
   | "region"
@@ -73,7 +74,8 @@ export type ValueFormat =
   | "number"
   | "currency"
   | "boolean"
-  | "badge";
+  | "badge"
+  | (string & {});
 export type ColumnVariant =
   | "text"
   | "status"
@@ -85,8 +87,16 @@ export type ColumnVariant =
   | "html"
   | "link_group"
   | "annotated"
-  | "progress";
-export type FilterType = "select" | "text" | "date" | "date_range" | "boolean" | "number_range";
+  | "progress"
+  | (string & {});
+export type FilterType =
+  | "select"
+  | "text"
+  | "date"
+  | "date_range"
+  | "boolean"
+  | "number_range"
+  | (string & {});
 export type FieldConstraints =
   | {
       required?: true;
@@ -318,7 +328,7 @@ export type OptionFieldProps = FieldPropsBase & {
 };
 export type RegionUpdateMode = "replace" | "append" | "prepend" | "remove" | "update";
 export type ActionTargetKind = "link" | "route" | "request" | "panel";
-export type ChartType = "line" | "bar" | "area";
+export type ChartType = "line" | "bar" | "area" | (string & {});
 export type ConditionOperator =
   | "eq"
   | "neq"
@@ -360,7 +370,8 @@ export type FieldType =
   | "tags"
   | "hidden"
   | "static"
-  | "header";
+  | "header"
+  | (string & {});
 export type FormComponent =
   | "text"
   | "textarea"
@@ -395,7 +406,8 @@ export type FormComponent =
   | "header"
   | "richtext"
   | "time"
-  | "autocomplete";
+  | "autocomplete"
+  | (string & {});
 export type RenderTarget = "html" | "props";
 
 export interface PageContract {

@@ -13,10 +13,10 @@ describe("FormComponentSchema", () => {
     expect(FormComponentSchema.safeParse(component).success).toBe(true);
   });
 
-  it("degrades an unknown component to the first member", () => {
+  it("accepts an unknown component and keeps its raw value", () => {
     const parsed = FormComponentSchema.safeParse("wysiwyg");
     expect(parsed.success).toBe(true);
-    expect(parsed.data).toBe("text");
+    expect(parsed.data).toBe("wysiwyg");
   });
 });
 

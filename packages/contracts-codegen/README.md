@@ -25,6 +25,7 @@ src/generated/          output: types.ts, schemas.ts, meta.ts, index.ts
 | `producer`         | Composer package of the producer                                       |
 | `externals`        | `$ref` prefix of another contracts package -> module to import from    |
 | `aliases`          | extra zod export -> `$def`                                             |
+| `openEnums`        | `$def` names of string enums that also accept any other string (zod `z.union([z.enum([...]), z.string()])`, TS union plus `string & {}`); all other enums stay strict. Only for presentational enums: never for discriminators or control enums |
 | `relaxBareObjects` | render a bare `{ "type": "object" }` as a string-keyed record          |
 | `disjointWith`     | contracts package directories whose `$def` names must not be redefined |
 | `commands`         | regenerate and check commands printed in the generated header          |

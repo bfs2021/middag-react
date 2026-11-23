@@ -8,6 +8,7 @@
 import { useState, type ReactElement } from "react";
 
 import { ConfirmationDialog } from "@/base/partials/ConfirmationDialog";
+import { isDangerIntent } from "@/base/utils/action-intent";
 import type { ExecutableAction } from "@/contracts/block-data";
 import { renderLabel } from "@/i18n/render-label";
 import { useTranslation } from "@/i18n/useTranslation";
@@ -72,7 +73,7 @@ export function ActionBar({
           <Button
             key={action.id}
             data-testid={actionTestId(action.id)}
-            variant={action.intent === "danger" ? "destructive" : "outline"}
+            variant={isDangerIntent(action.intent) ? "destructive" : "outline"}
             size="sm"
             onClick={() => handleAction(action)}
             disabled={isLoading}
@@ -94,7 +95,7 @@ export function ActionBar({
           message={bulkMessage}
           intent={
             confirmAction.confirmation?.intent ??
-            (confirmAction.intent === "danger" ? "danger" : undefined)
+            (isDangerIntent(confirmAction.intent) ? "danger" : undefined)
           }
           confirmLabel={
             confirmAction.confirmation?.confirmLabel

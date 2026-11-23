@@ -20,6 +20,7 @@ import { router } from "@inertiajs/core";
 import { Link } from "@inertiajs/react";
 
 import { ConfirmationDialog } from "@/base/partials/ConfirmationDialog";
+import { isDangerIntent } from "@/base/utils/action-intent";
 import { getIcon, hasIcon } from "@/base/utils/icons";
 import type { PageAction } from "@/contracts/page-contract";
 import { renderLabel } from "@/i18n/render-label";
@@ -44,7 +45,8 @@ export function PageActionButton({ action }: { action: PageAction }): ReactEleme
   const [isWaiting, setIsWaiting] = useState(false);
 
   const target = resolveActionTarget(action);
-  const variant: ButtonVariant = VARIANT_MAP[action.intent] ?? "outline";
+  const variant: ButtonVariant =
+    VARIANT_MAP[action.intent] ?? (isDangerIntent(action.intent) ? "destructive" : "outline");
   const isNavigation = target.kind === "link";
   // External loading (server-driven via action.loading) merges with local in-flight state
   const effectiveLoading = isLoading || action.loading === true;

@@ -12,6 +12,7 @@ import { router } from "@inertiajs/core";
 import type { TFunction } from "i18next";
 
 import { ConfirmationDialog } from "@/base/partials/ConfirmationDialog";
+import { isDangerIntent } from "@/base/utils/action-intent";
 import { getIcon } from "@/base/utils/icons";
 import type {
   DetailPanelBlockData,
@@ -112,7 +113,7 @@ function SectionActionButton({ action }: { action: ExecutableAction }): ReactEle
   return (
     <>
       <Button
-        variant={action.intent === "danger" ? "destructive" : "outline"}
+        variant={isDangerIntent(action.intent) ? "destructive" : "outline"}
         size="sm"
         onClick={handleClick}
         disabled={action.disabled}

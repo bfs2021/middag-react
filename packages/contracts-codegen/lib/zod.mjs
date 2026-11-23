@@ -68,6 +68,26 @@ function primitive(type) {
   }
 }
 
+/** An open enum must be a top-level $def that is a non-empty string enum. */
+export function isStringEnum(node) {
+  return (
+    Boolean(node) &&
+    Array.isArray(node.enum) &&
+    node.enum.length > 0 &&
+    node.enum.every((e) => typeof e === "string")
+  );
+}
+
+export function assertOpenEnums(defs, openEnums) {
+  for (const name of openEnums) {
+    if (!isStringEnum(defs[name])) {
+      throw new Error(
+        `contracts-codegen: openEnums entry "${name}" is not a top-level string enum $def`,
+      );
+    }
+  }
+}
+
 function union(members) {
   if (members.length === 1) return members[0];
   return `z.union([${members.join(", ")}])`;
@@ -79,9 +99,11 @@ function union(members) {
  * @param {Record<string, string>} [options.externals] $ref prefix -> module
  * @param {string} options.typesModule               module of the generated types (for recursive annotations)
  * @param {Record<string, string>} [options.aliases]  extra export name -> def name
+ * @param {string[]} [options.openEnums]              top-level string-enum $defs that also accept any other string
  * @returns {{ body: string, order: string[], recursive: string[] }}
  */
-export function emitZod({ defs, externals = {}, typesModule, aliases = {} }) {
+export function emitZod({ defs, externals = {}, typesModule, aliases = {}, openEnums = [] }) {
+  assertOpenEnums(defs, openEnums);
   const names = Object.keys(defs);
   const externalImports = new Map();
 
@@ -152,9 +174,7 @@ export function emitZod({ defs, externals = {}, typesModule, aliases = {} }) {
     if (node.const !== undefined) return `z.literal(${JSON.stringify(node.const)})`;
     if (Array.isArray(node.enum)) {
       if (node.enum.length > 0 && node.enum.every((e) => typeof e === "string")) {
-        // An unknown value degrades to the first member instead of failing the
-        // whole payload, so a newer producer does not break an older renderer.
-        return `z.enum([${node.enum.map((e) => JSON.stringify(e)).join(", ")}]).catch(${JSON.stringify(node.enum[0])})`;
+        return `z.enum([${node.enum.map((e) => JSON.stringify(e)).join(", ")}])`;
       }
       return union(node.enum.map((e) => `z.literal(${JSON.stringify(e)})`));
     }
@@ -218,7 +238,9 @@ export function emitZod({ defs, externals = {}, typesModule, aliases = {} }) {
   };
 
   const decls = order.map((name) => {
-    const body = expr(defs[name], name, 0);
+    const body = openEnums.includes(name)
+      ? `z.union([${expr(defs[name], name, 0)}, z.string()])`
+      : expr(defs[name], name, 0);
     return recursive.has(name)
       ? `export const ${name}Schema: z.ZodType<${name}> = ${body};`
       : `export const ${name}Schema = ${body};`;
