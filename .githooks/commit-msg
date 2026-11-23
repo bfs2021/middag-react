@@ -3,13 +3,13 @@
 
 MSG=$(head -1 "$1")
 
-# Pattern: type(scope): description  OR  type: description
-PATTERN="^(feat|fix|chore|docs|style|refactor|perf|test|build|ci|revert)(\([a-z0-9_-]+\))?: .{3,}"
+# Pattern: type(scope): description  OR  type: description; a "!" before the colon marks a breaking change
+PATTERN="^(feat|fix|chore|docs|style|refactor|perf|test|build|ci|revert)(\([a-z0-9_-]+\))?!?: .{3,}"
 
 if ! echo "$MSG" | grep -qE "$PATTERN"; then
     echo "[commit-msg] BLOCKED: Message must follow Conventional Commits."
     echo ""
-    echo "  Format: type(scope): description"
+    echo "  Format: type(scope): description  (type(scope)!: for a breaking change)"
     echo "  Types:  feat, fix, chore, docs, style, refactor, perf, test, build, ci, revert"
     echo ""
     echo "  Examples:"
