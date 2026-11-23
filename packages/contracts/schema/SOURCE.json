@@ -1,10 +1,10 @@
 {
   "repository": "middag-io/middag-php-ui",
-  "ref": "exec-code/form-nodes-additive",
-  "sha": "1b0575287acbb1c6f3717140d1adb153e8239aaf",
+  "ref": "v1.11.0",
+  "sha": "f3f500f1208aad0f634e1108a3eb4d2cdeab0358",
   "path": "schema",
   "files": {
-    "page-contract.json": "470f3c1f32b70cfbaa16765b60d4685cddef022165c2ddc8089d833f2237ccc3",
-    "fragment.json": "c892a2d6a638bebd28a228043e7417cf7c7d6f0b2ebe7cd2fffea472617fd163"
+    "page-contract.json": "55113990204e5b971290208619042097c965cf0d72362d041278b13e6fc92e0d",
+    "fragment.json": "69fb8047239ea553e3499e956efcb17f250c23b4473843a2e30f4a489293c2f4"
   }
 }

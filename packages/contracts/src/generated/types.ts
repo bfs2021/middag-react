@@ -7,9 +7,9 @@
  * Regenerate:  npm run gen:contracts
  * Drift gate:  npm run gen:contracts:check
  *
- * @source middag-io/middag-php-ui@exec-code/form-nodes-additive schema/{page-contract.json,fragment.json}
+ * @source middag-io/middag-php-ui@v1.11.0 schema/{page-contract.json,fragment.json}
  * @contract-version 1
- * @hash a1f6512ba27a254e
+ * @hash 63f5044005aa4225
  */
 export type Label = string | Translatable;
 export type ActionTarget =
@@ -124,18 +124,6 @@ export type FormFieldNode =
       props: FieldPropsBase & {
         rows?: number;
       };
-    }
-  | {
-      kind: "field";
-      key: string;
-      component: "richtext" | "time";
-      props: FieldPropsBase;
-    }
-  | {
-      kind: "field";
-      key: string;
-      component: "autocomplete";
-      props: OptionFieldProps;
     }
   | {
       kind: "field";
@@ -309,6 +297,18 @@ export type FormFieldNode =
       props: {
         label: string;
       };
+    }
+  | {
+      kind: "field";
+      key: string;
+      component: "richtext" | "time";
+      props: FieldPropsBase;
+    }
+  | {
+      kind: "field";
+      key: string;
+      component: "autocomplete";
+      props: OptionFieldProps;
     };
 export type OptionFieldProps = FieldPropsBase & {
   options?: {
@@ -364,7 +364,6 @@ export type FieldType =
 export type FormComponent =
   | "text"
   | "textarea"
-  | "richtext"
   | "password"
   | "otp"
   | "email"
@@ -380,11 +379,9 @@ export type FormComponent =
   | "switch"
   | "date"
   | "datetime"
-  | "time"
   | "duration"
   | "file"
   | "entity_picker"
-  | "autocomplete"
   | "phone"
   | "document"
   | "currency"
@@ -395,7 +392,10 @@ export type FormComponent =
   | "date_range"
   | "hidden"
   | "static"
-  | "header";
+  | "header"
+  | "richtext"
+  | "time"
+  | "autocomplete";
 export type RenderTarget = "html" | "props";
 
 export interface PageContract {
