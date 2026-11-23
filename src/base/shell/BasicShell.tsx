@@ -53,6 +53,11 @@ import { Toaster } from "@/primitives/reui/sonner";
 
 const EMPTY_NAV: NavigationTree = { tree: [], footer: [], activeKey: "" };
 
+/** An absolute http(s) URL leaves the app, so Inertia must not handle it. */
+function isExternalHref(href: string): boolean {
+  return /^https?:\/\//i.test(href);
+}
+
 /** A single navigation leaf — a link (or label-only node) inside the menu. */
 function NavLeaf({ node, activeKey }: { node: NavigationNode; activeKey: string }): ReactElement {
   const { t } = useTranslation();
@@ -62,7 +67,16 @@ function NavLeaf({ node, activeKey }: { node: NavigationNode; activeKey: string 
   return (
     <SidebarMenuItem>
       <SidebarMenuButton asChild={!!node.href} isActive={isActive}>
-        {node.href ? (
+        {node.href && (node.target || isExternalHref(node.href)) ? (
+          <a
+            href={node.href}
+            target={node.target}
+            rel="noopener noreferrer"
+            aria-current={isActive ? "page" : undefined}
+          >
+            <span className="truncate">{label}</span>
+          </a>
+        ) : node.href ? (
           <Link href={node.href} prefetch="hover" aria-current={isActive ? "page" : undefined}>
             <span className="truncate">{label}</span>
           </Link>
