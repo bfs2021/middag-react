@@ -10,7 +10,6 @@
 
 ### Bug Fixes
 
-* **ui-contracts:** degrade unknown enum values to the first member ([1b3647f](https://github.com/middag-io/middag-react/commit/1b3647fff79fbbaf54c43fc895207eeb0d99e46e))
 * **ui-contracts:** mirror the released middag-php-ui v1.11.0 schemas ([4b01e47](https://github.com/middag-io/middag-react/commit/4b01e47011470c81b8eb83b8c46c2fff196a442c))
 * **ui-contracts:** replace the enum catch with open enums for presentational values ([65cdc00](https://github.com/middag-io/middag-react/commit/65cdc0052facc85f0bc77000a86d67a7820d278e))
 
@@ -18,6 +17,10 @@
 ### Documentation
 
 * add consumer impact to the changelog ([534ed21](https://github.com/middag-io/middag-react/commit/534ed2172b474421190ec7dbdf301055ae627b56))
+
+### Consumer impact
+
+An unknown `ActionIntent` renders with danger styling, an unknown theme preference resolves like `system`, and `FilterBar` skips filters of an unknown type. The contracts mirror and the new form components come from `ui-contracts` 0.2.0.
 
 ## [0.46.1](https://github.com/middag-io/middag-react/compare/v0.46.0...v0.46.1) (2026-11-19)
 
