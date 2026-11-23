@@ -152,17 +152,6 @@ export {
   type PageContractValidationError,
 } from "@/contracts/page-contract-schema";
 
-// ── Contracts: Connectors ───────────────────────────────────────────────────
-
-export type {
-  ConnectorStatus,
-  CredentialField,
-  HealthCheckResult,
-  ConnectorListItem,
-  ConnectorDetail,
-  ConnectorTypeInfo,
-} from "@/contracts/connectors";
-
 // ── App Core ────────────────────────────────────────────────────────────────
 
 export { ContractPage } from "@/engine/ContractPage";

@@ -75,8 +75,6 @@ import type {
   MetricCardBlockData,
   FormCondition,
   ActionConfirmation,
-  ConnectorStatus,
-  ConnectorDetail,
   PageAction,
   Breadcrumb,
   PageContractValidationError,

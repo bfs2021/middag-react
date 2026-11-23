@@ -53,14 +53,6 @@
       "usage": "Understand global data available on every page via usePage<SharedProps>().props."
     },
     {
-      "id": "connectors",
-      "title": "Connectors Contract",
-      "description": "Connector management types (ConnectorStatus, CredentialField, ConnectorDetail). Separate subsystem.",
-      "path": "connectors.json",
-      "url": "https://ui-docs.middag.io/schemas/connectors.json",
-      "usage": "Understand connector data shapes when building connector management pages."
-    },
-    {
       "id": "ai-contract-manifest",
       "title": "AI Contract Manifest",
       "description": "Machine-readable manifest for LLMs and AI agents. Describes the full contract-driven rendering system with generation rules, validation, examples, and anti-patterns.",

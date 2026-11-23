@@ -67,13 +67,6 @@
       "url": "https://ui-docs.middag.io/schemas/shared-props.json",
       "description": "Inertia shared props sent on every request: auth (user + capabilities), theme (strings + appearance), flash (success/error/info/warning messages), errors, csrf_token, locale, scope (extension data), navigation.",
       "x-ai-purpose": "Global data available on every page. AI agents can assume these props exist when generating pages. Auth capabilities drive <Can>/<Cannot> gates."
-    },
-    {
-      "id": "connectors",
-      "title": "Connectors Contract",
-      "url": "https://ui-docs.middag.io/schemas/connectors.json",
-      "description": "Connector management types: ConnectorStatus (5 lifecycle states), CredentialField (form schema), HealthCheckResult, ConnectorListItem, ConnectorDetail, ConnectorTypeInfo.",
-      "x-ai-purpose": "Use when building connector management pages. ConnectorStatus maps to semantic colors for badges. CredentialField drives dynamic configuration forms."
     }
   ],
   "systemOverview": {
