@@ -46,7 +46,7 @@ export const ActionTargetSchema = z.union([z.object({
   "kind": z.literal("panel"),
 })]);
 
-export const ActionIntentSchema = z.enum(["primary", "secondary", "danger", "success", "warning", "info", "link", "ghost"]);
+export const ActionIntentSchema = z.union([z.enum(["primary", "secondary", "danger", "success", "warning", "info", "link", "ghost"]), z.string()]);
 
 export const ConfirmationSchema = z.object({
   "title": LabelSchema,
@@ -103,7 +103,7 @@ export const LayoutDescriptorSchema = z.object({
   "meta": z.record(z.string(), z.unknown()).optional(),
 });
 
-export const ThemeModeSchema = z.enum(["light", "dark", "system"]);
+export const ThemeModeSchema = z.union([z.enum(["light", "dark", "system"]), z.string()]);
 
 export const UserPreferencesSchema = z.object({
   "theme": ThemeModeSchema,
@@ -135,7 +135,7 @@ export const PageResourcesSchema = z.object({
   "branding": BrandingSchema.optional(),
 });
 
-export const NotificationLevelSchema = z.enum(["success", "info", "warning", "error"]);
+export const NotificationLevelSchema = z.union([z.enum(["success", "info", "warning", "error"]), z.string()]);
 
 export const NotificationSchema = z.object({
   "level": NotificationLevelSchema,
@@ -199,9 +199,9 @@ export const NavigationNodeSchema: z.ZodType<NavigationNode> = z.object({
   "children": z.array(z.lazy(() => NavigationNodeSchema)).optional(),
 });
 
-export const ValueFormatSchema = z.enum(["text", "date", "datetime", "time", "number", "currency", "boolean", "badge"]);
+export const ValueFormatSchema = z.union([z.enum(["text", "date", "datetime", "time", "number", "currency", "boolean", "badge"]), z.string()]);
 
-export const ColumnVariantSchema = z.enum(["text", "status", "badge", "boolean", "timestamp", "link", "rich_status", "html", "link_group", "annotated", "progress"]);
+export const ColumnVariantSchema = z.union([z.enum(["text", "status", "badge", "boolean", "timestamp", "link", "rich_status", "html", "link_group", "annotated", "progress"]), z.string()]);
 
 export const ColumnSchema = z.object({
   "key": z.string(),
@@ -214,7 +214,7 @@ export const ColumnSchema = z.object({
   "variant": ColumnVariantSchema.optional(),
 });
 
-export const FilterTypeSchema = z.enum(["select", "text", "date", "date_range", "boolean", "number_range"]);
+export const FilterTypeSchema = z.union([z.enum(["select", "text", "date", "date_range", "boolean", "number_range"]), z.string()]);
 
 export const FilterDefinitionSchema = z.object({
   "key": z.string(),
@@ -551,13 +551,13 @@ export const ActionResultSchema = z.object({
 
 export const ActionTargetKindSchema = z.enum(["link", "route", "request", "panel"]);
 
-export const ChartTypeSchema = z.enum(["line", "bar", "area"]);
+export const ChartTypeSchema = z.union([z.enum(["line", "bar", "area"]), z.string()]);
 
 export const ConditionOperatorSchema = z.enum(["eq", "neq", "in", "not_in", "gt", "gte", "lt", "lte", "truthy", "falsy", "exists", "empty", "matches"]);
 
-export const FieldTypeSchema = z.enum(["text", "textarea", "richtext", "password", "otp", "email", "url", "int", "float", "slider", "select", "multiselect", "native_select", "radio", "checkbox", "switch", "date", "datetime", "time", "duration", "file", "entity_picker", "autocomplete", "tags", "hidden", "static", "header"]);
+export const FieldTypeSchema = z.union([z.enum(["text", "textarea", "richtext", "password", "otp", "email", "url", "int", "float", "slider", "select", "multiselect", "native_select", "radio", "checkbox", "switch", "date", "datetime", "time", "duration", "file", "entity_picker", "autocomplete", "tags", "hidden", "static", "header"]), z.string()]);
 
-export const FormComponentSchema = z.enum(["text", "textarea", "password", "otp", "email", "url", "int", "float", "slider", "select", "native_select", "multiselect", "radio", "checkbox", "switch", "date", "datetime", "duration", "file", "entity_picker", "phone", "document", "currency", "color", "slug", "tags", "rating", "date_range", "hidden", "static", "header", "richtext", "time", "autocomplete"]);
+export const FormComponentSchema = z.union([z.enum(["text", "textarea", "password", "otp", "email", "url", "int", "float", "slider", "select", "native_select", "multiselect", "radio", "checkbox", "switch", "date", "datetime", "duration", "file", "entity_picker", "phone", "document", "currency", "color", "slug", "tags", "rating", "date_range", "hidden", "static", "header", "richtext", "time", "autocomplete"]), z.string()]);
 
 export const RenderTargetSchema = z.enum(["html", "props"]);
 

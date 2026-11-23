@@ -9,6 +9,17 @@
     "pageContractSchemaCore": "PageContract",
     "fragmentSchemaCore": "Fragment"
   },
+  "openEnums": [
+    "ActionIntent",
+    "NotificationLevel",
+    "ThemeMode",
+    "ValueFormat",
+    "ColumnVariant",
+    "FilterType",
+    "ChartType",
+    "FormComponent",
+    "FieldType"
+  ],
   "commands": {
     "generate": "npm run gen:contracts",
     "check": "npm run gen:contracts:check"

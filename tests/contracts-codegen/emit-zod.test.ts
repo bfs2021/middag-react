@@ -6,6 +6,34 @@ const emit = (defs: Record<string, unknown>, extra: Partial<Parameters<typeof em
   emitZod({ defs, typesModule: "./types.js", ...extra });
 
 describe("emitZod", () => {
+  it("emits a strict enum, with no catch, by default", () => {
+    const { body } = emit({ Level: { enum: ["info", "warn"] } });
+    expect(body).toContain('z.enum(["info", "warn"])');
+    expect(body).not.toContain(".catch(");
+  });
+
+  it("emits a union with z.string() for an open enum", () => {
+    const { body } = emit({ Level: { enum: ["info", "warn"] } }, { openEnums: ["Level"] });
+    expect(body).toContain('z.union([z.enum(["info", "warn"]), z.string()])');
+    expect(body).not.toContain(".catch(");
+  });
+
+  it("keeps an inline enum strict even when its owner is open", () => {
+    const { body } = emit(
+      {
+        Level: { enum: ["info"] },
+        Box: { type: "object", properties: { kind: { enum: ["a", "b"] } } },
+      },
+      { openEnums: ["Level"] },
+    );
+    expect(body).toContain('"kind": z.enum(["a", "b"]).optional()');
+  });
+
+  it("rejects an open enum that is not a top-level string enum", () => {
+    expect(() => emit({ Box: { type: "object" } }, { openEnums: ["Box"] })).toThrow(/openEnums/);
+    expect(() => emit({}, { openEnums: ["Missing"] })).toThrow(/openEnums/);
+  });
+
   it("declares dependencies before dependents", () => {
     const { order } = emit({
       Page: { type: "object", properties: { label: { $ref: "#/$defs/Label" } } },

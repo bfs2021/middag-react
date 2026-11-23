@@ -1,6 +1,6 @@
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { applyTheme } from "@/base/theme/appearance";
+import { applyTheme, getEffectiveTheme, type Appearance } from "@/base/theme/appearance";
 
 describe("applyTheme — color-scheme sync", () => {
   afterEach(() => {
@@ -28,5 +28,19 @@ describe("applyTheme — color-scheme sync", () => {
     applyTheme("dark");
     expect(root.getAttribute("data-theme")).toBe("dark");
     document.body.removeChild(root);
+  });
+});
+
+describe("getEffectiveTheme", () => {
+  it("passes light and dark through", () => {
+    expect(getEffectiveTheme("light")).toBe("light");
+    expect(getEffectiveTheme("dark")).toBe("dark");
+  });
+
+  it("resolves an unknown preference like system, never returning it", () => {
+    vi.stubGlobal("matchMedia", () => ({ matches: false }));
+    const result = getEffectiveTheme("sepia" as Appearance);
+    vi.unstubAllGlobals();
+    expect(["light", "dark"]).toContain(result);
   });
 });

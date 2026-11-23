@@ -14,6 +14,7 @@ import { DataTable } from "@/base/partials/DataTable";
 import type { DataTableParamChange } from "@/base/partials/DataTable/types";
 import { useEditablePanel } from "@/base/shell/partials/EditablePanelContext";
 import { useInspector } from "@/base/shell/partials/InspectorContext";
+import { isDangerIntent } from "@/base/utils/action-intent";
 import { evaluateCondition } from "@/base/utils/conditions";
 import { interpolate } from "@/base/utils/interpolate";
 import type { ActionConfirmation, DenseTableBlockData } from "@/contracts/block-data";
@@ -234,7 +235,7 @@ export function DenseTableBlock({ block }: BlockProps<DenseTableBlockData>): Rea
       id: action.id,
       label: renderLabel(action.label, t),
       icon: action.icon,
-      intent: action.intent === "danger" ? ("danger" as const) : ("default" as const),
+      intent: isDangerIntent(action.intent) ? ("danger" as const) : ("default" as const),
       variant: action.variant,
       onAction: (row: Record<string, unknown>) => {
         const resolvedHref = interpolate(target.url, row);

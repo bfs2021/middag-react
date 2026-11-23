@@ -22,6 +22,17 @@ import {
 } from "@/primitives/reui/select";
 import { Separator } from "@/primitives/reui/separator";
 
+const RENDERABLE_FILTER_TYPES: ReadonlySet<string> = new Set([
+  "select",
+  "multiselect",
+  "date_range",
+]);
+
+/** FilterType is an open enum: a type this renderer cannot draw is skipped, not shown as a bare label. */
+function isRenderableFilter(filter: { type: string }): boolean {
+  return RENDERABLE_FILTER_TYPES.has(filter.type);
+}
+
 export interface FilterDef {
   key: string;
   label: string;
@@ -104,7 +115,7 @@ export function FilterBar({
           align="start"
         >
           <p className="text-sm font-semibold">{t("middag.ui.filter.title")}</p>
-          {filters.map((filter) => (
+          {filters.filter(isRenderableFilter).map((filter) => (
             <div key={filter.key} className="space-y-1.5">
               <label className="text-muted-foreground text-xs font-medium">{filter.label}</label>
               {filter.type === "select" && filter.options && (

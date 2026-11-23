@@ -15,6 +15,8 @@ export interface ContractsConfig {
   externals: Record<string, string>;
   /** Extra zod export name -> `$def` name. */
   aliases: Record<string, string>;
+  /** Top-level string-enum `$defs` that also accept any other string (zod union, TS `string & {}`). */
+  openEnums: string[];
   /** Render bare `{ type: "object" }` as a string-keyed record. */
   relaxBareObjects: boolean;
   /** Contracts packages (directories) whose `$defs` names must not be redefined. */
@@ -90,6 +92,7 @@ export function emitZod(options: {
   externals?: Record<string, string>;
   typesModule: string;
   aliases?: Record<string, string>;
+  openEnums?: string[];
 }): { body: string; order: string[]; recursive: string[] };
 export function mirror(
   packageDir: string,

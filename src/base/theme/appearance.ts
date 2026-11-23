@@ -29,7 +29,8 @@ export type EffectiveTheme = "light" | "dark";
  * 'system' consults host page first, then OS.
  */
 export function getEffectiveTheme(preference: Appearance): EffectiveTheme {
-  if (preference !== "system") return preference;
+  // An unknown preference (ThemeMode is an open enum) resolves like "system".
+  if (preference === "light" || preference === "dark") return preference;
 
   const hostTheme: DetectedTheme = detectHostTheme();
   if (hostTheme === "dark") return "dark";

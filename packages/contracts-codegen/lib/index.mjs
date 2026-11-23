@@ -15,7 +15,7 @@ import { join, relative, resolve } from "node:path";
 import { compile } from "json-schema-to-typescript";
 
 import { compareContracts } from "./compat.mjs";
-import { collectRefs, emitZod, resolveRef } from "./zod.mjs";
+import { assertOpenEnums, collectRefs, emitZod, resolveRef } from "./zod.mjs";
 
 export { compareContracts } from "./compat.mjs";
 export { emitZod } from "./zod.mjs";
@@ -44,6 +44,7 @@ export function loadConfig(packageDir) {
     forbiddenIds: [],
     externals: {},
     aliases: {},
+    openEnums: [],
     relaxBareObjects: false,
     disjointWith: [],
     ...config,
@@ -203,6 +204,14 @@ function header({ summary, config, source, version, hash }) {
 
 async function emitTypes(defs, config, banner) {
   const prepared = structuredClone(defs);
+  assertOpenEnums(prepared, config.openEnums);
+  for (const name of config.openEnums) {
+    // string & {} keeps editor autocomplete on the known members.
+    prepared[name].tsType = [
+      ...prepared[name].enum.map((e) => JSON.stringify(e)),
+      "(string & {})",
+    ].join(" | ");
+  }
   if (config.relaxBareObjects) relaxBareObjects(prepared);
   const imports = new Map();
   const externalized = externalizeForTypes(prepared, config.externals, imports);
@@ -276,6 +285,7 @@ export async function build(packageDir) {
     externals: config.externals,
     typesModule: "./types.js",
     aliases: config.aliases,
+    openEnums: config.openEnums,
   });
 
   return {
