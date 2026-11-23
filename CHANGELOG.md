@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.49.0](https://github.com/middag-io/middag-react/compare/v0.48.0...v0.49.0) (2026-11-23)
+
+
+### ⚠ BREAKING CHANGES
+
+* **contracts:** 'ConnectorStatus', 'CredentialField', 'HealthCheckResult', 'ConnectorListItem', 'ConnectorDetail' and 'ConnectorTypeInfo' are no longer exported, and the 'connectors' schema is gone from the published schemas.
+
+### Features
+
+* **contracts:** drop the connector types from the public API ([e86ec44](https://github.com/middag-io/middag-react/commit/e86ec4474c595842c11a11d6be1a1fb2c7b75478))
+
 ## [0.48.0](https://github.com/middag-io/middag-react/compare/v0.47.0...v0.48.0) (2026-11-23)
 
 
