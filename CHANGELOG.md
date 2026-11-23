@@ -14,7 +14,6 @@
 
 ### Bug Fixes
 
-* **githooks:** accept the breaking-change marker in commit messages ([c0f61e1](https://github.com/middag-io/middag-react/commit/c0f61e1de5721a109b1cc0e0e7b4ed159be1618d))
 * **githooks:** accept the breaking-change marker in commit messages ([0117dbd](https://github.com/middag-io/middag-react/commit/0117dbd1c1a6b56ad6e87ca009f2f61bbebad268))
 
 ## [0.47.0](https://github.com/middag-io/middag-react/compare/v0.46.1...v0.47.0) (2026-11-23)
