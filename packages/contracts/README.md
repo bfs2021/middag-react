@@ -57,11 +57,25 @@ The package versions on its own, not with `@middag-io/react` or the PHP library.
 | Wire change | npm |
 |---|---|
 | breaking (`x-contract-version` goes up) | major (minor while 0.x) |
-| additive: new `$def`, new optional field, new enum value | minor |
+| additive: new `$def`, new optional field, new value of an open enum | minor |
+| new value of a control enum | major (minor while 0.x) |
 | regeneration with no wire change | patch |
 
-A new enum value is additive. A `switch` over a contract enum needs a `default`
-branch.
+### Open and control enums
+
+The producer (`middag-io/ui`) splits its enums in two kinds; the split is in its
+`API-STABILITY.md`, section "Enum evolution on the wire", and in
+`contracts.config.json` (`openEnums`).
+
+| Kind | Enums | Type and schema here | New value |
+|---|---|---|---|
+| Open | `ActionIntent`, `NotificationLevel`, `ThemeMode`, `ValueFormat`, `ColumnVariant`, `FilterType`, `ChartType`, `FormComponent`, `FieldType` | TS union plus `string & {}`; zod `z.union([z.enum([...]), z.string()])`: an unknown value passes | minor |
+| Control | `HttpMethod` (also the form `submitMethod`), `ActionTargetKind`, `FragmentKind`, `RegionUpdateMode`, `RenderTarget`, `ConditionOperator` (the condition `operator`), `documentScope` | strict union; zod `z.enum([...])`: an unknown value fails validation | major |
+
+A consumer of an open enum must handle a value it does not know: give every
+`switch` a `default` branch that degrades the element instead of failing.
+`@middag-io/react` renders an unknown `ActionIntent` in the danger style.
+Discriminators (`kind`, `type`, an inline `component`) stay strict.
 
 The compatibility gate compares a new mirror with the previous one and fails
 when a `$def` or field is removed, a field becomes required or a type narrows
