@@ -426,13 +426,29 @@ export function contractOf(dir, config) {
   return { version: String(files[0].json["x-contract-version"]), defs: mergeDefs(files) };
 }
 
-/** Compare a previous mirror directory with the package's current mirror. */
+/** The `ref` a mirror's SOURCE.json records, or undefined when it has none. */
+function sourceRef(schemaDir) {
+  const path = join(schemaDir, SOURCE_FILE);
+  if (!existsSync(path)) return undefined;
+  try {
+    const ref = JSON.parse(readFileSync(path, "utf8")).ref;
+    return typeof ref === "string" ? ref : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+/**
+ * Compare a previous mirror directory with the package's current mirror. The
+ * producer tags come from each mirror's SOURCE.json (see compareContracts).
+ */
 export function compat(packageDir, baseDir) {
   const config = loadConfig(packageDir);
-  return compareContracts(
-    contractOf(baseDir, config),
-    contractOf(join(packageDir, SCHEMA_DIR), config),
-  );
+  const dir = join(packageDir, SCHEMA_DIR);
+  return compareContracts(contractOf(baseDir, config), contractOf(dir, config), {
+    producerTag: sourceRef(dir),
+    baseTag: sourceRef(baseDir),
+  });
 }
 
 /**
@@ -478,6 +494,7 @@ export async function mirror(packageDir, { repository, ref, path = SCHEMA_DIR, t
   });
   if (unchanged) return { changed: false };
 
+  const baseTag = sourceRef(dir);
   const baseDir = join(dir, ".base");
   rmSync(baseDir, { recursive: true, force: true });
   mkdirSync(baseDir, { recursive: true });
@@ -494,7 +511,10 @@ export async function mirror(packageDir, { repository, ref, path = SCHEMA_DIR, t
   writeSource(packageDir, { repository, ref, sha, path, files: hashes });
   const hasBase = config.schemas.every((name) => existsSync(join(baseDir, name)));
   const report = hasBase
-    ? compareContracts(contractOf(baseDir, config), contractOf(dir, config), { producerTag: ref })
+    ? compareContracts(contractOf(baseDir, config), contractOf(dir, config), {
+        producerTag: ref,
+        baseTag,
+      })
     : null;
   rmSync(baseDir, { recursive: true, force: true });
   return { changed: true, report };

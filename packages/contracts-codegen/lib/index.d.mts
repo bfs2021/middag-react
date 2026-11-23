@@ -86,7 +86,7 @@ export function compat(packageDir: string, baseDir: string): CompatReport;
 export function compareContracts(
   base: Contract,
   next: Contract,
-  options?: { producerTag?: string },
+  options?: { producerTag?: string; baseTag?: string },
 ): CompatReport;
 export function enforcesBreaks(tag: string | undefined): boolean;
 export const ENFORCE_FROM: string;

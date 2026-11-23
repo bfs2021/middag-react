@@ -15,9 +15,12 @@
  * branch: every value the old schema accepted is still accepted.
  *
  * The gate only refuses a break once the producer is at `2.0.0-rc.1` or later
- * (the wire freezes at the first release candidate). Below that, breaks are
- * still reported, but `ok` stays true. A missing or unparseable producer tag is
- * enforced, so a caller that does not pass one keeps the strict behaviour.
+ * (the wire freezes at the first release candidate): when the new tag or the
+ * base mirror's tag is at or past that floor. Below it, breaks are still
+ * reported, but `ok` stays true. A missing or unparseable new tag is enforced,
+ * so a caller that does not pass one keeps the strict behaviour. Only the
+ * prerelease forms `alpha.N`, `beta.N` and `rc.N` parse; any other prerelease
+ * is treated as unparseable.
  */
 
 /** First producer version whose wire breaks are refused. */
@@ -28,6 +31,7 @@ function parseVersion(tag) {
     String(tag ?? "").trim(),
   );
   if (!match) return null;
+  if (match[4] !== undefined && !/^(alpha|beta|rc)\.\d+$/.test(match[4])) return null;
   return {
     core: [Number(match[1]), Number(match[2]), Number(match[3])],
     pre: match[4] ? match[4].split(".") : [],
@@ -75,6 +79,26 @@ function typeSet(node) {
   return null;
 }
 
+/** Keywords that never change which values a schema accepts. */
+const ANNOTATIONS = new Set(["description", "title", "$comment", "examples", "deprecated"]);
+
+/**
+ * `next` is `{anyOf: [..., {$ref: ref}, ...]}` and nothing else that could
+ * reject a value (annotations and `x-*` keys aside), so every value the old
+ * `$ref` accepted still validates. `oneOf` is not a widening: a new branch that
+ * overlaps the old one makes those values fail.
+ */
+function isPureWidening(ref, next) {
+  if (!Array.isArray(next.anyOf)) return false;
+  if (
+    !next.anyOf.some((branch) => branch && branch.$ref === ref && Object.keys(branch).length === 1)
+  )
+    return false;
+  return Object.keys(next).every(
+    (key) => key === "anyOf" || ANNOTATIONS.has(key) || key.startsWith("x-"),
+  );
+}
+
 function compareNode(base, next, path, breaks, additions) {
   if (base === next) return;
   if (base === true || base === undefined) return;
@@ -85,13 +109,9 @@ function compareNode(base, next, path, breaks, additions) {
     return;
   }
 
-  if (base.$ref !== undefined && next.$ref === undefined) {
-    for (const key of ["anyOf", "oneOf"]) {
-      if (Array.isArray(next[key]) && next[key].some((branch) => branch?.$ref === base.$ref)) {
-        additions.push(`${describe(path)}: $ref ${base.$ref} widened to ${key}`);
-        return;
-      }
-    }
+  if (base.$ref !== undefined && next.$ref === undefined && isPureWidening(base.$ref, next)) {
+    additions.push(`${describe(path)}: $ref ${base.$ref} widened to anyOf`);
+    return;
   }
 
   if (base.$ref !== undefined || next.$ref !== undefined) {
@@ -203,8 +223,10 @@ function compareNode(base, next, path, breaks, additions) {
 /**
  * @param {{ version: string, defs: Record<string, unknown> }} base
  * @param {{ version: string, defs: Record<string, unknown> }} next
- * @param {{ producerTag?: string }} [options] release tag of the producer that
- *   made `next`; breaks below {@link ENFORCE_FROM} are reported, not refused
+ * @param {{ producerTag?: string, baseTag?: string }} [options] release tag of
+ *   the producer that made `next`, and the tag the base mirror came from; a
+ *   break is refused when either is at or past {@link ENFORCE_FROM}, or when
+ *   `producerTag` is missing or unparseable
  * @returns {{ level: "none" | "patch" | "additive" | "breaking", versionBumped: boolean, enforced: boolean, ok: boolean, breaks: string[], additions: string[] }}
  */
 export function compareContracts(base, next, options = {}) {
@@ -230,7 +252,9 @@ export function compareContracts(base, next, options = {}) {
       : changed
         ? "patch"
         : "none";
-  const enforced = enforcesBreaks(options.producerTag);
+  const enforced =
+    enforcesBreaks(options.producerTag) ||
+    (options.baseTag !== undefined && enforcesBreaks(options.baseTag));
   return {
     level,
     versionBumped,
