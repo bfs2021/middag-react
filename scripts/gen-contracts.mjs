@@ -104,8 +104,10 @@ if (CHECK) {
   console.log(`gen-contracts --check: OK (hash ${result.hash}, contract v${result.version}).`);
 } else {
   if (MIRROR_AT >= 0) {
-    if (!MIRROR_REF || !/^v\d+\.\d+\.\d+$/.test(MIRROR_REF)) {
-      console.error("gen-contracts: --mirror needs a release tag (vX.Y.Z).");
+    if (!MIRROR_REF || !/^v\d+\.\d+\.\d+(-(alpha|beta|rc)\.\d+)?$/.test(MIRROR_REF)) {
+      console.error(
+        "gen-contracts: --mirror needs a release tag (vX.Y.Z or vX.Y.Z-alpha|beta|rc.N).",
+      );
       process.exit(1);
     }
     const output = (key, value) => {
@@ -129,6 +131,8 @@ if (CHECK) {
         `compat: ${report.level}${report.versionBumped ? " (x-contract-version bumped)" : ""}`,
       );
       for (const line of report.breaks) console.log(`  breaking: ${line}`);
+      if (report.breaks.length && !report.enforced)
+        console.log("  (reported only: the producer tag is below the rc gate)");
       for (const line of report.additions) console.log(`  additive: ${line}`);
     }
   }
