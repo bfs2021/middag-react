@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.48.0](https://github.com/middag-io/middag-react/compare/v0.47.0...v0.48.0) (2026-11-23)
+
+
+### ⚠ BREAKING CHANGES
+
+* **contracts:** the page contract version is '2'. 'PageResources' no longer has 'user', 'capabilities' or 'preferences'. 'SharedPropsAuth', 'SharedPropsTheme', 'SharedPropsFlash' and 'NavigationTreePayload' are now 'SharedAuth', 'SharedTheme', 'FlashMessages' and 'NavigationTree', with no alias. 'NavigationEntityType' is gone and 'registerEntityIcon' takes a string. 'auth.id' is a string, 'email', 'theme', 'locale' and 'navigation' are optional, 'flash.toast', 'version', 'theme.brandColor', 'theme.inherit' and 'drilldownStack' are gone. 'useAuth().user.id' is a string.
+
+### Features
+
+* **contracts:** adopt the middag-php-ui 1.13.0 contract ([cadddcd](https://github.com/middag-io/middag-react/commit/cadddcdaefda90b6bf7bdaa469cb27bd67e7ff14))
+
+
+### Bug Fixes
+
+* **githooks:** accept the breaking-change marker in commit messages ([c0f61e1](https://github.com/middag-io/middag-react/commit/c0f61e1de5721a109b1cc0e0e7b4ed159be1618d))
+* **githooks:** accept the breaking-change marker in commit messages ([0117dbd](https://github.com/middag-io/middag-react/commit/0117dbd1c1a6b56ad6e87ca009f2f61bbebad268))
+
 ## [0.47.0](https://github.com/middag-io/middag-react/compare/v0.46.1...v0.47.0) (2026-11-23)
 
 
