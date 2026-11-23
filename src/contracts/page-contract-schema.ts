@@ -8,8 +8,8 @@
  * DA-03: the host-extensible parts are validated loosely. The generated core is
  * already lenient on unknown keys (Pro overlay + forward-compat fields are
  * stripped, not rejected); on top of that, `resources` is relaxed to a
- * permissive record because hosts patch it (preferences/capabilities/branding)
- * and the React Pro overlay (auth/locale) rides alongside.
+ * permissive record because hosts patch it (feature flags/branding) and the
+ * React Pro overlay rides alongside.
  */
 
 import { z } from "zod";

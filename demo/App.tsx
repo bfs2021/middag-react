@@ -26,11 +26,10 @@ function NavigateBridge() {
 }
 
 const sharedProps = {
-  auth: { id: 1, name: "Dev User", email: "dev@localhost", capabilities: [] },
+  auth: { id: "1", name: "Dev User", email: "dev@localhost", capabilities: [] },
   theme: { appearance: "light" as const, strings: {} as Record<string, string> },
   flash: {},
   locale: "en",
-  version: "0.0.0-dev",
   scope: { extension: null, context: "global" },
 };
 

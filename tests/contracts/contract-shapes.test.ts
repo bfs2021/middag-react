@@ -25,7 +25,7 @@ import type {
   StatusStripBlockData,
   TabsBlockData,
 } from "@/contracts/block-data";
-import type { NavigationNode, NavigationTreePayload } from "@/contracts/navigation";
+import type { NavigationNode, NavigationTree } from "@/contracts/navigation";
 import type {
   Breadcrumb,
   ContractPageProps,
@@ -35,12 +35,7 @@ import type {
   PageMeta,
 } from "@/contracts/page-contract";
 import { validatePageContract } from "@/contracts/page-contract-schema";
-import type {
-  SharedProps,
-  SharedPropsAuth,
-  SharedPropsFlash,
-  SharedPropsTheme,
-} from "@/contracts/shared-props";
+import type { FlashMessages, SharedAuth, SharedProps, SharedTheme } from "@/contracts/shared-props";
 
 // ── PageContract with all optional fields ──────────────────────────────
 
@@ -65,7 +60,7 @@ const FULL_PAGE_META: PageMeta = {
 };
 
 const FULL_CONTRACT: PageContract = {
-  version: "1",
+  version: "2",
   shell: "product",
   page: FULL_PAGE_META,
   layout: {
@@ -83,8 +78,6 @@ const FULL_CONTRACT: PageContract = {
     meta: { customKey: true },
   },
   resources: {
-    preferences: { theme: "light", locale: "en" },
-    capabilities: { "local/middag:view": true },
     featureFlags: { beta: true },
   },
   entities: { user: "/users/{id}" },
@@ -143,7 +136,7 @@ describe("ContractPageProps shape", () => {
       contract: FULL_CONTRACT,
       overlay: true,
     };
-    expect(props.contract.version).toBe("1");
+    expect(props.contract.version).toBe("2");
     expect(props.overlay).toBe(true);
   });
 });
@@ -152,19 +145,18 @@ describe("ContractPageProps shape", () => {
 
 describe("SharedProps shape", () => {
   it("satisfies the full interface", () => {
-    const auth: SharedPropsAuth = {
-      id: 1,
+    const auth: SharedAuth = {
+      id: "1",
       name: "Admin",
       email: "admin@example.com",
       avatarUrl: "https://example.com/avatar.jpg",
       capabilities: ["local/middag:manage", "local/middag:view"],
     };
-    const theme: SharedPropsTheme = {
+    const theme: SharedTheme = {
       strings: { "middag.ui.confirm": "Confirm" },
       appearance: "dark",
-      brandColor: "#3b82f6",
     };
-    const flash: SharedPropsFlash = {
+    const flash: FlashMessages = {
       success: "Saved",
       error: "Failed",
       info: "Note",
@@ -180,21 +172,20 @@ describe("SharedProps shape", () => {
       theme,
       flash,
       locale: "pt-BR",
-      version: "0.12.0",
       scope: { organization: { id: 1, name: "Acme" } },
     };
 
-    expect(shared.auth?.id).toBe(1);
+    expect(shared.auth?.id).toBe("1");
     expect(shared.auth?.capabilities).toHaveLength(2);
-    expect(shared.theme.appearance).toBe("dark");
+    expect(shared.theme?.appearance).toBe("dark");
     expect(shared.flash?.success).toBe("Saved");
     expect(shared.locale).toBe("pt-BR");
   });
 });
 
-// ── NavigationTreePayload ────────────────────────────────────────────
+// ── NavigationTree ────────────────────────────────────────────
 
-describe("NavigationTreePayload shape", () => {
+describe("NavigationTree shape", () => {
   it("satisfies the tree payload interface", () => {
     const node: NavigationNode = {
       key: "dashboard",
@@ -203,7 +194,7 @@ describe("NavigationTreePayload shape", () => {
       icon: "home",
       children: [],
     };
-    const treePayload: NavigationTreePayload = {
+    const treePayload: NavigationTree = {
       activeKey: "dashboard",
       tree: [node],
       footer: [],

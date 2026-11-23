@@ -7,7 +7,7 @@ import { validatePageContract } from "@/contracts/page-contract-schema";
 // ---------------------------------------------------------------------------
 
 const validContract = {
-  version: "1" as const,
+  version: "2" as const,
   shell: "product" as const,
   page: { key: "test", title: "Test Page" },
   layout: {
@@ -60,8 +60,8 @@ describe("validatePageContract", () => {
     expect(errors!.length).toBeGreaterThan(0);
   });
 
-  it('returns errors for wrong version ("2" instead of "1")', () => {
-    const contract = { ...validContract, version: "2" };
+  it('returns errors for wrong version ("1" instead of "2")', () => {
+    const contract = { ...validContract, version: "1" };
     const errors = validatePageContract(contract);
 
     expect(errors).not.toBeNull();

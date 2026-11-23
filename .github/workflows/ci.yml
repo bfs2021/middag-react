@@ -58,9 +58,9 @@ jobs:
         run: |
           git fetch --no-tags --depth=1 origin "$BASE_REF"
           BASE_DIR=$(mktemp -d)
-          for f in page-contract.json fragment.json; do
+          for f in page-contract.json fragment.json shared-props.json; do
             if ! git show "FETCH_HEAD:packages/contracts/schema/$f" > "$BASE_DIR/$f" 2>/dev/null; then
-              echo "No contracts mirror on $BASE_REF yet; nothing to compare."
+              echo "No $f in the contracts mirror on $BASE_REF yet; nothing to compare."
               exit 0
             fi
           done

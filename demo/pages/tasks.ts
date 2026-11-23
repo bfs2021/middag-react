@@ -8,7 +8,7 @@
 import type { PageContract } from "@middag-io/react";
 
 export const tasksContract: PageContract = {
-  version: "1",
+  version: "2",
   shell: "product",
   page: {
     key: "demo.tasks",

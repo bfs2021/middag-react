@@ -1,8 +1,8 @@
 # @middag-io/ui-contracts
 
 TypeScript types and zod schemas of the MIDDAG UI wire contract: the page
-contract and fragment payloads a PHP host sends to the React frontend through
-Inertia.
+contract, fragment and shared props payloads a PHP host sends to the React
+frontend through Inertia.
 
 The source of truth is PHP. The value objects of
 [`middag-io/ui`](https://github.com/middag-io/middag-php-ui) emit JSON Schema
@@ -29,7 +29,7 @@ peer: the types alone (`@middag-io/ui-contracts/types`) need no runtime.
 ## Use
 
 ```ts
-import type { PageContract, Fragment } from "@middag-io/ui-contracts";
+import type { PageContract, Fragment, SharedProps } from "@middag-io/ui-contracts";
 import { PageContractSchema, pageContractSchemaCore } from "@middag-io/ui-contracts";
 import { CONTRACT_VERSION, SCHEMA_HASH, PRODUCER } from "@middag-io/ui-contracts/meta";
 import pageContract from "@middag-io/ui-contracts/schemas/page-contract.json";
@@ -43,8 +43,8 @@ import pageContract from "@middag-io/ui-contracts/schemas/page-contract.json";
 | `./schemas/*.json` | the raw JSON Schemas and `SOURCE.json` |
 
 Every `$def` has a type (`PageContract`) and a zod schema (`PageContractSchema`).
-`pageContractSchemaCore` and `fragmentSchemaCore` are kept as aliases of the two
-roots.
+`pageContractSchemaCore`, `fragmentSchemaCore` and `sharedPropsSchemaCore` are
+kept as aliases of the three roots.
 
 The zod schemas are lenient: an object strips unknown keys instead of rejecting
 them, so a newer producer or a host overlay does not break validation. The

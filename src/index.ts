@@ -30,9 +30,9 @@ export type {
 // ── Contracts: Shared Props ─────────────────────────────────────────────────
 
 export type {
-  SharedPropsAuth,
-  SharedPropsTheme,
-  SharedPropsFlash,
+  SharedAuth,
+  SharedTheme,
+  FlashMessages,
   AdminTabItem,
   AdminTabsProps,
   SharedProps,
@@ -40,11 +40,7 @@ export type {
 
 // ── Contracts: Navigation ───────────────────────────────────────────────────
 
-export type {
-  NavigationEntityType,
-  NavigationNode,
-  NavigationTreePayload,
-} from "@/contracts/navigation";
+export type { NavigationNode, NavigationTree } from "@/contracts/navigation";
 
 // ── Contracts: Block Data ───────────────────────────────────────────────────
 

@@ -9,8 +9,6 @@
 
 import type { IconSvgElement } from "@hugeicons/react";
 
-import type { NavigationEntityType } from "@/contracts/navigation";
-
 /**
  * The maps live on globalThis so the registry stays ONE registry even when this
  * module is instantiated more than once.
@@ -58,8 +56,10 @@ export function registerIcon(name: string, icon: IconSvgElement): void {
 
 /**
  * Register an icon for a given entity type (navigation entity resolution).
+ * The navigation contract keeps 'entityType' an open string, so each product
+ * registers the types it sends.
  */
-export function registerEntityIcon(entityType: NavigationEntityType, icon: IconSvgElement): void {
+export function registerEntityIcon(entityType: string, icon: IconSvgElement): void {
   entityIconMap.set(entityType, icon);
 }
 

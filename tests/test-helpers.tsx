@@ -25,7 +25,7 @@ export const MOCK_SHARED_PROPS: SharedProps = {
     footer: [],
   },
   auth: {
-    id: 1,
+    id: "1",
     name: "Test User",
     email: "test@example.com",
     capabilities: ["local/middag:view", "local/middag:manage"],
@@ -36,7 +36,6 @@ export const MOCK_SHARED_PROPS: SharedProps = {
   },
   flash: {},
   locale: "en",
-  version: "0.0.0-test",
   scope: { organization: { id: 1, name: "Test Org" } },
 };
 

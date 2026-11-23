@@ -31,11 +31,6 @@ export function FlashProvider({ children }: { children: ReactNode }) {
     if (flash.error) toast.error(flash.error);
     if (flash.info) toast.info(flash.info);
     if (flash.warning) toast.warning(flash.warning);
-    if (flash.toast) {
-      toast[flash.toast.severity](flash.toast.message, {
-        duration: flash.toast.duration ?? 5000,
-      });
-    }
   }, [flash]);
 
   return <>{children}</>;

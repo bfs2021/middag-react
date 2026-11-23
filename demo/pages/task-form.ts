@@ -76,7 +76,7 @@ const taskFormSchema: FormSchemaNode[] = [
 ];
 
 export const newTaskContract: PageContract = {
-  version: "1",
+  version: "2",
   shell: "product",
   page: {
     key: "demo.tasks.create",
@@ -105,7 +105,7 @@ export const newTaskContract: PageContract = {
 };
 
 export const editTaskContract: PageContract = {
-  version: "1",
+  version: "2",
   shell: "product",
   page: {
     key: "demo.tasks.edit",

@@ -154,7 +154,7 @@ add_menu_page(
     'middag',
     function() {
         $contract = [
-            'version' => '1',
+            'version' => '2',
             'shell'   => 'immersive',
             'page'    => [
                 'key'   => 'dashboard',
