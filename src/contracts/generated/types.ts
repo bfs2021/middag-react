@@ -7,9 +7,9 @@
  * Regenerate:  npm run gen:contracts
  * Drift gate:  npm run gen:contracts:check
  *
- * @source middag-io/middag-php-ui@v1.10.1 schema/{page-contract.json,fragment.json}
+ * @source middag-io/middag-php-ui@v1.11.0 schema/{page-contract.json,fragment.json}
  * @contract-version 1
- * @hash 8079f706d81e80a7
+ * @hash 63f5044005aa4225
  */
 export type Label = string | Translatable;
 export type ActionTarget =
@@ -297,6 +297,18 @@ export type FormFieldNode =
       props: {
         label: string;
       };
+    }
+  | {
+      kind: "field";
+      key: string;
+      component: "richtext" | "time";
+      props: FieldPropsBase;
+    }
+  | {
+      kind: "field";
+      key: string;
+      component: "autocomplete";
+      props: OptionFieldProps;
     };
 export type OptionFieldProps = FieldPropsBase & {
   options?: {
@@ -380,7 +392,10 @@ export type FormComponent =
   | "date_range"
   | "hidden"
   | "static"
-  | "header";
+  | "header"
+  | "richtext"
+  | "time"
+  | "autocomplete";
 export type RenderTarget = "html" | "props";
 
 export interface PageContract {
@@ -643,7 +658,7 @@ export interface FormFieldDocumentMask {
 export interface FormSectionNode {
   kind: "section";
   id: string;
-  label: string;
+  label: string | Translatable | null;
   defaultCollapsed?: boolean;
   children: FormSchemaNode[];
 }

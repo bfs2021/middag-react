@@ -94,6 +94,7 @@ function SchemaRenderer({
   onChange: (key: string, value: unknown) => void;
   sourceValues: Record<string, unknown>;
 }): ReactElement {
+  const { t } = useTranslation();
   return (
     <>
       {nodes.map((node, index) => {
@@ -116,7 +117,7 @@ function SchemaRenderer({
               <FormSection
                 key={node.id}
                 id={node.id}
-                title={node.label}
+                title={renderLabel(node.label, t) || undefined}
                 defaultCollapsed={node.defaultCollapsed}
                 hasErrors={node.children.some((c) => c.kind === "field" && !!errors[c.key])}
                 errorCount={

@@ -7,9 +7,9 @@
  * Regenerate:  npm run gen:contracts
  * Drift gate:  npm run gen:contracts:check
  *
- * @source middag-io/middag-php-ui@v1.10.1 schema/{page-contract.json,fragment.json}
+ * @source middag-io/middag-php-ui@v1.11.0 schema/{page-contract.json,fragment.json}
  * @contract-version 1
- * @hash 8079f706d81e80a7
+ * @hash 63f5044005aa4225
  */
 import { z } from "zod";
 import type { NavigationNode, FormSectionNode, FormGroupNode, FormSchemaNode } from "./types.js";
@@ -496,12 +496,22 @@ export const FormFieldNodeSchema = z.union([z.object({
   "props": z.object({
     "label": z.string(),
   }),
+}), z.object({
+  "kind": z.literal("field"),
+  "key": z.string(),
+  "component": z.enum(["richtext", "time"]),
+  "props": FieldPropsBaseSchema,
+}), z.object({
+  "kind": z.literal("field"),
+  "key": z.string(),
+  "component": z.literal("autocomplete"),
+  "props": OptionFieldPropsSchema,
 })]);
 
 export const FormSectionNodeSchema: z.ZodType<FormSectionNode> = z.object({
   "kind": z.literal("section"),
   "id": z.string(),
-  "label": z.string(),
+  "label": z.union([z.string(), TranslatableSchema, z.null()]),
   "defaultCollapsed": z.boolean().optional(),
   "children": z.array(z.lazy(() => FormSchemaNodeSchema)),
 });
@@ -547,7 +557,7 @@ export const ConditionOperatorSchema = z.enum(["eq", "neq", "in", "not_in", "gt"
 
 export const FieldTypeSchema = z.enum(["text", "textarea", "richtext", "password", "otp", "email", "url", "int", "float", "slider", "select", "multiselect", "native_select", "radio", "checkbox", "switch", "date", "datetime", "time", "duration", "file", "entity_picker", "autocomplete", "tags", "hidden", "static", "header"]);
 
-export const FormComponentSchema = z.enum(["text", "textarea", "password", "otp", "email", "url", "int", "float", "slider", "select", "native_select", "multiselect", "radio", "checkbox", "switch", "date", "datetime", "duration", "file", "entity_picker", "phone", "document", "currency", "color", "slug", "tags", "rating", "date_range", "hidden", "static", "header"]);
+export const FormComponentSchema = z.enum(["text", "textarea", "password", "otp", "email", "url", "int", "float", "slider", "select", "native_select", "multiselect", "radio", "checkbox", "switch", "date", "datetime", "duration", "file", "entity_picker", "phone", "document", "currency", "color", "slug", "tags", "rating", "date_range", "hidden", "static", "header", "richtext", "time", "autocomplete"]);
 
 export const RenderTargetSchema = z.enum(["html", "props"]);
 
