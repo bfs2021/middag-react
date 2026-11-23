@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.3.0](https://github.com/middag-io/middag-react/compare/ui-contracts-v0.2.0...ui-contracts-v0.3.0) (2026-11-23)
+
+
+### ⚠ BREAKING CHANGES
+
+* **contracts:** the page contract version is '2'. 'PageResources' no longer has 'user', 'capabilities' or 'preferences'. 'SharedPropsAuth', 'SharedPropsTheme', 'SharedPropsFlash' and 'NavigationTreePayload' are now 'SharedAuth', 'SharedTheme', 'FlashMessages' and 'NavigationTree', with no alias. 'NavigationEntityType' is gone and 'registerEntityIcon' takes a string. 'auth.id' is a string, 'email', 'theme', 'locale' and 'navigation' are optional, 'flash.toast', 'version', 'theme.brandColor', 'theme.inherit' and 'drilldownStack' are gone. 'useAuth().user.id' is a string.
+
+### Features
+
+* **contracts:** adopt the middag-php-ui 1.13.0 contract ([cadddcd](https://github.com/middag-io/middag-react/commit/cadddcdaefda90b6bf7bdaa469cb27bd67e7ff14))
+
+
+### Documentation
+
+* **ui-contracts:** explain open and control enums ([f5c4f25](https://github.com/middag-io/middag-react/commit/f5c4f2529bf170165be51083ebe823b64366cf96))
+
 ## [0.2.0](https://github.com/middag-io/middag-react/compare/ui-contracts-v0.1.0...ui-contracts-v0.2.0) (2026-11-23)
 
 
@@ -28,4 +44,3 @@
 ### Consumer impact
 
 Presentational enums (`ActionIntent`, `NotificationLevel`, `ThemeMode`, `ValueFormat`, `ColumnVariant`, `FilterType`, `ChartType`, `FormComponent`, `FieldType`) now accept an unknown string and keep its raw value (the TypeScript type adds `(string & {})`); control enums stay strict. The package also accepts the `richtext`, `time` and `autocomplete` form components.
-
