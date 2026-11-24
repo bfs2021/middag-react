@@ -282,12 +282,7 @@ interface PageContract {
     shell: 'product' | 'immersive' | (string & {});
     page: PageMeta;
     layout: LayoutDescriptor;
-    resources?: PageResources;
-}
-
-interface PageResources {
-    featureFlags: Record<string, boolean>;
-    branding?: Branding;
+    entities?: Record<string, string>;
 }
 
 interface PageMeta {
@@ -343,14 +338,14 @@ interface ContractPageProps {
 
 ## Types: SharedProps {#types-shared-props}
 
-Typed Inertia shared props sent on every request, generated from the middag-php-ui `SharedProps` value object. They are the only carrier of session data (user, capabilities, theme, locale): `PageResources` does not repeat them.
+Typed Inertia shared props sent on every request, generated from the middag-php-ui `SharedProps` value object. They are the only carrier of session data (user, capabilities, theme, locale); the page contract carries none.
 
 ```ts
 interface SharedProps {
     auth?: SharedAuth;
     theme?: SharedTheme;
     flash?: FlashMessages;
-    errors?: FormErrors;
+    errors?: FormErrors | FormErrorBags;   // a flat map, or one map per Inertia error bag
     csrf_token?: string;
     locale?: string;      // e.g. 'pt-BR', 'en'
     scope?: Record<string, unknown>;

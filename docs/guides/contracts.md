@@ -116,12 +116,7 @@ interface PageContract {
     shell: 'product' | 'immersive' | (string & {});
     page: PageMeta;
     layout: LayoutDescriptor;
-    resources?: PageResources;
-}
-
-interface PageResources {
-    featureFlags: Record<string, boolean>;
-    branding?: Branding;
+    entities?: Record<string, string>;
 }
 
 interface PageMeta {

@@ -84,7 +84,7 @@ interface SharedProps {
         info?: string;
         warning?: string;
     };
-    errors?: FormErrors;
+    errors?: FormErrors | FormErrorBags;
     csrf_token?: string;
     locale?: string;     // e.g. 'en', 'pt-BR'
     scope?: Record<string, unknown>;

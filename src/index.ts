@@ -22,7 +22,6 @@ export type {
   PageMeta,
   BlockDescriptor,
   LayoutDescriptor,
-  PageResources,
   PageContract,
   ContractPageProps,
 } from "@/contracts/page-contract";
@@ -121,6 +120,8 @@ export type {
   FormMethod,
   FormValidationMode,
   FieldError,
+  FieldMessage,
+  FormErrorBags,
   FormErrors,
   FormPanelBlockData,
   // MarkdownPanel
