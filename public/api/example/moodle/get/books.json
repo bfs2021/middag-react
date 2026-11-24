@@ -3,7 +3,7 @@
   "host": "moodle",
   "method": "GET",
   "contract": {
-    "version": "1",
+    "version": "2",
     "shell": "basic",
     "page": {
       "key": "books-list",

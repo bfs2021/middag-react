@@ -19,6 +19,7 @@ import { Link } from "@inertiajs/react";
 
 import { ConfirmationDialog } from "@/base/partials/ConfirmationDialog";
 import { useInspector } from "@/base/shell/partials/InspectorContext";
+import { isDangerIntent } from "@/base/utils/action-intent";
 import { getIcon } from "@/base/utils/icons";
 import { interpolate } from "@/base/utils/interpolate";
 import type {
@@ -180,7 +181,7 @@ export function CardGridBlock({ block }: BlockProps<CardGridBlockData>): ReactEl
                     variant="ghost"
                     size="icon-xs"
                     className={cn(
-                      action.intent === "danger" && "text-destructive hover:text-destructive",
+                      isDangerIntent(action.intent) && "text-destructive hover:text-destructive",
                     )}
                     title={renderLabel(action.label, t)}
                     onClick={() => runRowAction(action, row)}

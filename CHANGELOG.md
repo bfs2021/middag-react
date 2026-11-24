@@ -1,5 +1,73 @@
 # Changelog
 
+## [0.50.0](https://github.com/middag-io/middag-react/compare/v0.49.0...v0.50.0) (2026-11-24)
+
+
+### ⚠ BREAKING CHANGES
+
+* **contracts:** 'PageResources' is no longer exported and the page contract has no 'resources'. 'FormErrors' now accepts rich messages inside lists and 'errors' may be a 'FormErrorBags' map.
+
+### Features
+
+* **contracts-codegen:** refuse wire breaks only from a 2.0.0-rc.1 producer on ([baee0ed](https://github.com/middag-io/middag-react/commit/baee0edeca2ee2be74ae47bfbe1905a67cfd10af))
+* **contracts:** adopt the middag-php-ui 1.14.0 contract ([0dfebb7](https://github.com/middag-io/middag-react/commit/0dfebb7a5c263ea98c47006a0473fc1a6115918d))
+* **shell:** render external and targeted nav links as plain anchors ([ff573b4](https://github.com/middag-io/middag-react/commit/ff573b4ee470b3c3e0790b16991ad4ddef9d4df1))
+
+
+### Bug Fixes
+
+* **contracts-codegen:** close the gaps in the release-candidate gate ([ba83a2f](https://github.com/middag-io/middag-react/commit/ba83a2fd8e05f91d9254d7316311609f05391e2e))
+* stop tracking the node_modules symlink ([70ab4b0](https://github.com/middag-io/middag-react/commit/70ab4b0417432325d14ceead79b6a5f26f26291c))
+
+## [0.49.0](https://github.com/middag-io/middag-react/compare/v0.48.0...v0.49.0) (2026-11-23)
+
+
+### ⚠ BREAKING CHANGES
+
+* **contracts:** 'ConnectorStatus', 'CredentialField', 'HealthCheckResult', 'ConnectorListItem', 'ConnectorDetail' and 'ConnectorTypeInfo' are no longer exported, and the 'connectors' schema is gone from the published schemas.
+
+### Features
+
+* **contracts:** drop the connector types from the public API ([e86ec44](https://github.com/middag-io/middag-react/commit/e86ec4474c595842c11a11d6be1a1fb2c7b75478))
+
+## [0.48.0](https://github.com/middag-io/middag-react/compare/v0.47.0...v0.48.0) (2026-11-23)
+
+
+### ⚠ BREAKING CHANGES
+
+* **contracts:** the page contract version is '2'. 'PageResources' no longer has 'user', 'capabilities' or 'preferences'. 'SharedPropsAuth', 'SharedPropsTheme', 'SharedPropsFlash' and 'NavigationTreePayload' are now 'SharedAuth', 'SharedTheme', 'FlashMessages' and 'NavigationTree', with no alias. 'NavigationEntityType' is gone and 'registerEntityIcon' takes a string. 'auth.id' is a string, 'email', 'theme', 'locale' and 'navigation' are optional, 'flash.toast', 'version', 'theme.brandColor', 'theme.inherit' and 'drilldownStack' are gone. 'useAuth().user.id' is a string.
+
+### Features
+
+* **contracts:** adopt the middag-php-ui 1.13.0 contract ([cadddcd](https://github.com/middag-io/middag-react/commit/cadddcdaefda90b6bf7bdaa469cb27bd67e7ff14))
+
+
+### Bug Fixes
+
+* **githooks:** accept the breaking-change marker in commit messages ([0117dbd](https://github.com/middag-io/middag-react/commit/0117dbd1c1a6b56ad6e87ca009f2f61bbebad268))
+
+## [0.47.0](https://github.com/middag-io/middag-react/compare/v0.46.1...v0.47.0) (2026-11-23)
+
+
+### Features
+
+* **ui-contracts:** accept richtext, time, autocomplete and translatable or null section labels ([25f8d72](https://github.com/middag-io/middag-react/commit/25f8d72a236659a565fadbf51f49d566222176b3))
+
+
+### Bug Fixes
+
+* **ui-contracts:** mirror the released middag-php-ui v1.11.0 schemas ([4b01e47](https://github.com/middag-io/middag-react/commit/4b01e47011470c81b8eb83b8c46c2fff196a442c))
+* **ui-contracts:** replace the enum catch with open enums for presentational values ([65cdc00](https://github.com/middag-io/middag-react/commit/65cdc0052facc85f0bc77000a86d67a7820d278e))
+
+
+### Documentation
+
+* add consumer impact to the changelog ([534ed21](https://github.com/middag-io/middag-react/commit/534ed2172b474421190ec7dbdf301055ae627b56))
+
+### Consumer impact
+
+An unknown `ActionIntent` renders with danger styling, an unknown theme preference resolves like `system`, and `FilterBar` skips filters of an unknown type. The contracts mirror and the new form components come from `ui-contracts` 0.2.0.
+
 ## [0.46.1](https://github.com/middag-io/middag-react/compare/v0.46.0...v0.46.1) (2026-11-19)
 
 

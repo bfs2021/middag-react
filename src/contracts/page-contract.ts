@@ -18,7 +18,6 @@ import type {
   LayoutDescriptor as WireLayoutDescriptor,
   PageContract as WirePageContract,
   PageMeta as WirePageMeta,
-  PageResources as WirePageResources,
 } from "@/contracts/generated";
 
 // ── Composed wire types ──────────────────────────────────────────────────────
@@ -45,13 +44,9 @@ export type LayoutDescriptor = Omit<WireLayoutDescriptor, "regions"> & {
   regions: Record<string, BlockDescriptor[]>;
 };
 
-/** Page resources — canonical php-ui shape. */
-export type PageResources = WirePageResources;
-
-export type PageContract = Omit<WirePageContract, "page" | "layout" | "resources"> & {
+export type PageContract = Omit<WirePageContract, "page" | "layout"> & {
   page: PageMeta;
   layout: LayoutDescriptor;
-  resources?: PageResources;
   // `entities` (entity type → route pattern) now rides on the generated
   // WirePageContract — sourced from the middag-php-ui PageContract VO.
 };

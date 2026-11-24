@@ -15,9 +15,9 @@ import { join, relative, resolve } from "node:path";
 import { compile } from "json-schema-to-typescript";
 
 import { compareContracts } from "./compat.mjs";
-import { collectRefs, emitZod, resolveRef } from "./zod.mjs";
+import { assertOpenEnums, collectRefs, emitZod, resolveRef } from "./zod.mjs";
 
-export { compareContracts } from "./compat.mjs";
+export { compareContracts, enforcesBreaks, ENFORCE_FROM } from "./compat.mjs";
 export { emitZod } from "./zod.mjs";
 
 export const CONFIG_FILE = "contracts.config.json";
@@ -44,6 +44,7 @@ export function loadConfig(packageDir) {
     forbiddenIds: [],
     externals: {},
     aliases: {},
+    openEnums: [],
     relaxBareObjects: false,
     disjointWith: [],
     ...config,
@@ -203,6 +204,14 @@ function header({ summary, config, source, version, hash }) {
 
 async function emitTypes(defs, config, banner) {
   const prepared = structuredClone(defs);
+  assertOpenEnums(prepared, config.openEnums);
+  for (const name of config.openEnums) {
+    // string & {} keeps editor autocomplete on the known members.
+    prepared[name].tsType = [
+      ...prepared[name].enum.map((e) => JSON.stringify(e)),
+      "(string & {})",
+    ].join(" | ");
+  }
   if (config.relaxBareObjects) relaxBareObjects(prepared);
   const imports = new Map();
   const externalized = externalizeForTypes(prepared, config.externals, imports);
@@ -276,6 +285,7 @@ export async function build(packageDir) {
     externals: config.externals,
     typesModule: "./types.js",
     aliases: config.aliases,
+    openEnums: config.openEnums,
   });
 
   return {
@@ -416,13 +426,29 @@ export function contractOf(dir, config) {
   return { version: String(files[0].json["x-contract-version"]), defs: mergeDefs(files) };
 }
 
-/** Compare a previous mirror directory with the package's current mirror. */
+/** The `ref` a mirror's SOURCE.json records, or undefined when it has none. */
+function sourceRef(schemaDir) {
+  const path = join(schemaDir, SOURCE_FILE);
+  if (!existsSync(path)) return undefined;
+  try {
+    const ref = JSON.parse(readFileSync(path, "utf8")).ref;
+    return typeof ref === "string" ? ref : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+/**
+ * Compare a previous mirror directory with the package's current mirror. The
+ * producer tags come from each mirror's SOURCE.json (see compareContracts).
+ */
 export function compat(packageDir, baseDir) {
   const config = loadConfig(packageDir);
-  return compareContracts(
-    contractOf(baseDir, config),
-    contractOf(join(packageDir, SCHEMA_DIR), config),
-  );
+  const dir = join(packageDir, SCHEMA_DIR);
+  return compareContracts(contractOf(baseDir, config), contractOf(dir, config), {
+    producerTag: sourceRef(dir),
+    baseTag: sourceRef(baseDir),
+  });
 }
 
 /**
@@ -468,6 +494,7 @@ export async function mirror(packageDir, { repository, ref, path = SCHEMA_DIR, t
   });
   if (unchanged) return { changed: false };
 
+  const baseTag = sourceRef(dir);
   const baseDir = join(dir, ".base");
   rmSync(baseDir, { recursive: true, force: true });
   mkdirSync(baseDir, { recursive: true });
@@ -484,7 +511,10 @@ export async function mirror(packageDir, { repository, ref, path = SCHEMA_DIR, t
   writeSource(packageDir, { repository, ref, sha, path, files: hashes });
   const hasBase = config.schemas.every((name) => existsSync(join(baseDir, name)));
   const report = hasBase
-    ? compareContracts(contractOf(baseDir, config), contractOf(dir, config))
+    ? compareContracts(contractOf(baseDir, config), contractOf(dir, config), {
+        producerTag: ref,
+        baseTag,
+      })
     : null;
   rmSync(baseDir, { recursive: true, force: true });
   return { changed: true, report };

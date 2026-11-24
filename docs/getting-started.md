@@ -129,7 +129,7 @@ import { ContractPage } from '@middag-io/react';
 import type { PageContract } from '@middag-io/react';
 
 const contract: PageContract = {
-    version: '1',
+    version: '2',
     shell: 'product',
     page: {
         key: 'users',

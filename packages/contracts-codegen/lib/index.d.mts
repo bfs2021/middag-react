@@ -15,6 +15,8 @@ export interface ContractsConfig {
   externals: Record<string, string>;
   /** Extra zod export name -> `$def` name. */
   aliases: Record<string, string>;
+  /** Top-level string-enum `$defs` that also accept any other string (zod union, TS `string & {}`). */
+  openEnums: string[];
   /** Render bare `{ type: "object" }` as a string-keyed record. */
   relaxBareObjects: boolean;
   /** Contracts packages (directories) whose `$defs` names must not be redefined. */
@@ -34,6 +36,8 @@ export interface ContractSource {
 export interface CompatReport {
   level: "none" | "patch" | "additive" | "breaking";
   versionBumped: boolean;
+  /** False when the producer tag is below ENFORCE_FROM: breaks are reported, not refused. */
+  enforced: boolean;
   ok: boolean;
   breaks: string[];
   additions: string[];
@@ -79,7 +83,13 @@ export function generate(packageDir: string): Promise<BuildResult>;
 export function copyLocalSource(packageDir: string, sourceDir: string): void;
 export function contractOf(dir: string, config: ContractsConfig): Contract;
 export function compat(packageDir: string, baseDir: string): CompatReport;
-export function compareContracts(base: Contract, next: Contract): CompatReport;
+export function compareContracts(
+  base: Contract,
+  next: Contract,
+  options?: { producerTag?: string; baseTag?: string },
+): CompatReport;
+export function enforcesBreaks(tag: string | undefined): boolean;
+export const ENFORCE_FROM: string;
 export function provenanceProblems(
   packageDir: string,
   config: ContractsConfig,
@@ -90,6 +100,7 @@ export function emitZod(options: {
   externals?: Record<string, string>;
   typesModule: string;
   aliases?: Record<string, string>;
+  openEnums?: string[];
 }): { body: string; order: string[]; recursive: string[] };
 export function mirror(
   packageDir: string,

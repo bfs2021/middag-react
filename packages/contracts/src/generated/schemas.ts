@@ -7,9 +7,9 @@
  * Regenerate:  npm run gen:contracts
  * Drift gate:  npm run gen:contracts:check
  *
- * @source middag-io/middag-php-ui@v1.10.1 schema/{page-contract.json,fragment.json}
- * @contract-version 1
- * @hash 8079f706d81e80a7
+ * @source middag-io/middag-php-ui@v1.14.0 schema/{page-contract.json,fragment.json,shared-props.json}
+ * @contract-version 2
+ * @hash ed3b25557c7c82c7
  */
 import { z } from "zod";
 import type { NavigationNode, FormSectionNode, FormGroupNode, FormSchemaNode } from "./types.js";
@@ -46,7 +46,7 @@ export const ActionTargetSchema = z.union([z.object({
   "kind": z.literal("panel"),
 })]);
 
-export const ActionIntentSchema = z.enum(["primary", "secondary", "danger", "success", "warning", "info", "link", "ghost"]);
+export const ActionIntentSchema = z.union([z.enum(["primary", "secondary", "danger", "success", "warning", "info", "link", "ghost"]), z.string()]);
 
 export const ConfirmationSchema = z.object({
   "title": LabelSchema,
@@ -103,39 +103,7 @@ export const LayoutDescriptorSchema = z.object({
   "meta": z.record(z.string(), z.unknown()).optional(),
 });
 
-export const ThemeModeSchema = z.enum(["light", "dark", "system"]);
-
-export const UserPreferencesSchema = z.object({
-  "theme": ThemeModeSchema,
-  "locale": z.string(),
-  "timezone": z.string().optional(),
-  "dateFormat": z.string().optional(),
-  "numberFormat": z.string().optional(),
-}).catchall(z.unknown());
-
-export const IdentitySchema = z.object({
-  "id": z.string(),
-  "name": z.string(),
-  "email": z.string().optional(),
-  "avatarUrl": z.string().optional(),
-  "roles": z.array(z.string()).optional(),
-});
-
-export const BrandingSchema = z.object({
-  "appName": z.string(),
-  "logoUrl": z.string().optional(),
-  "logoCompactUrl": z.string().optional(),
-});
-
-export const PageResourcesSchema = z.object({
-  "preferences": UserPreferencesSchema,
-  "capabilities": z.union([z.record(z.string(), z.boolean()), z.array(z.unknown()).max(0)]),
-  "featureFlags": z.union([z.record(z.string(), z.boolean()), z.array(z.unknown()).max(0)]),
-  "user": IdentitySchema.optional(),
-  "branding": BrandingSchema.optional(),
-});
-
-export const NotificationLevelSchema = z.enum(["success", "info", "warning", "error"]);
+export const NotificationLevelSchema = z.union([z.enum(["success", "info", "warning", "error"]), z.string()]);
 
 export const NotificationSchema = z.object({
   "level": NotificationLevelSchema,
@@ -147,29 +115,21 @@ export const NotificationSchema = z.object({
 });
 
 export const PageContractSchema = z.object({
-  "version": z.literal("1"),
+  "version": z.literal("2"),
   "shell": z.string(),
   "page": PageMetaSchema,
   "layout": LayoutDescriptorSchema,
-  "resources": PageResourcesSchema.optional(),
   "notifications": z.array(NotificationSchema).optional(),
   "entities": z.record(z.string(), z.string()).optional(),
 });
 
 export const FragmentKindSchema = z.enum(["block", "region", "table", "form", "detail", "inspector", "notifications", "custom"]);
 
-export const ResourcePatchSchema = z.union([z.object({
-  "preferences": UserPreferencesSchema.optional(),
-  "capabilities": z.record(z.string(), z.boolean()).optional(),
-  "featureFlags": z.record(z.string(), z.boolean()).optional(),
-}), z.array(z.unknown()).max(0)]);
-
 export const FragmentSchema = z.object({
-  "version": z.literal("1"),
+  "version": z.literal("2"),
   "kind": FragmentKindSchema,
   "payload": z.record(z.string(), z.unknown()).optional(),
   "notifications": z.array(NotificationSchema).optional(),
-  "resources": ResourcePatchSchema.optional(),
   "customType": z.string().optional(),
 });
 
@@ -186,12 +146,24 @@ export const EditablePanelDescriptorSchema = z.object({
   "width": z.number().int(),
 });
 
+export const IdentitySchema = z.object({
+  "id": z.string(),
+  "name": z.string(),
+  "email": z.string().optional(),
+  "avatarUrl": z.string().optional(),
+  "roles": z.array(z.string()).optional(),
+});
+
 export const NavigationNodeSchema: z.ZodType<NavigationNode> = z.object({
   "key": z.string(),
   "label": LabelSchema,
   "icon": z.string().optional(),
   "href": z.string().optional(),
   "badge": z.string().optional(),
+  "entityType": z.string().optional(),
+  "badgeVariant": z.string().optional(),
+  "statusColor": z.string().optional(),
+  "target": z.string().optional(),
   "active": z.literal(true).optional(),
   "drilldown": z.literal(true).optional(),
   "collapsible": z.literal(true).optional(),
@@ -199,9 +171,63 @@ export const NavigationNodeSchema: z.ZodType<NavigationNode> = z.object({
   "children": z.array(z.lazy(() => NavigationNodeSchema)).optional(),
 });
 
-export const ValueFormatSchema = z.enum(["text", "date", "datetime", "time", "number", "currency", "boolean", "badge"]);
+export const NavigationTreeSchema = z.object({
+  "tree": z.array(NavigationNodeSchema),
+  "activeKey": z.string(),
+  "footer": z.array(NavigationNodeSchema),
+});
 
-export const ColumnVariantSchema = z.enum(["text", "status", "badge", "boolean", "timestamp", "link", "rich_status", "html", "link_group", "annotated", "progress"]);
+export const SharedAuthSchema = z.object({
+  "id": z.string(),
+  "name": z.string(),
+  "email": z.string().optional(),
+  "avatarUrl": z.string().optional(),
+  "roles": z.array(z.string()).optional(),
+  "capabilities": z.array(z.string()),
+  "logoutUrl": z.string().optional(),
+});
+
+export const ThemeModeSchema = z.union([z.enum(["light", "dark", "system"]), z.string()]);
+
+export const SharedThemeSchema = z.object({
+  "appearance": ThemeModeSchema.optional(),
+  "strings": z.record(z.string(), z.string()).optional(),
+});
+
+export const FlashMessagesSchema = z.object({
+  "success": z.string().optional(),
+  "error": z.string().optional(),
+  "info": z.string().optional(),
+  "warning": z.string().optional(),
+});
+
+export const FieldMessageSchema = z.object({
+  "message": z.string(),
+  "key": z.string(),
+  "domain": z.string(),
+  "params": z.record(z.string(), z.unknown()).optional(),
+});
+
+export const FieldErrorSchema = z.union([z.string(), z.array(z.union([z.string(), FieldMessageSchema])), FieldMessageSchema]);
+
+export const FormErrorsSchema = z.record(z.string(), FieldErrorSchema);
+
+export const FormErrorBagsSchema = z.record(z.string(), FormErrorsSchema);
+
+export const SharedPropsSchema = z.object({
+  "auth": SharedAuthSchema.optional(),
+  "theme": SharedThemeSchema.optional(),
+  "flash": FlashMessagesSchema.optional(),
+  "errors": z.union([FormErrorsSchema, FormErrorBagsSchema]).optional(),
+  "csrf_token": z.string().optional(),
+  "locale": z.string().optional(),
+  "scope": z.record(z.string(), z.unknown()).optional(),
+  "navigation": NavigationTreeSchema.optional(),
+}).catchall(z.unknown());
+
+export const ValueFormatSchema = z.union([z.enum(["text", "date", "datetime", "time", "number", "currency", "boolean", "badge"]), z.string()]);
+
+export const ColumnVariantSchema = z.union([z.enum(["text", "status", "badge", "boolean", "timestamp", "link", "rich_status", "html", "link_group", "annotated", "progress"]), z.string()]);
 
 export const ColumnSchema = z.object({
   "key": z.string(),
@@ -214,7 +240,7 @@ export const ColumnSchema = z.object({
   "variant": ColumnVariantSchema.optional(),
 });
 
-export const FilterTypeSchema = z.enum(["select", "text", "date", "date_range", "boolean", "number_range"]);
+export const FilterTypeSchema = z.union([z.enum(["select", "text", "date", "date_range", "boolean", "number_range"]), z.string()]);
 
 export const FilterDefinitionSchema = z.object({
   "key": z.string(),
@@ -289,10 +315,6 @@ export const FileValueSchema = z.union([z.string(), z.object({
   "id": z.string().optional(),
   "uploadToken": z.string().optional(),
 })]);
-
-export const FieldErrorSchema = z.union([z.string(), z.array(z.string())]);
-
-export const FormErrorsSchema = z.record(z.string(), FieldErrorSchema);
 
 export const FormFieldValidationSchema = z.object({
   "minLength": z.number().int().optional(),
@@ -496,12 +518,22 @@ export const FormFieldNodeSchema = z.union([z.object({
   "props": z.object({
     "label": z.string(),
   }),
+}), z.object({
+  "kind": z.literal("field"),
+  "key": z.string(),
+  "component": z.enum(["richtext", "time"]),
+  "props": FieldPropsBaseSchema,
+}), z.object({
+  "kind": z.literal("field"),
+  "key": z.string(),
+  "component": z.literal("autocomplete"),
+  "props": OptionFieldPropsSchema,
 })]);
 
 export const FormSectionNodeSchema: z.ZodType<FormSectionNode> = z.object({
   "kind": z.literal("section"),
   "id": z.string(),
-  "label": z.string(),
+  "label": z.union([z.string(), TranslatableSchema, z.null()]),
   "defaultCollapsed": z.boolean().optional(),
   "children": z.array(z.lazy(() => FormSchemaNodeSchema)),
 });
@@ -536,20 +568,20 @@ export const ActionResultSchema = z.object({
   "refreshBlocks": z.array(z.string()).optional(),
   "errors": FormErrorsSchema.optional(),
   "fragments": z.array(FragmentSchema).optional(),
-  "resources": ResourcePatchSchema.optional(),
 });
 
 export const ActionTargetKindSchema = z.enum(["link", "route", "request", "panel"]);
 
-export const ChartTypeSchema = z.enum(["line", "bar", "area"]);
+export const ChartTypeSchema = z.union([z.enum(["line", "bar", "area"]), z.string()]);
 
 export const ConditionOperatorSchema = z.enum(["eq", "neq", "in", "not_in", "gt", "gte", "lt", "lte", "truthy", "falsy", "exists", "empty", "matches"]);
 
-export const FieldTypeSchema = z.enum(["text", "textarea", "richtext", "password", "otp", "email", "url", "int", "float", "slider", "select", "multiselect", "native_select", "radio", "checkbox", "switch", "date", "datetime", "time", "duration", "file", "entity_picker", "autocomplete", "tags", "hidden", "static", "header"]);
+export const FieldTypeSchema = z.union([z.enum(["text", "textarea", "richtext", "password", "otp", "email", "url", "int", "float", "slider", "select", "multiselect", "native_select", "radio", "checkbox", "switch", "date", "datetime", "time", "duration", "file", "entity_picker", "autocomplete", "tags", "hidden", "static", "header"]), z.string()]);
 
-export const FormComponentSchema = z.enum(["text", "textarea", "password", "otp", "email", "url", "int", "float", "slider", "select", "native_select", "multiselect", "radio", "checkbox", "switch", "date", "datetime", "duration", "file", "entity_picker", "phone", "document", "currency", "color", "slug", "tags", "rating", "date_range", "hidden", "static", "header"]);
+export const FormComponentSchema = z.union([z.enum(["text", "textarea", "password", "otp", "email", "url", "int", "float", "slider", "select", "native_select", "multiselect", "radio", "checkbox", "switch", "date", "datetime", "duration", "file", "entity_picker", "phone", "document", "currency", "color", "slug", "tags", "rating", "date_range", "hidden", "static", "header", "richtext", "time", "autocomplete"]), z.string()]);
 
 export const RenderTargetSchema = z.enum(["html", "props"]);
 
 export const pageContractSchemaCore = PageContractSchema;
 export const fragmentSchemaCore = FragmentSchema;
+export const sharedPropsSchemaCore = SharedPropsSchema;

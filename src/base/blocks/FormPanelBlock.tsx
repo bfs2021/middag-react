@@ -94,6 +94,7 @@ function SchemaRenderer({
   onChange: (key: string, value: unknown) => void;
   sourceValues: Record<string, unknown>;
 }): ReactElement {
+  const { t } = useTranslation();
   return (
     <>
       {nodes.map((node, index) => {
@@ -116,7 +117,7 @@ function SchemaRenderer({
               <FormSection
                 key={node.id}
                 id={node.id}
-                title={node.label}
+                title={renderLabel(node.label, t) || undefined}
                 defaultCollapsed={node.defaultCollapsed}
                 hasErrors={node.children.some((c) => c.kind === "field" && !!errors[c.key])}
                 errorCount={
@@ -328,10 +329,10 @@ export function FormPanelBlock({ block }: BlockProps<FormPanelBlockData>): React
             }
           },
           onError: (errors) => {
-            // Inertia types page-prop errors as flat strings, but v0.11.0 sends
-            // structured FieldError objects on the wire — cast through unknown.
+            // Inertia types the errors as flat strings; the wire may carry rich
+            // messages, which 'resolveFieldError' handles.
             const nonField: FormErrors = {};
-            for (const [field, err] of Object.entries(errors as unknown as FormErrors)) {
+            for (const [field, err] of Object.entries(errors as FormErrors)) {
               if (fieldKeys.has(field)) {
                 form.setError(field, { type: "server", message: resolveFieldError(err, t) });
               } else {

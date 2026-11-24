@@ -65,15 +65,16 @@ MIDDAG expects these Inertia shared props on every request:
 
 ```ts
 interface SharedProps {
-    navigation: NavigationTreePayload;  // Sidebar tree
-    auth: {
-        id: number;
+    navigation?: NavigationTree;  // Sidebar tree
+    auth?: {
+        id: string;
         name: string;
-        email: string;
+        email?: string;
         avatarUrl?: string;
         capabilities: string[];
+        logoutUrl?: string;
     };
-    theme: {
+    theme?: {
         strings?: Record<string, string>;  // Pre-loaded i18n strings
         appearance?: 'system' | 'light' | 'dark';
     };
@@ -83,8 +84,10 @@ interface SharedProps {
         info?: string;
         warning?: string;
     };
-    locale: string;      // e.g. 'en', 'pt-BR'
-    version: string;     // e.g. '1.0.0'
+    errors?: FormErrors | FormErrorBags;
+    csrf_token?: string;
+    locale?: string;     // e.g. 'en', 'pt-BR'
+    scope?: Record<string, unknown>;
 }
 ```
 

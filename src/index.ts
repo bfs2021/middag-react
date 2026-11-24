@@ -22,7 +22,6 @@ export type {
   PageMeta,
   BlockDescriptor,
   LayoutDescriptor,
-  PageResources,
   PageContract,
   ContractPageProps,
 } from "@/contracts/page-contract";
@@ -30,9 +29,9 @@ export type {
 // ── Contracts: Shared Props ─────────────────────────────────────────────────
 
 export type {
-  SharedPropsAuth,
-  SharedPropsTheme,
-  SharedPropsFlash,
+  SharedAuth,
+  SharedTheme,
+  FlashMessages,
   AdminTabItem,
   AdminTabsProps,
   SharedProps,
@@ -40,11 +39,7 @@ export type {
 
 // ── Contracts: Navigation ───────────────────────────────────────────────────
 
-export type {
-  NavigationEntityType,
-  NavigationNode,
-  NavigationTreePayload,
-} from "@/contracts/navigation";
+export type { NavigationNode, NavigationTree } from "@/contracts/navigation";
 
 // ── Contracts: Block Data ───────────────────────────────────────────────────
 
@@ -125,6 +120,8 @@ export type {
   FormMethod,
   FormValidationMode,
   FieldError,
+  FieldMessage,
+  FormErrorBags,
   FormErrors,
   FormPanelBlockData,
   // MarkdownPanel
@@ -155,17 +152,6 @@ export {
   validatePageContract,
   type PageContractValidationError,
 } from "@/contracts/page-contract-schema";
-
-// ── Contracts: Connectors ───────────────────────────────────────────────────
-
-export type {
-  ConnectorStatus,
-  CredentialField,
-  HealthCheckResult,
-  ConnectorListItem,
-  ConnectorDetail,
-  ConnectorTypeInfo,
-} from "@/contracts/connectors";
 
 // ── App Core ────────────────────────────────────────────────────────────────
 

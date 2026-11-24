@@ -7,9 +7,9 @@
  * Regenerate:  npm run gen:contracts
  * Drift gate:  npm run gen:contracts:check
  *
- * @source middag-io/middag-php-ui@v1.10.1 schema/{page-contract.json,fragment.json}
- * @contract-version 1
- * @hash 8079f706d81e80a7
+ * @source middag-io/middag-php-ui@v1.14.0 schema/{page-contract.json,fragment.json,shared-props.json}
+ * @contract-version 2
+ * @hash ed3b25557c7c82c7
  */
 export type Label = string | Translatable;
 export type ActionTarget =
@@ -42,9 +42,9 @@ export type ActionIntent =
   | "warning"
   | "info"
   | "link"
-  | "ghost";
-export type ThemeMode = "light" | "dark" | "system";
-export type NotificationLevel = "success" | "info" | "warning" | "error";
+  | "ghost"
+  | (string & {});
+export type NotificationLevel = "success" | "info" | "warning" | "error" | (string & {});
 export type FragmentKind =
   | "block"
   | "region"
@@ -54,17 +54,8 @@ export type FragmentKind =
   | "inspector"
   | "notifications"
   | "custom";
-export type ResourcePatch =
-  | {
-      preferences?: UserPreferences;
-      capabilities?: {
-        [k: string]: boolean;
-      };
-      featureFlags?: {
-        [k: string]: boolean;
-      };
-    }
-  | [];
+export type ThemeMode = "light" | "dark" | "system" | (string & {});
+export type FieldError = string | (string | FieldMessage)[] | FieldMessage;
 export type ValueFormat =
   | "text"
   | "date"
@@ -73,7 +64,8 @@ export type ValueFormat =
   | "number"
   | "currency"
   | "boolean"
-  | "badge";
+  | "badge"
+  | (string & {});
 export type ColumnVariant =
   | "text"
   | "status"
@@ -85,8 +77,16 @@ export type ColumnVariant =
   | "html"
   | "link_group"
   | "annotated"
-  | "progress";
-export type FilterType = "select" | "text" | "date" | "date_range" | "boolean" | "number_range";
+  | "progress"
+  | (string & {});
+export type FilterType =
+  | "select"
+  | "text"
+  | "date"
+  | "date_range"
+  | "boolean"
+  | "number_range"
+  | (string & {});
 export type FieldConstraints =
   | {
       required?: true;
@@ -108,7 +108,6 @@ export type FileValue =
       id?: string;
       uploadToken?: string;
     };
-export type FieldError = string | string[];
 export type FormSchemaNode = FormFieldNode | FormSectionNode | FormGroupNode | FormHeaderNode;
 export type FormFieldNode =
   | {
@@ -297,6 +296,18 @@ export type FormFieldNode =
       props: {
         label: string;
       };
+    }
+  | {
+      kind: "field";
+      key: string;
+      component: "richtext" | "time";
+      props: FieldPropsBase;
+    }
+  | {
+      kind: "field";
+      key: string;
+      component: "autocomplete";
+      props: OptionFieldProps;
     };
 export type OptionFieldProps = FieldPropsBase & {
   options?: {
@@ -306,7 +317,7 @@ export type OptionFieldProps = FieldPropsBase & {
 };
 export type RegionUpdateMode = "replace" | "append" | "prepend" | "remove" | "update";
 export type ActionTargetKind = "link" | "route" | "request" | "panel";
-export type ChartType = "line" | "bar" | "area";
+export type ChartType = "line" | "bar" | "area" | (string & {});
 export type ConditionOperator =
   | "eq"
   | "neq"
@@ -348,7 +359,8 @@ export type FieldType =
   | "tags"
   | "hidden"
   | "static"
-  | "header";
+  | "header"
+  | (string & {});
 export type FormComponent =
   | "text"
   | "textarea"
@@ -380,15 +392,18 @@ export type FormComponent =
   | "date_range"
   | "hidden"
   | "static"
-  | "header";
+  | "header"
+  | "richtext"
+  | "time"
+  | "autocomplete"
+  | (string & {});
 export type RenderTarget = "html" | "props";
 
 export interface PageContract {
-  version: "1";
+  version: "2";
   shell: string;
   page: PageMeta;
   layout: LayoutDescriptor;
-  resources?: PageResources;
   notifications?: Notification[];
   entities?: {
     [k: string]: string;
@@ -467,41 +482,6 @@ export interface PollConfig {
   pauseWhenHidden: boolean;
   stopAfterMs?: number;
 }
-export interface PageResources {
-  preferences: UserPreferences;
-  capabilities:
-    | {
-        [k: string]: boolean;
-      }
-    | [];
-  featureFlags:
-    | {
-        [k: string]: boolean;
-      }
-    | [];
-  user?: Identity;
-  branding?: Branding;
-}
-export interface UserPreferences {
-  theme: ThemeMode;
-  locale: string;
-  timezone?: string;
-  dateFormat?: string;
-  numberFormat?: string;
-  [k: string]: unknown;
-}
-export interface Identity {
-  id: string;
-  name: string;
-  email?: string;
-  avatarUrl?: string;
-  roles?: string[];
-}
-export interface Branding {
-  appName: string;
-  logoUrl?: string;
-  logoCompactUrl?: string;
-}
 export interface Notification {
   level: NotificationLevel;
   message: Label;
@@ -511,13 +491,12 @@ export interface Notification {
   action?: Action;
 }
 export interface Fragment {
-  version: "1";
+  version: "2";
   kind: FragmentKind;
   payload?: {
     [k: string]: unknown;
   };
   notifications?: Notification[];
-  resources?: ResourcePatch;
   customType?: string;
 }
 export interface InspectorDescriptor {
@@ -531,17 +510,93 @@ export interface EditablePanelDescriptor {
   submitMethod: "post" | "put" | "patch";
   width: number;
 }
+export interface Identity {
+  id: string;
+  name: string;
+  email?: string;
+  avatarUrl?: string;
+  roles?: string[];
+}
 export interface NavigationNode {
   key: string;
   label: Label;
   icon?: string;
   href?: string;
   badge?: string;
+  entityType?: string;
+  badgeVariant?: string;
+  statusColor?: string;
+  target?: string;
   active?: true;
   drilldown?: true;
   collapsible?: true;
   defaultOpen?: true;
   children?: NavigationNode[];
+}
+export interface NavigationTree {
+  tree: NavigationNode[];
+  activeKey: string;
+  footer: NavigationNode[];
+}
+export interface SharedProps {
+  auth?: SharedAuth;
+  theme?: SharedTheme;
+  flash?: FlashMessages;
+  /**
+   * Validation errors of the current request: a FormErrors map or, when the request carried the X-Inertia-Error-Bag header, a FormErrorBags map of bag name to FormErrors. The wire is not self-describing: the reader that sent the header reads errors[bag]; any other reader treats the map as flat.
+   */
+  errors?: FormErrors | FormErrorBags;
+  csrf_token?: string;
+  locale?: string;
+  scope?: {
+    [k: string]: unknown;
+  };
+  navigation?: NavigationTree;
+  [k: string]: unknown;
+}
+export interface SharedAuth {
+  id: string;
+  name: string;
+  email?: string;
+  avatarUrl?: string;
+  roles?: string[];
+  capabilities: string[];
+  logoutUrl?: string;
+}
+export interface SharedTheme {
+  appearance?: ThemeMode;
+  strings?: {
+    [k: string]: string;
+  };
+}
+export interface FlashMessages {
+  success?: string;
+  error?: string;
+  info?: string;
+  warning?: string;
+}
+/**
+ * Validation errors keyed by field name. Each value is a message, a structured message (FieldMessage) or a list of either. The reserved key "_" carries form-level errors; dotted keys target nested fields.
+ */
+export interface FormErrors {
+  [k: string]: FieldError;
+}
+/**
+ * A structured validation message: the server-resolved message plus the translation key, domain and optional params.
+ */
+export interface FieldMessage {
+  message: string;
+  key: string;
+  domain: string;
+  params?: {
+    [k: string]: unknown;
+  };
+}
+/**
+ * Validation errors scoped to error bags: bag name to FormErrors.
+ */
+export interface FormErrorBags {
+  [k: string]: FormErrors;
 }
 export interface TableConfig {
   columns: Column[];
@@ -605,12 +660,6 @@ export interface FormStep {
   fields: string[];
   help?: Label;
 }
-/**
- * Validation errors keyed by field name. The reserved key "_" carries form-level errors; dotted keys target nested fields.
- */
-export interface FormErrors {
-  [k: string]: FieldError;
-}
 export interface FieldPropsBase {
   label: string;
   placeholder?: string;
@@ -643,7 +692,7 @@ export interface FormFieldDocumentMask {
 export interface FormSectionNode {
   kind: "section";
   id: string;
-  label: string;
+  label: string | Translatable | null;
   defaultCollapsed?: boolean;
   children: FormSchemaNode[];
 }
@@ -670,6 +719,5 @@ export interface ActionResult {
   refreshBlocks?: string[];
   errors?: FormErrors;
   fragments?: Fragment[];
-  resources?: ResourcePatch;
 }
 

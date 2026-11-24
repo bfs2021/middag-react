@@ -1,8 +1,8 @@
 # @middag-io/ui-contracts
 
 TypeScript types and zod schemas of the MIDDAG UI wire contract: the page
-contract and fragment payloads a PHP host sends to the React frontend through
-Inertia.
+contract, fragment and shared props payloads a PHP host sends to the React
+frontend through Inertia.
 
 The source of truth is PHP. The value objects of
 [`middag-io/ui`](https://github.com/middag-io/middag-php-ui) emit JSON Schema
@@ -29,7 +29,7 @@ peer: the types alone (`@middag-io/ui-contracts/types`) need no runtime.
 ## Use
 
 ```ts
-import type { PageContract, Fragment } from "@middag-io/ui-contracts";
+import type { PageContract, Fragment, SharedProps } from "@middag-io/ui-contracts";
 import { PageContractSchema, pageContractSchemaCore } from "@middag-io/ui-contracts";
 import { CONTRACT_VERSION, SCHEMA_HASH, PRODUCER } from "@middag-io/ui-contracts/meta";
 import pageContract from "@middag-io/ui-contracts/schemas/page-contract.json";
@@ -43,8 +43,8 @@ import pageContract from "@middag-io/ui-contracts/schemas/page-contract.json";
 | `./schemas/*.json` | the raw JSON Schemas and `SOURCE.json` |
 
 Every `$def` has a type (`PageContract`) and a zod schema (`PageContractSchema`).
-`pageContractSchemaCore` and `fragmentSchemaCore` are kept as aliases of the two
-roots.
+`pageContractSchemaCore`, `fragmentSchemaCore` and `sharedPropsSchemaCore` are
+kept as aliases of the three roots.
 
 The zod schemas are lenient: an object strips unknown keys instead of rejecting
 them, so a newer producer or a host overlay does not break validation. The
@@ -57,11 +57,25 @@ The package versions on its own, not with `@middag-io/react` or the PHP library.
 | Wire change | npm |
 |---|---|
 | breaking (`x-contract-version` goes up) | major (minor while 0.x) |
-| additive: new `$def`, new optional field, new enum value | minor |
+| additive: new `$def`, new optional field, new value of an open enum | minor |
+| new value of a control enum | major (minor while 0.x) |
 | regeneration with no wire change | patch |
 
-A new enum value is additive. A `switch` over a contract enum needs a `default`
-branch.
+### Open and control enums
+
+The producer (`middag-io/ui`) splits its enums in two kinds; the split is in its
+`API-STABILITY.md`, section "Enum evolution on the wire", and in
+`contracts.config.json` (`openEnums`).
+
+| Kind | Enums | Type and schema here | New value |
+|---|---|---|---|
+| Open | `ActionIntent`, `NotificationLevel`, `ThemeMode`, `ValueFormat`, `ColumnVariant`, `FilterType`, `ChartType`, `FormComponent`, `FieldType` | TS union plus `string & {}`; zod `z.union([z.enum([...]), z.string()])`: an unknown value passes | minor |
+| Control | `HttpMethod` (also the form `submitMethod`), `ActionTargetKind`, `FragmentKind`, `RegionUpdateMode`, `RenderTarget`, `ConditionOperator` (the condition `operator`), `documentScope` | strict union; zod `z.enum([...])`: an unknown value fails validation | major |
+
+A consumer of an open enum must handle a value it does not know: give every
+`switch` a `default` branch that degrades the element instead of failing.
+`@middag-io/react` renders an unknown `ActionIntent` in the danger style.
+Discriminators (`kind`, `type`, an inline `component`) stay strict.
 
 The compatibility gate compares a new mirror with the previous one and fails
 when a `$def` or field is removed, a field becomes required or a type narrows

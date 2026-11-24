@@ -58,12 +58,15 @@ jobs:
         run: |
           git fetch --no-tags --depth=1 origin "$BASE_REF"
           BASE_DIR=$(mktemp -d)
-          for f in page-contract.json fragment.json; do
+          for f in page-contract.json fragment.json shared-props.json; do
             if ! git show "FETCH_HEAD:packages/contracts/schema/$f" > "$BASE_DIR/$f" 2>/dev/null; then
-              echo "No contracts mirror on $BASE_REF yet; nothing to compare."
+              echo "No $f in the contracts mirror on $BASE_REF yet; nothing to compare."
               exit 0
             fi
           done
+          # The base mirror's producer tag: once it is at 2.0.0-rc.1 or later,
+          # a break is refused whatever the new tag says.
+          git show "FETCH_HEAD:packages/contracts/schema/SOURCE.json" > "$BASE_DIR/SOURCE.json" 2>/dev/null || rm -f "$BASE_DIR/SOURCE.json"
           npm run contracts:compat -- --base "$BASE_DIR"
 
       # Runs the full suite once WITH coverage so the regression floor

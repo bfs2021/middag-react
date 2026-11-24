@@ -278,11 +278,11 @@ Core types for the contract-driven page system. The backend sends `PageContract`
 
 ```ts
 interface PageContract {
-    version: '1';
+    version: '2';
     shell: 'product' | 'immersive' | (string & {});
     page: PageMeta;
     layout: LayoutDescriptor;
-    resources?: PageResources;
+    entities?: Record<string, string>;
 }
 
 interface PageMeta {
@@ -338,33 +338,41 @@ interface ContractPageProps {
 
 ## Types: SharedProps {#types-shared-props}
 
-Typed Inertia shared props sent on every request.
+Typed Inertia shared props sent on every request, generated from the middag-php-ui `SharedProps` value object. They are the only carrier of session data (user, capabilities, theme, locale); the page contract carries none.
 
 ```ts
 interface SharedProps {
-    navigation: NavigationTreePayload;
-    auth: SharedPropsAuth;
-    theme: SharedPropsTheme;
-    flash?: SharedPropsFlash;
-    locale: string;       // e.g. 'pt-BR', 'en'
-    version: string;      // e.g. '5.0.0'
+    auth?: SharedAuth;
+    theme?: SharedTheme;
+    flash?: FlashMessages;
+    errors?: FormErrors | FormErrorBags;   // a flat map, or one map per Inertia error bag
+    csrf_token?: string;
+    locale?: string;      // e.g. 'pt-BR', 'en'
     scope?: Record<string, unknown>;
+    navigation?: NavigationTree;
     [key: string]: unknown;
 }
 
-interface SharedPropsAuth {
-    id: number;
+interface SharedAuth {
+    id: string;
     name: string;
-    email: string;
+    email?: string;
     avatarUrl?: string;
+    roles?: string[];
     capabilities: string[];
+    logoutUrl?: string;
 }
 
-interface SharedPropsTheme {
-    strings?: Record<string, string>;
+interface SharedTheme {
     appearance?: 'system' | 'light' | 'dark';
-    brandColor?: string;
-    inherit?: boolean;
+    strings?: Record<string, string>;
+}
+
+interface FlashMessages {
+    success?: string;
+    error?: string;
+    info?: string;
+    warning?: string;
 }
 ```
 
@@ -373,26 +381,26 @@ interface SharedPropsTheme {
 Navigation contract types. The unified tree model is the single supported shape (pre-1.0: the legacy sections-based `NavigationPayload` was removed).
 
 ```ts
-interface NavigationTreePayload {
+interface NavigationTree {
     tree: NavigationNode[];
     activeKey: string;
-    drilldownStack?: string[];
     footer: NavigationNode[];
 }
 
 interface NavigationNode {
     key: string;
-    label: string;
+    label: Label;
     icon?: string;
-    entityType?: NavigationEntityType;
     href?: string;
-    badge?: string | number;
-    badgeVariant?: 'count' | 'alert';
-    active?: boolean;
-    drilldown?: boolean;
-    collapsible?: boolean;
-    defaultOpen?: boolean;
+    badge?: string;
+    entityType?: string;     // resolved through registerEntityIcon()
+    badgeVariant?: string;   // 'count' | 'alert'
     statusColor?: string;
+    target?: string;
+    active?: true;
+    drilldown?: true;
+    collapsible?: true;
+    defaultOpen?: true;
     children?: NavigationNode[];
 }
 ```

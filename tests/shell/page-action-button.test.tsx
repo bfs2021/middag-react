@@ -98,3 +98,24 @@ describe("PageActionButton icon", () => {
     expect(container.querySelectorAll("svg").length).toBe(1);
   });
 });
+
+describe("PageActionButton intent", () => {
+  afterEach(() => {
+    cleanup();
+  });
+
+  it("renders an unknown intent as destructive, not neutral", () => {
+    renderAction({ intent: "nuke" as PageAction["intent"], disabled: true });
+    const known = renderAction({ intent: "secondary" as PageAction["intent"], disabled: true });
+    const secondaryClass = screen.getAllByTestId("action-new-store")[1]?.className;
+    known.unmount();
+    const unknownClass = screen.getByTestId("action-new-store").className;
+    expect(unknownClass).not.toBe(secondaryClass);
+    expect(unknownClass).toContain("destructive");
+  });
+
+  it("keeps a known non-danger intent non-destructive", () => {
+    renderAction({ intent: "info" as PageAction["intent"], disabled: true });
+    expect(screen.getByTestId("action-new-store").className).not.toContain("bg-destructive");
+  });
+});

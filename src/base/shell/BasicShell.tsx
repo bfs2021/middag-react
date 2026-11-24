@@ -7,7 +7,7 @@
  * the ReUI sidebar primitives, so any Community consumer gets a usable
  * dashboard frame without @middag-io/react-pro.
  *
- * Reads navigation from shared props (NavigationTreePayload, rendered flat —
+ * Reads navigation from shared props (NavigationTree, rendered flat —
  * top-level groups with one level of children) and page meta from the contract.
  * For rich navigation (drilldown, search, chrome panels), use the Pro
  * ProductShell via @middag-io/react-pro's registerProDefaults().
@@ -20,9 +20,9 @@ import { Link, usePage } from "@inertiajs/react";
 import { useIsDark } from "@/base/hooks/useIsDark";
 import { PageActionButton } from "@/base/shell/partials/PageActionButton";
 import { setAppearance } from "@/base/theme/appearance";
-import type { NavigationNode, NavigationTreePayload } from "@/contracts/navigation";
+import type { NavigationNode, NavigationTree } from "@/contracts/navigation";
 import type { PageMeta } from "@/contracts/page-contract";
-import type { SharedProps, SharedPropsAuth } from "@/contracts/shared-props";
+import type { SharedAuth, SharedProps } from "@/contracts/shared-props";
 import type { ShellProps } from "@/engine/registries";
 import { renderLabel } from "@/i18n/render-label";
 import { useTranslation } from "@/i18n/useTranslation";
@@ -51,7 +51,12 @@ import {
 } from "@/primitives/reui/sidebar";
 import { Toaster } from "@/primitives/reui/sonner";
 
-const EMPTY_NAV: NavigationTreePayload = { tree: [], footer: [], activeKey: "" };
+const EMPTY_NAV: NavigationTree = { tree: [], footer: [], activeKey: "" };
+
+/** An absolute http(s) URL leaves the app, so Inertia must not handle it. */
+function isExternalHref(href: string): boolean {
+  return /^https?:\/\//i.test(href);
+}
 
 /** A single navigation leaf — a link (or label-only node) inside the menu. */
 function NavLeaf({ node, activeKey }: { node: NavigationNode; activeKey: string }): ReactElement {
@@ -62,7 +67,16 @@ function NavLeaf({ node, activeKey }: { node: NavigationNode; activeKey: string 
   return (
     <SidebarMenuItem>
       <SidebarMenuButton asChild={!!node.href} isActive={isActive}>
-        {node.href ? (
+        {node.href && (node.target || isExternalHref(node.href)) ? (
+          <a
+            href={node.href}
+            target={node.target}
+            rel="noopener noreferrer"
+            aria-current={isActive ? "page" : undefined}
+          >
+            <span className="truncate">{label}</span>
+          </a>
+        ) : node.href ? (
           <Link href={node.href} prefetch="hover" aria-current={isActive ? "page" : undefined}>
             <span className="truncate">{label}</span>
           </Link>
@@ -90,7 +104,7 @@ function HeaderUserMenu({
   logoutUrl,
   csrfToken,
 }: {
-  auth: SharedPropsAuth;
+  auth: SharedAuth;
   logoutUrl?: string;
   csrfToken?: string;
 }): ReactElement {
@@ -149,14 +163,14 @@ export function BasicShell({ children }: ShellProps): ReactElement {
   const { props } = usePage<SharedProps>();
   const isDark = useIsDark();
 
-  const nav: NavigationTreePayload = (props as SharedProps).navigation ?? EMPTY_NAV;
+  const nav: NavigationTree = (props as SharedProps).navigation ?? EMPTY_NAV;
   const page: PageMeta = (props as SharedProps & { contract?: { page?: PageMeta } }).contract
     ?.page ?? { key: "unknown", title: "", breadcrumbs: [], actions: [] };
 
   // Header-right chrome inputs. `actions` are the contract's page-level actions
   // (Edit, back, etc.) — previously destructured into `page` but never rendered.
   // `logoutUrl`/`csrf_token` are optional shared props the app supplies.
-  const auth: SharedPropsAuth | null | undefined = (props as SharedProps).auth;
+  const auth: SharedAuth | null | undefined = (props as SharedProps).auth;
   const actions = page.actions ?? [];
   // Canonical source is `auth.logoutUrl`; a top-level `logoutUrl` shared prop
   // is accepted as a fallback for hosts that inject it outside the auth object.

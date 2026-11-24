@@ -3,7 +3,7 @@
   "host": "wordpress",
   "method": "GET",
   "contract": {
-    "version": "1",
+    "version": "2",
     "shell": "product",
     "page": {
       "key": "products-catalog",

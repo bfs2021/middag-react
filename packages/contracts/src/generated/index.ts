@@ -7,9 +7,9 @@
  * Regenerate:  npm run gen:contracts
  * Drift gate:  npm run gen:contracts:check
  *
- * @source middag-io/middag-php-ui@v1.10.1 schema/{page-contract.json,fragment.json}
- * @contract-version 1
- * @hash 8079f706d81e80a7
+ * @source middag-io/middag-php-ui@v1.14.0 schema/{page-contract.json,fragment.json,shared-props.json}
+ * @contract-version 2
+ * @hash ed3b25557c7c82c7
  */
 export * from "./types.js";
 export * from "./schemas.js";

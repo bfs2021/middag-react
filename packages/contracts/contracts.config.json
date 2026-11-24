@@ -1,14 +1,32 @@
 {
   "packageName": "@middag-io/ui-contracts",
-  "schemas": ["page-contract.json", "fragment.json"],
+  "schemas": [
+    "page-contract.json",
+    "fragment.json",
+    "shared-props.json"
+  ],
   "idPrefix": "https://ui-docs.middag.io/",
-  "forbiddenIds": ["https://pro-docs.middag.io/"],
+  "forbiddenIds": [
+    "https://pro-docs.middag.io/"
+  ],
   "out": "src/generated",
   "producer": "middag-io/ui",
   "aliases": {
     "pageContractSchemaCore": "PageContract",
-    "fragmentSchemaCore": "Fragment"
+    "fragmentSchemaCore": "Fragment",
+    "sharedPropsSchemaCore": "SharedProps"
   },
+  "openEnums": [
+    "ActionIntent",
+    "NotificationLevel",
+    "ThemeMode",
+    "ValueFormat",
+    "ColumnVariant",
+    "FilterType",
+    "ChartType",
+    "FormComponent",
+    "FieldType"
+  ],
   "commands": {
     "generate": "npm run gen:contracts",
     "check": "npm run gen:contracts:check"

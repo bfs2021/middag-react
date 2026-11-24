@@ -43,7 +43,7 @@ const MIRROR_REF = MIRROR_AT >= 0 ? process.argv[MIRROR_AT + 1] : undefined;
 const PRODUCER_REPOSITORY = "middag-io/middag-php-ui";
 
 const COPIED = ["types.ts", "schemas.ts"];
-const SCHEMAS = ["page-contract.json", "fragment.json"];
+const SCHEMAS = ["page-contract.json", "fragment.json", "shared-props.json"];
 
 function engineFiles() {
   const generated = join(PACKAGE_DIR, "src", "generated");
@@ -55,7 +55,7 @@ function engineFiles() {
     banner +
     [
       'export * from "./types.js";',
-      'export { pageContractSchemaCore, fragmentSchemaCore } from "./schemas.js";',
+      'export { pageContractSchemaCore, fragmentSchemaCore, sharedPropsSchemaCore } from "./schemas.js";',
       "",
     ].join("\n");
   return files;
@@ -104,8 +104,10 @@ if (CHECK) {
   console.log(`gen-contracts --check: OK (hash ${result.hash}, contract v${result.version}).`);
 } else {
   if (MIRROR_AT >= 0) {
-    if (!MIRROR_REF || !/^v\d+\.\d+\.\d+$/.test(MIRROR_REF)) {
-      console.error("gen-contracts: --mirror needs a release tag (vX.Y.Z).");
+    if (!MIRROR_REF || !/^v\d+\.\d+\.\d+(-(alpha|beta|rc)\.\d+)?$/.test(MIRROR_REF)) {
+      console.error(
+        "gen-contracts: --mirror needs a release tag (vX.Y.Z or vX.Y.Z-alpha|beta|rc.N).",
+      );
       process.exit(1);
     }
     const output = (key, value) => {
@@ -129,6 +131,8 @@ if (CHECK) {
         `compat: ${report.level}${report.versionBumped ? " (x-contract-version bumped)" : ""}`,
       );
       for (const line of report.breaks) console.log(`  breaking: ${line}`);
+      if (report.breaks.length && !report.enforced)
+        console.log("  (reported only: the producer tag is below the rc gate)");
       for (const line of report.additions) console.log(`  additive: ${line}`);
     }
   }
