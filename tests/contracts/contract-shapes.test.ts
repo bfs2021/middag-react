@@ -77,9 +77,6 @@ const FULL_CONTRACT: PageContract = {
     },
     meta: { customKey: true },
   },
-  resources: {
-    featureFlags: { beta: true },
-  },
   entities: { user: "/users/{id}" },
 };
 

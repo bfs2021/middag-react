@@ -7,12 +7,21 @@
  * module re-exports them under the stable public names and derives the
  * per-component variant aliases via `Extract`.
  *
- * Only the FormPanelBlockData envelope and the client error shapes stay
- * hand-authored: the rich client `FieldError` ({message, key, domain, params})
- * is intentionally NOT on the wire yet, so it is not generated.
+ * Only the FormPanelBlockData envelope stays hand-authored. The validation
+ * error shapes ('FieldMessage', 'FieldError', 'FormErrors', 'FormErrorBags')
+ * are generated too: a field error is a plain string, a rich message
+ * ({message, key, domain, params}) or a list mixing both.
  */
 
-import type { FormComponent, FormFieldNode, FormSchemaNode } from "@/contracts/generated";
+import type {
+  FieldMessage,
+  FormComponent,
+  FormErrorBags,
+  FormFieldNode,
+  FormSchemaNode,
+  FieldError as WireFieldError,
+  FormErrors as WireFormErrors,
+} from "@/contracts/generated";
 
 // ── Generated contract types (re-exported under the stable public names) ──────
 
@@ -110,24 +119,19 @@ export type HeaderFormField = Extract<FormFieldNode, { component: "header" }>;
 // ── Form panel block data ─────────────────────────────────────────────────────
 
 /**
- * A single server validation error. v0.11.0 wire shape: `message` is the
- * server-resolved (default-locale) string; key/domain/params are the machine
- * channel for client-side re-translation.
- *
- * Hand-authored on purpose: the wire `FieldError` ($def in middag-php-ui) is the
- * leaner `string | string[]`; unifying the two is a deferred breaking change.
+ * A rich server validation message: `message` is the server-resolved
+ * (default-locale) string; key/domain/params are the machine channel for
+ * client-side re-translation ('resolveFieldError').
  */
-export interface FieldError {
-  message: string;
-  key: string;
-  domain: string;
-  params?: Record<string, unknown>;
-}
+export type FieldError = FieldMessage;
 
-export type FormErrorValue = FieldError | FieldError[] | string;
+/** What the server sends for one field: a string, a rich message or a list of both. */
+export type FormErrorValue = WireFieldError;
 
 /** Server validation errors keyed by field key. */
-export type FormErrors = Record<string, FormErrorValue>;
+export type FormErrors = WireFormErrors;
+
+export type { FieldMessage, FormErrorBags };
 
 /** HTTP method the form submits with. */
 export type FormMethod = "post" | "put" | "patch";
